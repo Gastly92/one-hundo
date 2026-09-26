@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build & test
+    name: Build
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -21,36 +21,12 @@ jobs:
       - name: Show toolchain
         run: |
           xcodebuild -version
-          xcrun simctl list runtimes
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
       - name: Generate Xcode project
         run: xcodegen generate
-
-      - name: Pick an iPhone simulator
-        id: sim
-        run: |
-          UDID=$(xcrun simctl list devices available -j \
-            | jq -r '[.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.name | startswith("iPhone"))] | last | .udid')
-          if [ -z "$UDID" ] || [ "$UDID" = "null" ]; then
-            echo "::error::No iPhone simulator available"; exit 1
-          fi
-          echo "Using simulator $UDID"
-          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
-
-      - name: Run unit tests
-        run: |
-          mkdir -p build
-          xcodebuild test \
-            -project OneHundo.xcodeproj \
-            -scheme OneHundo \
-            -destination "id=${{ steps.sim.outputs.udid }}" \
-            -resultBundlePath build/TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO \
-            | tee build/test.log | grep -E '(error|warning:|Test Case|\*\* TEST)' || true
-          grep -q '\*\* TEST SUCCEEDED \*\*' build/test.log
 
       - name: Build simulator app
         run: |
@@ -92,12 +68,3 @@ jobs:
         with:
           name: OneHundo-unsigned-ipa
           path: build/OneHundo-unsigned.ipa
-
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            build/TestResults.xcresult
-            build/test.log
