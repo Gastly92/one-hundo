@@ -1,0 +1,70 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build simulator app
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project OneHundo.xcodeproj \
+            -scheme OneHundo \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build/sim \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 20
+          cd build/sim/Build/Products/Debug-iphonesimulator
+          zip -qry "$GITHUB_WORKSPACE/build/OneHundo-simulator.zip" OneHundo.app
+
+      - name: Build unsigned device IPA
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project OneHundo.xcodeproj \
+            -scheme OneHundo \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build/device \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 20
+          mkdir -p build/ipa/Payload
+          cp -R build/device/Build/Products/Release-iphoneos/OneHundo.app build/ipa/Payload/
+          cd build/ipa && zip -qry "$GITHUB_WORKSPACE/build/OneHundo-unsigned.ipa" Payload
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: OneHundo-simulator
+          path: build/OneHundo-simulator.zip
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: OneHundo-unsigned-ipa
+          path: build/OneHundo-unsigned.ipa
