@@ -29,16 +29,16 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
-  OneHundoTests:
-    type: bundle.unit-test
+  OneHundoUITests:
+    type: bundle.ui-testing
     platform: iOS
     sources:
-      - OneHundoTests
+      - OneHundoUITests
     dependencies:
       - target: OneHundo
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.gastly92.onehundo.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.gastly92.onehundo.uitests
         GENERATE_INFOPLIST_FILE: YES
         TARGETED_DEVICE_FAMILY: "1"
 schemes:
@@ -48,4 +48,4 @@ schemes:
         OneHundo: all
     test:
       targets:
-        - OneHundoTests
+        - OneHundoUITests
