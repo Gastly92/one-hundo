@@ -55,15 +55,24 @@ starting count and a goal, and it works like the built-in ones (no form tips).
 - Tap a day to see the challenges you did that day and your counts.
 - Tap a challenge from that day to open its full challenge screen.
 
+## Rules
+
+- **Missed days are fine.** The target stays the same until you log again.
+- **Fell short?** The next target is what you actually did plus the increment.
+  Did 4 when the target was 6? Try for 5 next time.
+
+## Data
+
+- Stored on the phone only, with no account or server.
+- Saved with SwiftData in the app's normal storage, which iCloud Backup
+  includes automatically. Restoring a phone from backup brings your challenges
+  back. Don't put user data in `Caches` or `tmp`, or mark it excluded from
+  backup, since iCloud Backup skips those.
+- This is backup, not sync: data doesn't move live between devices.
+
 ## Later (not planned yet)
 
 - **Apple Health integration**: e.g. save workouts to the Health app.
 - **Ads or other monetization**, in some light form.
-
-## Open questions
-
-- What happens on a missed day? Suggested default: keep the same target
-  until you log again.
-- What if you do fewer than the target? Suggested default: the next target is
-  your actual result plus the increment.
-- Where does data live? Suggested default: on the device only (no account) to start.
+- **iCloud sync** (CloudKit) so data shows up on a new phone or iPad without a
+  full restore. Needs the iCloud entitlement and extra signing setup.
