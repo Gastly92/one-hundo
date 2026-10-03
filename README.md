@@ -1,7 +1,8 @@
 # One Hundo
 
-An iOS app built entirely from a phone with Claude Code and GitHub Actions.
-Right now it just says "Hello One Hundo".
+A daily tracker for fitness challenges like 100 push-ups in one go, built entirely
+from a phone with Claude Code and GitHub Actions. See [docs/PRODUCT.md](docs/PRODUCT.md)
+for what the app does. Right now it just says "Hello One Hundo".
 
 Every PR and push to `main` runs `.github/workflows/ios-build.yml` on a macOS
 runner. It runs the UI tests in `OneHundoUITests/`; the `CI Gate` check shows whether
