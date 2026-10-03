@@ -17,7 +17,8 @@ Keep both updated as features land.
   `macos-26`). It generates the project, runs tests on a simulator, and builds.
   Docs-only PRs skip the macOS job. The `CI Gate` job is the single pass/fail check for a PR;
   keep its name stable, and add new code paths to the `changes` filter.
-- Tests live in `OneHundoUITests/` (XCTest UI tests that launch the app and check the screen).
+- Tests: `OneHundoTests/` (unit tests for logic in `OneHundo/Models/`) and `OneHundoUITests/`
+  (XCTest UI tests that launch the app and check the screen). Both run in the scheme's test action.
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
   failures before calling the work done. Re-read Swift changes carefully first, since each
   CI round trip takes a few minutes.

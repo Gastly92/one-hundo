@@ -27,6 +27,7 @@ jobs:
           filters: |
             code:
               - 'OneHundo/**'
+              - 'OneHundoTests/**'
               - 'OneHundoUITests/**'
               - 'project.yml'
               - '.github/workflows/**'
@@ -50,7 +51,7 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Run UI tests
+      - name: Run tests
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j \
             | jq -r '[.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.name | startswith("iPhone"))][0].udid // empty')

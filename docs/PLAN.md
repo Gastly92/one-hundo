@@ -26,12 +26,14 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 - `BuiltInChallenge` (static data in code, not stored): id, name, description,
   icon, form tips, image names.
 
-Today's target = latest attempt's count + daily increase, capped at the goal.
-Missed days don't change it.
+Today's target = the latest attempt *before today* (or the starting count if there
+is none) + daily increase, capped at the goal. Missed days don't change it, and
+logging today doesn't move today's target. Reminder time is stored as minutes after
+midnight; color as a palette name; unit as a raw string.
 
 ## PRs
 
-### 1. Data model, logic, and unit tests
+### 1. Data model, logic, and unit tests ✅
 - SwiftData models above, built-in catalog (Push-ups, Sit-ups, Pull-ups), and the
   target/progress logic.
 - Add the `OneHundoTests` unit test target in `project.yml`, add it to the scheme,
