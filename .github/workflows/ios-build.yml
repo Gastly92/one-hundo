@@ -11,8 +11,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Decides whether the PR touches anything that affects the app.
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      code: ${{ github.event_name != 'pull_request' || steps.filter.outputs.code == 'true' }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        if: github.event_name == 'pull_request'
+        with:
+          filters: |
+            code:
+              - 'OneHundo/**'
+              - 'OneHundoTests/**'
+              - 'project.yml'
+              - '.github/workflows/**'
+
   build:
-    name: Build
+    name: Build & test
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -27,6 +49,29 @@ jobs:
 
       - name: Generate Xcode project
         run: xcodegen generate
+
+      - name: Run unit tests
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j \
+            | jq -r '[.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.name | startswith("iPhone"))][0].udid // empty')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "::error::No iPhone simulator available"; exit 1
+          fi
+          echo "Testing on simulator $DEVICE_ID"
+          mkdir -p build
+          status=0
+          xcodebuild test \
+            -project OneHundo.xcodeproj \
+            -scheme OneHundo \
+            -destination "id=$DEVICE_ID" \
+            -derivedDataPath build/test \
+            CODE_SIGNING_ALLOWED=NO \
+            > build/test.log 2>&1 || status=$?
+          grep -E '(✔|✘|error:|\*\* TEST)' build/test.log || true
+          if [ "$status" -ne 0 ]; then
+            tail -n 60 build/test.log
+          fi
+          exit "$status"
 
       - name: Build simulator app
         run: |
@@ -68,3 +113,20 @@ jobs:
         with:
           name: OneHundo-unsigned-ipa
           path: build/OneHundo-unsigned.ipa
+
+  # The one check to mark as required in branch protection. It always reports,
+  # passing when the build was skipped (docs-only PR) or succeeded.
+  gate:
+    name: CI Gate
+    needs: [changes, build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        run: |
+          echo "changes: ${{ needs.changes.result }}, build: ${{ needs.build.result }}"
+          [ "${{ needs.changes.result }}" = "success" ] || exit 1
+          case "${{ needs.build.result }}" in
+            success|skipped) exit 0 ;;
+            *) exit 1 ;;
+          esac
