@@ -2,7 +2,8 @@
 
 One Hundo: a SwiftUI iOS fitness-challenge tracker (e.g. 100 push-ups a day).
 The owner develops entirely from an iPhone via Claude Code; there is no Mac.
-Product vision and planned features: `docs/PRODUCT.md`. Keep it updated as features land.
+Product vision and planned features: `docs/PRODUCT.md`. Build order: `docs/PLAN.md`.
+Keep both updated as features land.
 
 ## Working with the owner
 - Keep it simple: few steps, few questions. Pick sensible defaults and say what you chose.
