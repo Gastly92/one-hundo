@@ -36,24 +36,105 @@ reminders off per challenge.
 Each built-in challenge has tips, and images where helpful, explaining good form
 and common mistakes.
 
-**Custom challenges** let you track anything else. You name it, give it a
-starting count and a goal, and it works like the built-in ones (no form tips).
+**Custom challenges** let you track anything else. You name it, pick a unit
+(reps, seconds, or minutes), icon, and color, give it a starting count and a goal,
+and it works like the built-in ones (no form tips).
 
 ## Screens
 
-### Challenge list (home)
+The app has two tabs at the bottom: **Challenges** and **Calendar**.
+
+### Challenge list (Challenges tab)
 
 - A grid of challenge cards, 2 columns, scrolling down as far as you have cards.
-- Each card shows the challenge name, today's target, and progress toward the goal.
-- Tap a card to open the challenge: log today's attempt, see history, read tips,
-  change the goal or increment.
-- A button to add a challenge (built-in or custom).
+- A **+** button in the top bar opens Add challenge.
+- First launch, with no challenges yet: a friendly empty state with a big
+  "Start your first challenge" button that also opens Add challenge.
 
-### Calendar
+### Challenge card
 
-- A month calendar; days with logged attempts are marked.
-- Tap a day to see the challenges you did that day and your counts.
-- Tap a challenge from that day to open its full challenge screen.
+- Icon and name, e.g. a push-up icon and "Push-ups".
+- Today's target, large: "Try 6 today", or "Done: 6" with a checkmark once
+  logged today.
+- Progress toward the goal: "6 / 100" with a thin progress bar.
+- Tapping the card opens the challenge screen.
+
+### Add challenge (sheet)
+
+The first step of starting a challenge. A list of choices:
+
+- Each built-in challenge, with icon, name, and a one-line description.
+  Built-ins you've already started are shown greyed out with "In progress".
+- **Custom challenge** at the bottom, which opens the custom challenge form.
+
+Picking a built-in goes to the enroll flow.
+
+### Enroll flow
+
+A short step-by-step flow (a few pages in the same sheet, with Back/Next):
+
+1. **Intro**: the challenge name, its form tips, and an image where available,
+   so you warm up with good form before testing yourself.
+2. **Test yourself**: "How many push-ups can you do in one go?" A number entry
+   with − / + buttons and a number pad. This is your starting count.
+3. **Goal and pace**:
+   - Goal: number entry, defaulting to 100 (must be above the starting count).
+   - Daily increase: picker, defaulting to 1 (choices like 1, 2, 3, 5, 10).
+   - A preview line: "At this pace you'd hit 100 in about 95 days."
+4. **Reminder**: a toggle (on by default) and a time picker (default 6:00 PM).
+   Turning it on asks for notification permission the first time.
+5. **Start** button: saves the challenge with today's test as its first
+   attempt, and returns to the list with the new card.
+
+### Custom challenge form
+
+Opened from Add challenge. One scrolling form:
+
+- **Name** (required), e.g. "Plank" or "Burpees".
+- **Unit**: picker of reps, seconds, or minutes (default reps). The unit is used
+  in labels, e.g. "Try 46 seconds today". Higher is always better.
+- **Icon**: a grid of a few dozen fitness-style symbols to pick from.
+- **Color**: a row of color swatches for the card.
+- Then the same fields as the enroll flow: starting count, goal (default 100),
+  daily increase (default 1), and reminder.
+- **Start** button, enabled once the name is filled in.
+
+### Challenge screen
+
+Opened from a card or from the calendar.
+
+- **Header**: icon, name, and a large progress ring showing current / goal.
+- **Today**: today's target and a big **Log attempt** button. If already logged
+  today, it shows your count and the button becomes **Edit today**.
+- **History**: a line chart of your counts over time, and a list of attempts
+  (date and count), newest first. Swipe an attempt to edit or delete it.
+- **Form tips** (built-ins only): the tips and images, collapsible.
+- **Settings** (the gear in the top bar): edit goal, daily increase, reminder,
+  and for custom challenges name, unit, icon, and color. A red **Delete
+  challenge** button at the bottom, with a confirmation.
+
+### Log attempt (sheet)
+
+- "How many did you do?" with the number entry, prefilled with today's target.
+- Date: today by default; can be changed to log a past day.
+- **Save**. One attempt per challenge per day: logging the same day again
+  replaces that day's count.
+- Hitting or beating the target shows a small celebration; falling short shows
+  an encouraging message and tomorrow's target.
+
+### Goal reached
+
+When an attempt reaches the goal: a full-screen celebration, then two choices:
+**Set a new goal** (back to Goal and pace) or **Done** (the card moves to a
+"Completed" section at the bottom of the list, showing the date you finished).
+
+### Calendar (Calendar tab)
+
+- A month calendar you can swipe between months; days with logged attempts
+  show a dot (one per challenge, in the challenge's color, up to 3).
+- Tap a day to open the day view: each challenge you logged that day with its
+  count, and whether you hit that day's target.
+- Tap a challenge in the day view to open its challenge screen.
 
 ## Rules
 
