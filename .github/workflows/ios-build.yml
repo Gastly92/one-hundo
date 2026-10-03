@@ -67,7 +67,7 @@ jobs:
             -derivedDataPath build/test \
             CODE_SIGNING_ALLOWED=NO \
             > build/test.log 2>&1 || status=$?
-          grep -E '(✔|✘|error:|\*\* TEST)' build/test.log || true
+          grep -E '(Test Case .*(passed|failed)|error:|\*\* TEST)' build/test.log || true
           if [ "$status" -ne 0 ]; then
             tail -n 60 build/test.log
           fi
@@ -114,8 +114,8 @@ jobs:
           name: OneHundo-unsigned-ipa
           path: build/OneHundo-unsigned.ipa
 
-  # The one check to mark as required in branch protection. It always reports,
-  # passing when the build was skipped (docs-only PR) or succeeded.
+  # Single pass/fail check for a PR. It always reports, passing when the build
+  # was skipped (docs-only PR) or succeeded.
   gate:
     name: CI Gate
     needs: [changes, build]

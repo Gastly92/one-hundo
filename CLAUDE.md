@@ -13,7 +13,7 @@ The owner develops entirely from an iPhone via Claude Code; there is no Mac.
 - This container is Linux: nothing Swift/Xcode builds locally. CI is the compiler.
 - `.github/workflows/ios-build.yml` runs on every PR and push to `main` (macOS runner,
   `macos-26`). It generates the project, runs tests on a simulator, and builds.
-  Docs-only PRs skip the macOS job. The `CI Gate` job is the required check on `main`;
+  Docs-only PRs skip the macOS job. The `CI Gate` job is the single pass/fail check for a PR;
   keep its name stable, and add new code paths to the `changes` filter.
 - Tests live in `OneHundoUITests/` (XCTest UI tests that launch the app and check the screen).
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
