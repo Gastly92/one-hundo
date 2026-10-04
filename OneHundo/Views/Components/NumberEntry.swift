@@ -1,0 +1,61 @@
+import SwiftUI
+
+/// A big number with − / + buttons; tap the number to type it on the number pad.
+/// Shared by the enroll flow, the custom challenge form, and logging attempts.
+struct NumberEntry: View {
+    @Binding var value: Int
+    var range: ClosedRange<Int> = 0...9999
+    /// Prefix for accessibility identifiers: `<id>.field`, `<id>.increment`, `<id>.decrement`.
+    var identifier: String = "number"
+
+    @State private var text = ""
+
+    var body: some View {
+        HStack(spacing: 16) {
+            stepButton(systemImage: "minus.circle.fill", label: "Decrease", delta: -1)
+                .accessibilityIdentifier("\(identifier).decrement")
+
+            TextField("0", text: $text)
+                .keyboardType(.numberPad)
+                .multilineTextAlignment(.center)
+                .font(.system(size: 56, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .frame(minWidth: 120)
+                .accessibilityIdentifier("\(identifier).field")
+
+            stepButton(systemImage: "plus.circle.fill", label: "Increase", delta: 1)
+                .accessibilityIdentifier("\(identifier).increment")
+        }
+        .frame(maxWidth: .infinity)
+        .onAppear { text = String(value) }
+        .onChange(of: text) { _, newText in
+            let digits = newText.filter(\.isNumber)
+            guard let number = Int(digits) else {
+                if digits != newText { text = digits }
+                return
+            }
+            let clamped = clamp(number)
+            if String(clamped) != newText { text = String(clamped) }
+            if clamped != value { value = clamped }
+        }
+        .onChange(of: value) { _, newValue in
+            if Int(text) != newValue { text = String(newValue) }
+        }
+    }
+
+    private func stepButton(systemImage: String, label: String, delta: Int) -> some View {
+        Button {
+            value = clamp(value + delta)
+        } label: {
+            Image(systemName: systemImage)
+                .font(.system(size: 44))
+                .symbolRenderingMode(.hierarchical)
+        }
+        .accessibilityLabel(label)
+        .disabled(!range.contains(value + delta))
+    }
+
+    private func clamp(_ number: Int) -> Int {
+        min(max(number, range.lowerBound), range.upperBound)
+    }
+}

@@ -110,6 +110,13 @@ enum Progression {
         return (remaining + step - 1) / step
     }
 
+    /// The enroll preview line, e.g. "At this pace you'd hit 100 in about 95 days."
+    static func paceText(from count: Int, goal: Int, dailyIncrease: Int) -> String {
+        guard goal > count else { return "Your goal needs to be above \(count)." }
+        let days = daysToGoal(from: count, goal: goal, dailyIncrease: dailyIncrease)
+        return "At this pace you'd hit \(goal) in about \(days) \(days == 1 ? "day" : "days")."
+    }
+
     /// `current / goal`, clamped to 0...1.
     static func progress(current: Int, goal: Int) -> Double {
         guard goal > 0 else { return 0 }
