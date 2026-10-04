@@ -49,6 +49,16 @@ final class ChallengeListTests: XCTestCase {
     }
 
     @MainActor
+    func testAddButtonIsAlignedWithTitle() {
+        let app = launch()
+        let title = app.staticTexts["challengesTitle"]
+        let addButton = app.buttons["addChallengeButton"]
+        XCTAssertTrue(title.waitForExistence(timeout: 10))
+        XCTAssertTrue(addButton.exists)
+        XCTAssertEqual(title.frame.midY, addButton.frame.midY, accuracy: 4)
+    }
+
+    @MainActor
     func testCalendarTabShowsPlaceholder() {
         let app = launch()
         app.tabBars.buttons["Calendar"].tap()

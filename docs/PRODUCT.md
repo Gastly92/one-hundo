@@ -47,7 +47,7 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 ### Challenge list (Challenges tab)
 
 - A grid of challenge cards, 2 columns, scrolling down as far as you have cards.
-- A **+** button in the top bar opens Add challenge.
+- A **+** button on the same line as the "Challenges" title opens Add challenge.
 - First launch, with no challenges yet: a friendly empty state with a big
   "Start your first challenge" button that also opens Add challenge.
 
