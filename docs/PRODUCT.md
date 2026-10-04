@@ -64,7 +64,10 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 The first step of starting a challenge. A list of choices:
 
 - Each built-in challenge, with icon, name, and a one-line description.
-  Built-ins you've already started are shown greyed out with "In progress".
+  Built-ins you're currently doing are shown greyed out with "In progress", so
+  there is only one active challenge per built-in. Once it's completed, the
+  built-in is available to start again (as a fresh challenge). Custom
+  challenges have no such limit.
 - **Custom challenge** at the bottom, which opens the custom challenge form.
 
 Picking a built-in goes to the enroll flow.
@@ -104,6 +107,7 @@ Opened from Add challenge. One scrolling form:
 Opened from a card or from the calendar.
 
 - **Header**: icon, name, and a large progress ring showing current / goal.
+  Below it, small stats: personal best and days logged.
 - **Today**: today's target and a big **Log attempt** button. If already logged
   today, it shows your count and the button becomes **Edit today**.
 - **History**: a line chart of your counts over time, and a list of attempts
@@ -112,6 +116,9 @@ Opened from a card or from the calendar.
 - **Settings** (the gear in the top bar): edit goal, daily increase, reminder,
   and for custom challenges name, unit, icon, and color. A red **Delete
   challenge** button at the bottom, with a confirmation.
+  - The goal can be raised or lowered at any time. Lowering it to at or below
+    your current count counts as reaching it: you get the goal-reached
+    celebration.
 
 ### Log attempt (sheet)
 
@@ -121,12 +128,21 @@ Opened from a card or from the calendar.
   replaces that day's count.
 - Hitting or beating the target shows a small celebration; falling short shows
   an encouraging message and tomorrow's target.
+- Beating your highest count ever for this challenge adds a "New personal
+  best!" badge to the celebration (not shown for the first attempt, which is
+  your test).
 
 ### Goal reached
 
-When an attempt reaches the goal: a full-screen celebration, then two choices:
-**Set a new goal** (back to Goal and pace) or **Done** (the card moves to a
-"Completed" section at the bottom of the list, showing the date you finished).
+When an attempt reaches the goal (or the goal is lowered to your current count):
+a full-screen celebration with confetti and a success haptic, then two choices:
+
+- **Set a new goal**: back to Goal and pace, defaulting to a higher goal (e.g.
+  150 after 100). The challenge keeps going from your current count.
+- **Done**: the card moves to a "Completed" section at the bottom of the list,
+  showing the date you finished. Its challenge screen stays viewable (history,
+  chart) and has a **Continue** button, which works like Set a new goal and
+  moves it back to the active list.
 
 ### Calendar (Calendar tab)
 
@@ -139,6 +155,8 @@ When an attempt reaches the goal: a full-screen celebration, then two choices:
 ## Rules
 
 - **Missed days are fine.** The target stays the same until you log again.
+  There are no streaks to break; the challenge screen shows "days logged"
+  instead.
 - **Fell short?** The next target is what you actually did plus the increment.
   Did 4 when the target was 6? Try for 5 next time.
 
