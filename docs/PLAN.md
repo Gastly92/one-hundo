@@ -26,12 +26,14 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 - `BuiltInChallenge` (static data in code, not stored): id, name, description,
   icon, form tips, image names.
 
-Today's target = latest attempt's count + daily increase, capped at the goal.
-Missed days don't change it.
+Today's target = the latest attempt *before today* (or the starting count if there
+is none) + daily increase, capped at the goal. Missed days don't change it, and
+logging today doesn't move today's target. Reminder time is stored as minutes after
+midnight; color as a palette name; unit as a raw string.
 
 ## PRs
 
-### 1. Data model, logic, and unit tests
+### 1. Data model, logic, and unit tests ✅
 - SwiftData models above, built-in catalog (Push-ups, Sit-ups, Pull-ups), and the
   target/progress logic.
 - Add the `OneHundoTests` unit test target in `project.yml`, add it to the scheme,
@@ -52,7 +54,8 @@ Missed days don't change it.
   seeded challenges show as cards.
 
 ### 3. Add challenge and enroll flow
-- Add challenge sheet listing the built-ins (greyed out when already started).
+- Add challenge sheet listing the built-ins (greyed out while one is active,
+  i.e. started and not completed).
 - Enroll flow: intro (tips as text for now), test yourself, goal and pace,
   reminder (toggle and time saved, not scheduled yet), Start.
 - Shared number entry component (− / + and number pad), reused later.
@@ -63,7 +66,10 @@ Missed days don't change it.
 ### 4. Challenge screen and logging
 - Challenge screen: header with progress ring, Today section, attempt list.
 - Log attempt sheet with the replace-same-day rule, plus edit and delete attempts.
-- Small celebration / encouragement after logging.
+- Small celebration / encouragement after logging, with a "New personal best!"
+  badge when the count beats every earlier attempt (not on the first attempt).
+- Header stats: personal best and days logged.
+- Unit tests for the personal-best and days-logged logic.
 - UI test: log 6, card shows "Done: 6"; log again the same day replaces it.
 
 **Milestone:** the core daily loop works. Ship to TestFlight and use it daily.
@@ -72,6 +78,8 @@ Missed days don't change it.
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
 - Settings screen for any challenge (goal, increase, reminder; name, unit, icon,
   color for custom), and Delete challenge with confirmation.
+- Goal can be raised or lowered any time. Lowering it to at or below the current
+  count is treated as reaching it (the celebration itself lands in PR 9).
 - UI test: create a "Plank" challenge in seconds and see its card.
 
 ### 6. Daily reminders
@@ -96,7 +104,13 @@ Missed days don't change it.
 - Swift Charts line chart of counts over time on the challenge screen.
 
 ### 9. Goal reached and polish
-- Goal-reached celebration, Set a new goal / Done, and the Completed section.
+- Goal-reached celebration (full screen, confetti, success haptic), Set a new
+  goal (defaults higher, e.g. 150 after 100) / Done, and the Completed section.
+- Completed challenges keep their screen and history, with a Continue button
+  that sets a new goal and makes them active again. A completed built-in can
+  also be started fresh from Add challenge.
+- UI test: log the goal count, see the celebration, tap Done, card is under
+  Completed; Continue moves it back.
 - App icon, accent color, haptics, and a pass on empty and error states.
 - Bump `MARKETING_VERSION` to 1.0 when you're happy with it.
 
