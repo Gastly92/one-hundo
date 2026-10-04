@@ -71,4 +71,13 @@ final class Attempt {
 
 enum ChallengeUnit: String, CaseIterable, Codable {
     case reps, seconds, minutes
+
+    /// A count with its unit for labels: "6" for reps, "46 seconds", "1 minute".
+    func format(_ count: Int) -> String {
+        switch self {
+        case .reps: return "\(count)"
+        case .seconds: return count == 1 ? "1 second" : "\(count) seconds"
+        case .minutes: return count == 1 ? "1 minute" : "\(count) minutes"
+        }
+    }
 }

@@ -22,6 +22,27 @@ extension Challenge {
         (attempts ?? []).first { calendar.isDate($0.date, inSameDayAs: day) }
     }
 
+    /// The attempt that counts as "done" for `day`. On the day the challenge was
+    /// started, the starting test alone doesn't count, so the card still says
+    /// "Try 6 today" right after testing yourself at 5.
+    func loggedAttempt(on day: Date, calendar: Calendar = .current) -> Attempt? {
+        guard let logged = attempt(on: day, calendar: calendar) else { return nil }
+        let isStartingTest = calendar.isDate(day, inSameDayAs: createdDate)
+            && logged.count == startingCount
+        return isStartingTest ? nil : logged
+    }
+
+    /// Card text for `day`: "Try 6 today", or "Done: 6" once logged.
+    func todayText(on day: Date = Date(), calendar: Calendar = .current) -> String {
+        if let logged = loggedAttempt(on: day, calendar: calendar) {
+            return "Done: \(unit.format(logged.count))"
+        }
+        return "Try \(unit.format(target(on: day, calendar: calendar))) today"
+    }
+
+    /// Progress label, e.g. "6 / 100".
+    var progressText: String { "\(currentCount) / \(goal)" }
+
     /// The count a day's target builds on: the latest attempt before that day,
     /// or the starting count if there is none. Missed days don't change it, and
     /// logging today doesn't move today's target.

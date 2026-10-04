@@ -28,7 +28,9 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 
 Today's target = the latest attempt *before today* (or the starting count if there
 is none) + daily increase, capped at the goal. Missed days don't change it, and
-logging today doesn't move today's target. Reminder time is stored as minutes after
+logging today doesn't move today's target. On the start day, the starting test
+alone doesn't count as "done", so the card says "Try 6 today" after testing at 5.
+Logging again that day replaces the test. Reminder time is stored as minutes after
 midnight; color as a palette name; unit as a raw string.
 
 ## PRs
@@ -45,7 +47,7 @@ midnight; color as a palette name; unit as a raw string.
   without a migration. "One attempt per day" is enforced in code instead.
 - No visible change yet.
 
-### 2. App shell and challenge list
+### 2. App shell and challenge list ✅
 - Tab bar: Challenges and Calendar (Calendar is a placeholder for now).
 - Challenge grid (2 columns) with cards, the empty state, and the + button
   (opens a placeholder sheet for now).

@@ -2,10 +2,10 @@
 
 A daily tracker for fitness challenges like 100 push-ups in one go, built entirely
 from a phone with Claude Code and GitHub Actions. See [docs/PRODUCT.md](docs/PRODUCT.md)
-for what the app does. Right now it just says "Hello One Hundo".
+for what the app does and [docs/PLAN.md](docs/PLAN.md) for build progress.
 
 Every PR and push to `main` runs `.github/workflows/ios-build.yml` on a macOS
-runner. It runs the UI tests in `OneHundoUITests/`; the `CI Gate` check shows whether
+runner. It runs the unit tests in `OneHundoTests/` and the UI tests in `OneHundoUITests/`; the `CI Gate` check shows whether
 a PR passed. It uploads:
 
 - `OneHundo-unsigned-ipa`: install on a phone with a sideloading app (e.g. SideStore)
