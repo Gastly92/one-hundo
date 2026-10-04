@@ -55,12 +55,13 @@ midnight; color as a palette name; unit as a raw string.
 - Replace the "Hello One Hundo" test with: empty state shows on first launch;
   seeded challenges show as cards.
 
-### 3. Add challenge and enroll flow
+### 3. Add challenge and enroll flow ✅
 - Add challenge sheet listing the built-ins (greyed out while one is active,
   i.e. started and not completed).
 - Enroll flow: intro (tips as text for now), test yourself, goal and pace,
   reminder (toggle and time saved, not scheduled yet), Start.
 - Shared number entry component (− / + and number pad), reused later.
+- Custom challenge row shows as "Coming soon" until PR 5.
 - UI test: start Push-ups with 5, goal 100; the card shows "Try 6 today".
 
 **Milestone:** you can start real challenges. Worth a TestFlight build.

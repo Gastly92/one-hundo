@@ -26,6 +26,21 @@ final class ProgressionTests: XCTestCase {
         XCTAssertEqual(Progression.daysToGoal(from: 150, goal: 100, dailyIncrease: 1), 0)
     }
 
+    func testPaceText() {
+        XCTAssertEqual(
+            Progression.paceText(from: 5, goal: 100, dailyIncrease: 1),
+            "At this pace you'd hit 100 in about 95 days."
+        )
+        XCTAssertEqual(
+            Progression.paceText(from: 99, goal: 100, dailyIncrease: 1),
+            "At this pace you'd hit 100 in about 1 day."
+        )
+        XCTAssertEqual(
+            Progression.paceText(from: 100, goal: 100, dailyIncrease: 1),
+            "Your goal needs to be above 100."
+        )
+    }
+
     func testProgress() {
         XCTAssertEqual(Progression.progress(current: 6, goal: 100), 0.06, accuracy: 0.0001)
         XCTAssertEqual(Progression.progress(current: 150, goal: 100), 1)

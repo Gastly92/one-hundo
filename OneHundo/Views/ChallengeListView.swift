@@ -43,7 +43,7 @@ struct ChallengeListView: View {
                 }
             }
             .sheet(isPresented: $isAddingChallenge) {
-                AddChallengePlaceholderView()
+                AddChallengeView()
             }
         }
     }
@@ -60,28 +60,6 @@ struct ChallengeListView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .accessibilityIdentifier("startFirstChallengeButton")
-        }
-    }
-}
-
-/// Stand-in until the Add challenge sheet lands (plan step 3).
-struct AddChallengePlaceholderView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView(
-                "Coming soon",
-                systemImage: "plus.circle",
-                description: Text("Starting challenges arrives in the next update.")
-            )
-            .navigationTitle("Add challenge")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
-                }
-            }
         }
     }
 }
