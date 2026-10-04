@@ -115,6 +115,35 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(challenge.sortedAttempts.map(\.count), [6, 5])
     }
 
+    func testCardTextTryAndDone() {
+        let challenge = makePushUps()
+        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        XCTAssertEqual(challenge.todayText(on: day(2), calendar: calendar), "Try 6 today")
+        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
+        XCTAssertEqual(challenge.todayText(on: day(2), calendar: calendar), "Done: 6")
+        XCTAssertEqual(challenge.progressText, "6 / 100")
+    }
+
+    func testStartingTestAloneIsNotDoneOnStartDay() {
+        let challenge = makePushUps()
+        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        XCTAssertNil(challenge.loggedAttempt(on: day(1), calendar: calendar))
+        XCTAssertEqual(challenge.todayText(on: day(1), calendar: calendar), "Try 6 today")
+
+        // Logging again on the start day replaces the test and counts as done.
+        challenge.logAttempt(count: 6, on: day(1, hour: 18), calendar: calendar)
+        XCTAssertEqual(challenge.todayText(on: day(1), calendar: calendar), "Done: 6")
+        XCTAssertEqual(challenge.target(on: day(2), calendar: calendar), 7)
+    }
+
+    func testCardTextUsesUnit() {
+        let challenge = makePushUps(start: 45)
+        challenge.unit = .seconds
+        XCTAssertEqual(challenge.todayText(on: day(2), calendar: calendar), "Try 46 seconds today")
+        XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
+        XCTAssertEqual(ChallengeUnit.reps.format(12), "12")
+    }
+
     func testBuiltInLookupAndUnit() {
         let challenge = makePushUps()
         XCTAssertEqual(challenge.builtIn?.name, "Push-ups")
