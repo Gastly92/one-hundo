@@ -17,9 +17,11 @@ struct ChallengeListView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            VStack(spacing: 0) {
+                header
                 if activeChallenges.isEmpty {
                     emptyState
+                        .frame(maxHeight: .infinity)
                 } else {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 12) {
@@ -32,20 +34,36 @@ struct ChallengeListView: View {
                 }
             }
             .navigationTitle("Challenges")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        isAddingChallenge = true
-                    } label: {
-                        Label("Add challenge", systemImage: "plus")
-                    }
-                    .accessibilityIdentifier("addChallengeButton")
-                }
-            }
+            // A custom header instead of the system bar, so the + sits on the
+            // same line as the big title.
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $isAddingChallenge) {
                 AddChallengeView()
             }
         }
+    }
+
+    private var header: some View {
+        HStack(alignment: .center) {
+            Text("Challenges")
+                .font(.largeTitle.bold())
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("challengesTitle")
+            Spacer()
+            Button {
+                isAddingChallenge = true
+            } label: {
+                Image(systemName: "plus")
+                    .font(.title3.weight(.semibold))
+                    .frame(width: 36, height: 36)
+            }
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.circle)
+            .accessibilityLabel("Add challenge")
+            .accessibilityIdentifier("addChallengeButton")
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
     }
 
     private var emptyState: some View {
