@@ -19,6 +19,11 @@ Keep both updated as features land.
   keep its name stable, and add new code paths to the `changes` filter.
 - Tests: `OneHundoTests/` (unit tests for logic in `OneHundo/Models/`) and `OneHundoUITests/`
   (XCTest UI tests that launch the app and check the screen). Both run in the scheme's test action.
+- `AccessibilityTests` runs Xcode's accessibility audit on each main screen. Add new screens to it.
+  Use system colors and text styles (or `@ScaledMetric` for big custom sizes) so text scales
+  and both light and dark mode work.
+- SwiftLint runs in CI with `--strict` (warnings fail). Config: `.swiftlint.yml`. It can't be
+  downloaded in this container, so read the `SwiftLint` job log on failure.
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
   failures before calling the work done. Re-read Swift changes carefully first, since each
   CI round trip takes a few minutes.

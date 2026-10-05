@@ -8,6 +8,8 @@ struct ChallengeDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var logRequest: LogRequest?
+    @ScaledMetric(relativeTo: .largeTitle) private var countSize: CGFloat = 44
+    @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 180
 
     /// Opens the Log attempt sheet, for a new attempt or for editing one.
     private struct LogRequest: Identifiable {
@@ -91,14 +93,14 @@ struct ChallengeDetailView: View {
                         .font(.title2)
                         .foregroundStyle(color)
                     Text("\(challenge.currentCount)")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .font(.system(size: countSize, weight: .bold, design: .rounded))
                         .monospacedDigit()
                     Text("of \(challenge.goal)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
-            .frame(width: 180, height: 180)
+            .frame(width: min(ringSize, 280), height: min(ringSize, 280))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Progress")
             .accessibilityValue(challenge.progressText)

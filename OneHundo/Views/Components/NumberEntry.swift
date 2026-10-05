@@ -9,6 +9,9 @@ struct NumberEntry: View {
     var identifier: String = "number"
 
     @State private var text = ""
+    // Big, but still scales with the user's text size setting.
+    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 56
+    @ScaledMetric(relativeTo: .largeTitle) private var buttonSize: CGFloat = 44
 
     var body: some View {
         HStack(spacing: 16) {
@@ -18,7 +21,7 @@ struct NumberEntry: View {
             TextField("0", text: $text)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.center)
-                .font(.system(size: 56, weight: .bold, design: .rounded))
+                .font(.system(size: numberSize, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .frame(minWidth: 120)
                 .accessibilityIdentifier("\(identifier).field")
@@ -48,7 +51,7 @@ struct NumberEntry: View {
             value = clamp(value + delta)
         } label: {
             Image(systemName: systemImage)
-                .font(.system(size: 44))
+                .font(.system(size: buttonSize))
                 .symbolRenderingMode(.hierarchical)
         }
         .accessibilityLabel(label)
