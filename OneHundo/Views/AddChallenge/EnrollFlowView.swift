@@ -99,15 +99,7 @@ struct EnrollFlowView: View {
                 NumberEntry(value: $goal, range: 1...9999, identifier: "goal")
                 HStack(spacing: 8) {
                     ForEach(Self.goalChoices.filter { $0 > startingCount }, id: \.self) { choice in
-                        Button {
-                            goal = choice
-                        } label: {
-                            Text("\(choice)").frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(goal == choice ? Color.accentColor : Color.gray)
-                        .accessibilityAddTraits(goal == choice ? .isSelected : [])
-                        .accessibilityIdentifier("goalChoice.\(choice)")
+                        goalChip(choice)
                     }
                 }
             }
@@ -148,6 +140,26 @@ struct EnrollFlowView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// A quick goal button; the selected one is filled.
+    private func goalChip(_ choice: Int) -> some View {
+        let isSelected = goal == choice
+        return Button {
+            goal = choice
+        } label: {
+            Text("\(choice)")
+                .font(.body.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .background(
+                    isSelected ? Color.accentColor : Color(.tertiarySystemFill),
+                    in: Capsule()
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier("goalChoice.\(choice)")
     }
 
     private var tomorrowTarget: Int {

@@ -1,7 +1,7 @@
 import XCTest
 
 /// Runs Xcode's accessibility audit (contrast, Dynamic Type, labels, hit areas, clipped
-/// text) on each main screen. A failing audit names the issue and the element.
+/// text) on each main screen. Each issue fails the test with the screen and element.
 final class AccessibilityTests: XCTestCase {
     override func setUp() {
         continueAfterFailure = true
@@ -15,28 +15,46 @@ final class AccessibilityTests: XCTestCase {
         return app
     }
 
+    /// Audits the current screen, failing once per issue with enough detail to find it.
+    @MainActor
+    private func audit(
+        _ app: XCUIApplication,
+        screen: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        try app.performAccessibilityAudit { issue in
+            var element = "no element"
+            if let found = issue.element, found.exists {
+                element = "\(found.elementType.rawValue) label='\(found.label)' "
+                    + "id='\(found.identifier)' frame=\(found.frame)"
+            }
+            let summary = "[\(screen)] \(issue.compactDescription): \(issue.detailedDescription)"
+            XCTFail("\(summary) | \(element)", file: file, line: line)
+            return true
+        }
+    }
+
     @MainActor
     func testWelcomeAndEnrollFlow() throws {
         let app = launch(seeded: false)
         XCTAssertTrue(app.staticTexts["welcomeTitle"].waitForExistence(timeout: 10))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "Welcome")
 
         app.buttons["startFirstChallengeButton"].tap()
         let pushUps = app.buttons["builtIn.pushups"]
         XCTAssertTrue(pushUps.waitForExistence(timeout: 5))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "Add challenge")
 
         pushUps.tap()
         let next = app.buttons["enrollNextButton"]
-        XCTAssertTrue(next.waitForExistence(timeout: 5))
-        // Intro, test yourself, set your plan.
-        for _ in 0..<3 {
-            try app.performAccessibilityAudit()
+        for (step, name) in ["Intro", "Test yourself", "Set your plan"].enumerated() {
+            XCTAssertTrue(app.staticTexts["Step \(step + 1) of 4"].waitForExistence(timeout: 5))
+            try audit(app, screen: name)
             next.tap()
         }
-        // Reminder.
-        XCTAssertTrue(app.buttons["enrollStartButton"].waitForExistence(timeout: 5))
-        try app.performAccessibilityAudit()
+        XCTAssertTrue(app.staticTexts["Step 4 of 4"].waitForExistence(timeout: 5))
+        try audit(app, screen: "Reminder")
     }
 
     @MainActor
@@ -44,19 +62,19 @@ final class AccessibilityTests: XCTestCase {
         let app = launch(seeded: true)
         let pushUps = app.staticTexts["Push-ups"]
         XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "List")
 
         pushUps.tap()
         let logButton = app.buttons["logAttemptButton"]
         XCTAssertTrue(logButton.waitForExistence(timeout: 5))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "Challenge")
 
         logButton.tap()
         XCTAssertTrue(app.buttons["logSaveButton"].waitForExistence(timeout: 5))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "Log sheet")
 
         app.buttons["logSaveButton"].tap()
         XCTAssertTrue(app.buttons["logDoneButton"].waitForExistence(timeout: 5))
-        try app.performAccessibilityAudit()
+        try audit(app, screen: "Log result")
     }
 }

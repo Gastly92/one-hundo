@@ -111,6 +111,7 @@ struct LogAttemptView: View {
             if outcome.isNewBest {
                 HStack(spacing: 6) {
                     Image(systemName: "star.fill")
+                        .foregroundStyle(color)
                         .accessibilityHidden(true)
                     Text("New personal best!")
                         .accessibilityIdentifier("newBestBadge")
@@ -118,8 +119,7 @@ struct LogAttemptView: View {
                 .font(.headline)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .foregroundStyle(.white)
-                .background(color, in: Capsule())
+                .background(color.opacity(0.18), in: Capsule())
             }
             Spacer()
             Button {
