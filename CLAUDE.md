@@ -34,8 +34,12 @@ Keep both updated as features land.
 - After a feature PR merges, trigger it with `actions_run_trigger` (`run_workflow`,
   `workflow_id: testflight.yml`, `ref: main`) when the owner asks to ship or test on their phone.
   Verify the log ends with "Upload succeeded". The build shows in TestFlight about 5–15 min later.
-- Build number = workflow run number (automatic). The version (`MARKETING_VERSION` in
-  `project.yml`) only changes when the owner asks for a bump.
+- Version scheme (`MARKETING_VERSION` in `project.yml`; Apple allows only three numbers):
+  - Before 1.0: `0.<plan step>.0` when a plan step's PR lands (step 4 → 0.4.0), and bump the
+    patch for fixes between steps (0.4.1). Make the bump in the same PR as the change.
+  - 1.0.0 is the first App Store release (end of plan step 9). After that: patch for bug
+    fixes, minor for new features.
+  - Build number = workflow run number (automatic), shown in TestFlight as e.g. 0.4.0 (5).
 - Secrets (`APPLE_TEAM_ID`, `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_KEY_P8`) live in GitHub
   repo secrets. Never print, log, or ask for them.
 - Bundle ID `com.gastly92.onehundo`, iOS 17+, iPhone only, portrait.
