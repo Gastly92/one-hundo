@@ -89,4 +89,18 @@ final class ChallengeListTests: XCTestCase {
         XCTAssertTrue(pullUps.waitForNonExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Push-ups"].exists)
     }
+
+    @MainActor
+    func testTabTitlesLineUp() {
+        let app = launch()
+        let challengesTitle = app.staticTexts["challengesTitle"]
+        XCTAssertTrue(challengesTitle.waitForExistence(timeout: 10))
+        let challengesFrame = challengesTitle.frame
+
+        app.tabBars.buttons["Calendar"].tap()
+        let calendarTitle = app.staticTexts["calendarTitle"]
+        XCTAssertTrue(calendarTitle.waitForExistence(timeout: 5))
+        XCTAssertEqual(calendarTitle.frame.minY, challengesFrame.minY, accuracy: 1)
+        XCTAssertEqual(calendarTitle.frame.minX, challengesFrame.minX, accuracy: 1)
+    }
 }
