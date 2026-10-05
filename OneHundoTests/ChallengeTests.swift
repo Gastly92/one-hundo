@@ -153,4 +153,5 @@ final class ChallengeTests: ChallengeTestCase {
         let challenge = makePushUps()
         challenge.unitRaw = "laps"
         XCTAssertEqual(challenge.unit, .reps)
+    }
 }
