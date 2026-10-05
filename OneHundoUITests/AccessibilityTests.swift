@@ -17,6 +17,7 @@ final class AccessibilityTests: XCTestCase {
 
     private static let offscreenAtLargeSizes: Set<String> = [
         "History", "Custom challenge", "Coming soon",
+        "Tap an attempt to change it, or swipe left to delete.",
     ]
 
     /// Audits the current screen, failing once per issue with enough detail to find it.
