@@ -61,4 +61,25 @@ final class ChallengeScreenTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["7 / 100"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Done: 7"].exists)
     }
+
+    @MainActor
+    func testTapHistoryRowEditsAttempt() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-seedSampleData"]
+        app.launch()
+
+        // Push-ups has attempts of 8 (start) and 10 (yesterday).
+        let pushUps = app.staticTexts["Push-ups"]
+        XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
+        pushUps.tap()
+
+        let row = app.buttons["attemptRow"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.tap()
+
+        XCTAssertTrue(app.navigationBars["Edit attempt"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.textFields["logCount.field"].value as? String, "10")
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(app.buttons["logAttemptButton"].waitForExistence(timeout: 5))
+    }
 }

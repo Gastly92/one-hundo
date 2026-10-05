@@ -31,8 +31,12 @@ final class EnrollFlowTests: XCTestCase {
         XCTAssertEqual(app.textFields["startingCount.field"].value as? String, "5")
         next.tap()
 
-        // Goal and pace: defaults to 100 at +1 a day.
+        // Goal and pace: defaults to 100 at +1 a day; the quick goal buttons change it.
         XCTAssertTrue(app.staticTexts["At this pace you'd hit 100 in about 95 days."].waitForExistence(timeout: 5))
+        app.buttons["goalChoice.150"].tap()
+        XCTAssertTrue(app.staticTexts["At this pace you'd hit 150 in about 145 days."].waitForExistence(timeout: 5))
+        app.buttons["goalChoice.100"].tap()
+        XCTAssertEqual(app.textFields["goal.field"].value as? String, "100")
         next.tap()
 
         // Reminder: keep the defaults and start.

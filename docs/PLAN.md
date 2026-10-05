@@ -85,6 +85,13 @@ e.g. 0.4.1); see CLAUDE.md.
 
 **Milestone:** the core daily loop works. Ship to TestFlight and use it daily.
 
+#### 4.1 UX polish from first use (0.4.1) ✅
+- First screen explains the idea in three steps instead of a bare empty state.
+- "Set your plan" step: quick goal buttons, a "1 more each day" stepper instead of
+  the +1/+2/… picker, and a Today → Tomorrow → Goal preview.
+- Long-press a card: Log attempt / Edit today, and Delete challenge (pulled forward
+  from PR 5). History rows are tap-to-edit with a hint.
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
 - Settings screen for any challenge (goal, increase, reminder; name, unit, icon,

@@ -52,13 +52,19 @@ struct ChallengeDetailView: View {
                 .accessibilityIdentifier("logAttemptButton")
             }
 
-            Section("History") {
+            Section {
                 if challenge.sortedAttempts.isEmpty {
                     Text("No attempts yet")
                         .foregroundStyle(.secondary)
                 }
                 ForEach(challenge.sortedAttempts) { attempt in
                     attemptRow(attempt)
+                }
+            } header: {
+                Text("History")
+            } footer: {
+                if !challenge.sortedAttempts.isEmpty {
+                    Text("Tap an attempt to change it, or swipe left to delete.")
                 }
             }
         }
@@ -120,13 +126,25 @@ struct ChallengeDetailView: View {
     }
 
     private func attemptRow(_ attempt: Attempt) -> some View {
-        HStack {
-            Text(attempt.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
-            Spacer()
-            Text(challenge.unit.format(attempt.count))
-                .bold()
-                .monospacedDigit()
+        Button {
+            logRequest = LogRequest(attempt: attempt)
+        } label: {
+            HStack {
+                Text(attempt.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
+                Spacer()
+                Text(challenge.unit.format(attempt.count))
+                    .bold()
+                    .monospacedDigit()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
         }
+        .foregroundStyle(.primary)
+        .accessibilityHint("Edit this attempt")
+        .accessibilityIdentifier("attemptRow")
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
                 delete(attempt)
@@ -139,6 +157,18 @@ struct ChallengeDetailView: View {
                 Label("Edit", systemImage: "pencil")
             }
             .tint(.blue)
+        }
+        .contextMenu {
+            Button {
+                logRequest = LogRequest(attempt: attempt)
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button(role: .destructive) {
+                delete(attempt)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
         }
     }
 

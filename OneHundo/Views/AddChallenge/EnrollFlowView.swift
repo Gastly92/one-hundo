@@ -20,7 +20,7 @@ struct EnrollFlowView: View {
     @State private var reminderEnabled = true
     @State private var reminderTime = EnrollFlowView.defaultReminderTime
 
-    private static let increaseChoices = [1, 2, 3, 5, 10]
+    private static let goalChoices = [50, 100, 150, 200]
 
     private static var defaultReminderTime: Date {
         Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: Date()) ?? Date()
@@ -85,23 +85,91 @@ struct EnrollFlowView: View {
     }
 
     private var goalAndPace: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Text("Goal")
-                .font(.title2.bold())
-            NumberEntry(value: $goal, range: 1...9999, identifier: "goal")
+        VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Set your plan")
+                    .font(.title2.bold())
+                Text("You can do \(startingCount) today. How many do you want to reach?")
+                    .foregroundStyle(.secondary)
+            }
 
-            Text("Daily increase")
-                .font(.headline)
-            Picker("Daily increase", selection: $dailyIncrease) {
-                ForEach(Self.increaseChoices, id: \.self) { choice in
-                    Text("+\(choice)").tag(choice)
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Goal")
+                    .font(.headline)
+                NumberEntry(value: $goal, range: 1...9999, identifier: "goal")
+                HStack(spacing: 8) {
+                    ForEach(Self.goalChoices.filter { $0 > startingCount }, id: \.self) { choice in
+                        Button {
+                            goal = choice
+                        } label: {
+                            Text("\(choice)").frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(goal == choice ? Color.accentColor : Color.gray)
+                        .accessibilityAddTraits(goal == choice ? .isSelected : [])
+                        .accessibilityIdentifier("goalChoice.\(choice)")
+                    }
                 }
             }
-            .pickerStyle(.segmented)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Daily step")
+                    .font(.headline)
+                Stepper(value: $dailyIncrease, in: 1...10) {
+                    Text("\(dailyIncrease) more each day")
+                }
+                .accessibilityIdentifier("dailyIncreaseStepper")
+                Text("Each day's target is your last result plus this.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            planPreview
+        }
+    }
+
+    /// "5 today → 6 tomorrow → 100 goal", plus how long it should take.
+    private var planPreview: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                previewStep(value: startingCount, label: "Today")
+                previewArrow
+                previewStep(
+                    value: Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal),
+                    label: "Tomorrow"
+                )
+                previewArrow
+                previewStep(value: goal, label: "Goal")
+            }
+            .opacity(goal > startingCount ? 1 : 0.4)
+            .accessibilityElement(children: .combine)
 
             Text(Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease))
-                .foregroundStyle(goal > startingCount ? Color.secondary : Color.red)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(goal > startingCount ? Color.primary : Color.red)
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private func previewStep(value: Int, label: String) -> some View {
+        VStack(spacing: 2) {
+            Text("\(value)")
+                .font(.title2.bold())
+                .monospacedDigit()
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var previewArrow: some View {
+        Image(systemName: "arrow.right")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .accessibilityHidden(true)
     }
 
     private var reminder: some View {

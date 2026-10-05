@@ -16,7 +16,8 @@ final class ChallengeListTests: XCTestCase {
     @MainActor
     func testEmptyStateShowsOnFirstLaunch() {
         let app = launch()
-        XCTAssertTrue(app.staticTexts["No challenges yet"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["welcomeTitle"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Get to 100 in one go."].exists)
 
         let startButton = app.buttons["startFirstChallengeButton"]
         XCTAssertTrue(startButton.exists)
@@ -32,7 +33,7 @@ final class ChallengeListTests: XCTestCase {
     func testSeededChallengesShowAsCards() {
         let app = launch(seeded: true)
         XCTAssertTrue(app.staticTexts["Push-ups"].waitForExistence(timeout: 10))
-        XCTAssertFalse(app.staticTexts["No challenges yet"].exists)
+        XCTAssertFalse(app.staticTexts["welcomeTitle"].exists)
 
         // Logged yesterday: target is yesterday's 10 + 1.
         XCTAssertTrue(app.staticTexts["Try 11 today"].exists)
@@ -64,6 +65,27 @@ final class ChallengeListTests: XCTestCase {
         app.tabBars.buttons["Calendar"].tap()
         XCTAssertTrue(app.staticTexts["Coming soon: your attempts, day by day."].waitForExistence(timeout: 5))
         app.tabBars.buttons["Challenges"].tap()
-        XCTAssertTrue(app.staticTexts["No challenges yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["welcomeTitle"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testLongPressCardDeletesChallenge() {
+        let app = launch(seeded: true)
+        let pullUps = app.staticTexts["Pull-ups"]
+        XCTAssertTrue(pullUps.waitForExistence(timeout: 10))
+
+        pullUps.press(forDuration: 1.0)
+        let deleteItem = app.buttons["Delete challenge"]
+        XCTAssertTrue(deleteItem.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Log attempt"].exists)
+        deleteItem.tap()
+
+        // The confirmation's button has the same label as the menu item, which is gone by now.
+        XCTAssertTrue(app.staticTexts["This deletes the challenge and all its attempts. You can't undo this."]
+            .waitForExistence(timeout: 5))
+        app.buttons["Delete challenge"].firstMatch.tap()
+
+        XCTAssertTrue(pullUps.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Push-ups"].exists)
     }
 }
