@@ -31,8 +31,6 @@ struct EnrollFlowView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-                    .font(.subheadline.weight(.medium))
                 content
             }
             .padding()
@@ -187,6 +185,18 @@ struct EnrollFlowView: View {
     }
 
     private var bottomBar: some View {
+        // The step count lives here, on a solid background: at the top of the scroll
+        // view, iOS fades content under the navigation bar.
+        VStack(spacing: 10) {
+            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+                .font(.subheadline.weight(.medium))
+            buttons
+        }
+        .padding()
+        .background(Color(.systemBackground))
+    }
+
+    private var buttons: some View {
         HStack(spacing: 12) {
             if step != .intro {
                 Button {
@@ -225,8 +235,6 @@ struct EnrollFlowView: View {
             }
         }
         .controlSize(.large)
-        .padding()
-        .background(Color(.systemBackground))
     }
 
     private func advance() {

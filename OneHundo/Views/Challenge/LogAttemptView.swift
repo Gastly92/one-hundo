@@ -107,6 +107,7 @@ struct LogAttemptView: View {
             Text(outcome.message)
                 .font(.title3)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .foregroundStyle(.secondary)
             if outcome.isNewBest {
                 HStack(spacing: 6) {

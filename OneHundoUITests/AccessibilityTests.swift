@@ -23,6 +23,21 @@ final class AccessibilityTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) throws {
+        do {
+            try runAudit(app, screen: screen, file: file, line: line)
+        } catch let error as NSError where error.code == -56 {
+            // "Audit failed to complete in time": retry once; a second timeout fails.
+            try runAudit(app, screen: screen, file: file, line: line)
+        }
+    }
+
+    @MainActor
+    private func runAudit(
+        _ app: XCUIApplication,
+        screen: String,
+        file: StaticString,
+        line: UInt
+    ) throws {
         // Navigation bar buttons (Close, Cancel, Save) are iOS's own and don't scale.
         let barButtonFrames = app.navigationBars.buttons.allElementsBoundByIndex.map(\.frame)
         try app.performAccessibilityAudit { issue in

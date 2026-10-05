@@ -63,13 +63,15 @@ struct ChallengeDetailView: View {
                 ForEach(challenge.sortedAttempts) { attempt in
                     attemptRow(attempt)
                 }
+                if !challenge.sortedAttempts.isEmpty {
+                    // A row rather than a section footer, which has low contrast and
+                    // doesn't scale with text size.
+                    Text("Tap an attempt to change it, or swipe left to delete.")
+                        .font(.footnote)
+                        .listRowSeparator(.hidden)
+                }
             } header: {
                 sectionHeader("History")
-            } footer: {
-                if !challenge.sortedAttempts.isEmpty {
-                    Text("Tap an attempt to change it, or swipe left to delete.")
-                        .foregroundStyle(.primary)
-                }
             }
         }
         .navigationTitle(challenge.name)
@@ -99,9 +101,6 @@ struct ChallengeDetailView: View {
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut, value: challenge.progress)
                 VStack(spacing: 2) {
-                    Image(systemName: challenge.icon)
-                        .font(.title2)
-                        .foregroundStyle(color)
                     Text("\(challenge.currentCount)")
                         .font(.system(size: countSize, weight: .bold, design: .rounded))
                         .monospacedDigit()
