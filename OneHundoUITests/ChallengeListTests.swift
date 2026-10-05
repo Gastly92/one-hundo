@@ -75,8 +75,13 @@ final class ChallengeListTests: XCTestCase {
         let pullUps = app.staticTexts["Pull-ups"]
         XCTAssertTrue(pullUps.waitForExistence(timeout: 10))
 
-        pullUps.press(forDuration: 1.0)
+        // Long-press once the list has settled; press again if the menu didn't open.
         let deleteItem = app.buttons["Delete challenge"]
+        XCTAssertTrue(pullUps.waitForHittable(timeout: 5))
+        pullUps.press(forDuration: 1.5)
+        if !deleteItem.waitForExistence(timeout: 3) {
+            pullUps.press(forDuration: 1.5)
+        }
         XCTAssertTrue(deleteItem.waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["Log attempt"].exists)
         deleteItem.tap()
@@ -88,5 +93,28 @@ final class ChallengeListTests: XCTestCase {
 
         XCTAssertTrue(pullUps.waitForNonExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Push-ups"].exists)
+    }
+
+    @MainActor
+    func testTabTitlesLineUp() {
+        let app = launch()
+        let challengesTitle = app.staticTexts["challengesTitle"]
+        XCTAssertTrue(challengesTitle.waitForExistence(timeout: 10))
+        let challengesFrame = challengesTitle.frame
+
+        app.tabBars.buttons["Calendar"].tap()
+        let calendarTitle = app.staticTexts["calendarTitle"]
+        XCTAssertTrue(calendarTitle.waitForExistence(timeout: 5))
+        XCTAssertEqual(calendarTitle.frame.minY, challengesFrame.minY, accuracy: 1)
+        XCTAssertEqual(calendarTitle.frame.minX, challengesFrame.minX, accuracy: 1)
+    }
+}
+
+private extension XCUIElement {
+    /// Waits until the element exists and can be tapped.
+    func waitForHittable(timeout: TimeInterval) -> Bool {
+        let predicate = NSPredicate(format: "exists == true AND hittable == true")
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: self)
+        return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
     }
 }
