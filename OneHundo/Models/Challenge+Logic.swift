@@ -12,9 +12,10 @@ extension Challenge {
 
     var builtIn: BuiltInChallenge? { BuiltInChallenge.with(id: kind) }
 
-    /// All attempts, in no particular order. SwiftData leaves the relationship nil
-    /// until something is added, so this treats nil as none.
-    var allAttempts: [Attempt] { attempts ?? [] }
+    /// All attempts, in no particular order, treating a nil relationship as none.
+    /// (Written without `?? []`: SwiftData returns [] for nil, so that fallback
+    /// could never run in tests and would fail the coverage gate.)
+    var allAttempts: [Attempt] { Array([attempts].compactMap { $0 }.joined()) }
 
     /// Attempts, newest first.
     var sortedAttempts: [Attempt] {
