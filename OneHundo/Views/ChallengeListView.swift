@@ -5,6 +5,11 @@ struct ChallengeListView: View {
     @Query(sort: \Challenge.createdDate) private var challenges: [Challenge]
     @State private var isAddingChallenge = false
     @State private var path: [Challenge] = []
+    /// The challenge whose Log attempt sheet is open (from a card's long-press menu).
+    @State private var loggingChallenge: Challenge?
+    /// The challenge waiting for delete confirmation.
+    @State private var deletingChallenge: Challenge?
+    @Environment(\.modelContext) private var modelContext
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -21,8 +26,7 @@ struct ChallengeListView: View {
             VStack(spacing: 0) {
                 header
                 if activeChallenges.isEmpty {
-                    emptyState
-                        .frame(maxHeight: .infinity)
+                    WelcomeView { isAddingChallenge = true }
                 } else {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 12) {
@@ -32,6 +36,7 @@ struct ChallengeListView: View {
                                 ChallengeCard(challenge: challenge)
                                     .contentShape(RoundedRectangle(cornerRadius: 16))
                                     .onTapGesture { path.append(challenge) }
+                                    .contextMenu { cardMenu(for: challenge) }
                             }
                         }
                         .padding()
@@ -47,6 +52,22 @@ struct ChallengeListView: View {
             }
             .sheet(isPresented: $isAddingChallenge) {
                 AddChallengeView()
+            }
+            .sheet(item: $loggingChallenge) { challenge in
+                LogAttemptView(challenge: challenge, attempt: challenge.loggedAttempt(on: Date()))
+            }
+            .confirmationDialog(
+                "Delete \(deletingChallenge?.name ?? "challenge")?",
+                isPresented: Binding(
+                    get: { deletingChallenge != nil },
+                    set: { if !$0 { deletingChallenge = nil } }
+                ),
+                titleVisibility: .visible,
+                presenting: deletingChallenge
+            ) { challenge in
+                Button("Delete challenge", role: .destructive) { delete(challenge) }
+            } message: { _ in
+                Text("This deletes the challenge and all its attempts. You can't undo this.")
             }
         }
     }
@@ -74,18 +95,27 @@ struct ChallengeListView: View {
         .padding(.top, 8)
     }
 
-    private var emptyState: some View {
-        ContentUnavailableView {
-            Label("No challenges yet", systemImage: "figure.strengthtraining.traditional")
-        } description: {
-            Text("Pick an exercise, test yourself, and get a little better every day.")
-        } actions: {
-            Button("Start your first challenge") {
-                isAddingChallenge = true
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .accessibilityIdentifier("startFirstChallengeButton")
+    @ViewBuilder
+    private func cardMenu(for challenge: Challenge) -> some View {
+        Button {
+            loggingChallenge = challenge
+        } label: {
+            Label(
+                challenge.loggedAttempt(on: Date()) == nil ? "Log attempt" : "Edit today",
+                systemImage: "plus.circle"
+            )
         }
+        Button(role: .destructive) {
+            deletingChallenge = challenge
+        } label: {
+            Label("Delete challenge", systemImage: "trash")
+        }
+    }
+
+    private func delete(_ challenge: Challenge) {
+        path.removeAll { $0 == challenge }
+        modelContext.delete(challenge)
+        try? modelContext.save()
+        deletingChallenge = nil
     }
 }

@@ -48,8 +48,9 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 
 - A grid of challenge cards, 2 columns, scrolling down as far as you have cards.
 - A **+** button on the same line as the "Challenges" title opens Add challenge.
-- First launch, with no challenges yet: a friendly empty state with a big
-  "Start your first challenge" button that also opens Add challenge.
+- First launch, with no challenges yet: a welcome that explains the idea in
+  three steps (test yourself, do one more each day, reach 100) and a big
+  "Start your first challenge" button that opens Add challenge.
 
 ### Challenge card
 
@@ -58,6 +59,8 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
   logged today.
 - Progress toward the goal: "6 / 100" with a thin progress bar.
 - Tapping the card opens the challenge screen.
+- Long-pressing the card opens a menu: **Log attempt** (or **Edit today**) and
+  **Delete challenge**, with a confirmation.
 
 ### Add challenge (sheet)
 
@@ -80,10 +83,12 @@ A short step-by-step flow (a few pages in the same sheet, with Back/Next):
    so you warm up with good form before testing yourself.
 2. **Test yourself**: "How many push-ups can you do in one go?" A number entry
    with − / + buttons and a number pad. This is your starting count.
-3. **Goal and pace**:
-   - Goal: number entry, defaulting to 100 (must be above the starting count).
-   - Daily increase: picker, defaulting to 1 (choices like 1, 2, 3, 5, 10).
-   - A preview line: "At this pace you'd hit 100 in about 95 days."
+3. **Set your plan** (goal and pace):
+   - Goal: number entry, defaulting to 100 (must be above the starting count),
+     with quick buttons for 50, 100, 150, and 200.
+   - Daily step: "1 more each day", with − / + (1 to 10).
+   - A preview: "5 Today → 6 Tomorrow → 100 Goal" and "At this pace you'd hit
+     100 in about 95 days."
 4. **Reminder**: a toggle (on by default) and a time picker (default 6:00 PM).
    Turning it on asks for notification permission the first time.
 5. **Start** button: saves the challenge with today's test as its first
@@ -111,7 +116,8 @@ Opened from a card or from the calendar.
 - **Today**: today's target and a big **Log attempt** button. If already logged
   today, it shows your count and the button becomes **Edit today**.
 - **History**: a line chart of your counts over time, and a list of attempts
-  (date and count), newest first. Swipe an attempt to edit or delete it.
+  (date and count), newest first. Tap an attempt to edit it; swipe left or
+  long-press to delete it.
 - **Form tips** (built-ins only): the tips and images, collapsible.
 - **Settings** (the gear in the top bar): edit goal, daily increase, reminder,
   and for custom challenges name, unit, icon, and color. A red **Delete
