@@ -35,6 +35,9 @@ midnight; color as a palette name; unit as a raw string.
 
 ## PRs
 
+Each PR bumps the version to `0.<step>.0` (fixes between steps bump the patch,
+e.g. 0.4.1); see CLAUDE.md.
+
 ### 1. Data model, logic, and unit tests ✅
 - SwiftData models above, built-in catalog (Push-ups, Sit-ups, Pull-ups), and the
   target/progress logic.
@@ -115,7 +118,7 @@ midnight; color as a palette name; unit as a raw string.
 - UI test: log the goal count, see the celebration, tap Done, card is under
   Completed; Continue moves it back.
 - App icon, accent color, haptics, and a pass on empty and error states.
-- Bump `MARKETING_VERSION` to 1.0 when you're happy with it.
+- Bump `MARKETING_VERSION` to 1.0.0 when you're happy with it: the first App Store release.
 
 ## Later
 
