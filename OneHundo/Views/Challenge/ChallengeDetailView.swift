@@ -29,7 +29,7 @@ struct ChallengeDetailView: View {
             }
             .listRowBackground(Color.clear)
 
-            Section("Today") {
+            Section {
                 HStack(spacing: 6) {
                     if todayAttempt != nil {
                         Image(systemName: "checkmark.circle.fill")
@@ -49,9 +49,10 @@ struct ChallengeDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .tint(color)
                 .listRowSeparator(.hidden)
                 .accessibilityIdentifier("logAttemptButton")
+            } header: {
+                sectionHeader("Today")
             }
 
             Section {
@@ -63,10 +64,11 @@ struct ChallengeDetailView: View {
                     attemptRow(attempt)
                 }
             } header: {
-                Text("History")
+                sectionHeader("History")
             } footer: {
                 if !challenge.sortedAttempts.isEmpty {
                     Text("Tap an attempt to change it, or swipe left to delete.")
+                        .foregroundStyle(.primary)
                 }
             }
         }
@@ -76,6 +78,14 @@ struct ChallengeDetailView: View {
         .sheet(item: $logRequest) { request in
             LogAttemptView(challenge: challenge, attempt: request.attempt)
         }
+    }
+
+    /// Section titles in a standard text style, so they scale and read clearly.
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+            .textCase(nil)
     }
 
     private var header: some View {
@@ -146,7 +156,7 @@ struct ChallengeDetailView: View {
                     .monospacedDigit()
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
             .contentShape(Rectangle())

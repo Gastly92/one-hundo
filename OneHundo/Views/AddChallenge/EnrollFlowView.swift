@@ -32,8 +32,7 @@ struct EnrollFlowView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.subheadline.weight(.medium))
                 content
             }
             .padding()
@@ -61,6 +60,7 @@ struct EnrollFlowView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(color)
                 .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
             Text(builtIn.summary)
                 .font(.title3)
             Text("Good form")
@@ -123,12 +123,10 @@ struct EnrollFlowView: View {
     /// "5 today → 6 tomorrow → 100 goal", plus how long it should take.
     private var planPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                previewStep(value: startingCount, label: "Today")
-                previewArrow
-                previewStep(value: tomorrowTarget, label: "Tomorrow")
-                previewArrow
-                previewStep(value: goal, label: "Goal")
+            // Side by side when it fits; stacked at very large text sizes.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) { previewSteps }
+                VStack(alignment: .leading, spacing: 8) { previewSteps }
             }
             .opacity(goal > startingCount ? 1 : 0.4)
             .accessibilityElement(children: .combine)
@@ -168,6 +166,15 @@ struct EnrollFlowView: View {
 
     private var paceText: String {
         Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease)
+    }
+
+    @ViewBuilder
+    private var previewSteps: some View {
+        previewStep(value: startingCount, label: "Today")
+        previewArrow
+        previewStep(value: tomorrowTarget, label: "Tomorrow")
+        previewArrow
+        previewStep(value: goal, label: "Goal")
     }
 
     private func previewStep(value: Int, label: String) -> some View {
@@ -212,6 +219,7 @@ struct EnrollFlowView: View {
                     Text("Back").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .tint(Color.primary)
                 .accessibilityIdentifier("enrollBackButton")
             }
 

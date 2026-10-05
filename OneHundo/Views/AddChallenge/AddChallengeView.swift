@@ -22,11 +22,11 @@ struct AddChallengeView: View {
                                 icon: builtIn.icon,
                                 color: Color(challengeColorName: builtIn.colorName),
                                 title: builtIn.name,
-                                subtitle: active ? "In progress" : builtIn.summary
+                                subtitle: active ? "In progress" : builtIn.summary,
+                                isDimmed: active
                             )
                         }
                         .disabled(active)
-                        .opacity(active ? 0.5 : 1)
                         .accessibilityIdentifier("builtIn.\(builtIn.id)")
                     }
                 }
@@ -37,9 +37,9 @@ struct AddChallengeView: View {
                         icon: "square.and.pencil",
                         color: .gray,
                         title: "Custom challenge",
-                        subtitle: "Coming soon"
+                        subtitle: "Coming soon",
+                        isDimmed: true
                     )
-                    .opacity(0.5)
                 }
             }
             .navigationTitle("Add challenge")
@@ -61,18 +61,24 @@ private struct ChallengeChoiceRow: View {
     let color: Color
     let title: String
     let subtitle: String
+    /// Unavailable rows use secondary text rather than fading the whole row, so the
+    /// text keeps enough contrast to read.
+    var isDimmed = false
 
     var body: some View {
         HStack(spacing: 14) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(color)
+                .foregroundStyle(isDimmed ? Color.secondary : color)
                 .frame(width: 36)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.headline)
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(isDimmed ? Color.secondary : Color.primary)
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(isDimmed ? Color.primary : Color.secondary)
             }
         }
         .padding(.vertical, 4)

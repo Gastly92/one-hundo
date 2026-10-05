@@ -16,7 +16,7 @@ struct ChallengeCard: View {
                     .accessibilityHidden(true)
                 Text(challenge.name)
                     .font(.headline)
-                    .lineLimit(1)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             HStack(spacing: 4) {
@@ -26,8 +26,7 @@ struct ChallengeCard: View {
                         .accessibilityHidden(true)
                 }
                 Text(challenge.todayText())
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .font(.title3.bold())
             .frame(minHeight: 50, alignment: .topLeading)
@@ -36,8 +35,10 @@ struct ChallengeCard: View {
                 Text(challenge.progressText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                // The text above already says this; a 4-point bar isn't a useful target.
                 ProgressView(value: challenge.progress)
                     .tint(color)
+                    .accessibilityHidden(true)
             }
         }
         .padding()

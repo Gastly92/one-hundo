@@ -114,6 +114,7 @@ struct LogAttemptView: View {
                         .foregroundStyle(color)
                         .accessibilityHidden(true)
                     Text("New personal best!")
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityIdentifier("newBestBadge")
                 }
                 .font(.headline)

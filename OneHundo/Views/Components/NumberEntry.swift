@@ -9,9 +9,12 @@ struct NumberEntry: View {
     var identifier: String = "number"
 
     @State private var text = ""
-    // Big, but still scales with the user's text size setting.
-    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 56
-    @ScaledMetric(relativeTo: .largeTitle) private var buttonSize: CGFloat = 44
+    // Big, and scales with the user's text size setting up to a cap, so four digits
+    // and both buttons still fit across the screen.
+    @ScaledMetric(relativeTo: .largeTitle) private var scaledNumberSize: CGFloat = 56
+    @ScaledMetric(relativeTo: .largeTitle) private var scaledButtonSize: CGFloat = 44
+    private var numberSize: CGFloat { min(scaledNumberSize, 80) }
+    private var buttonSize: CGFloat { min(scaledButtonSize, 56) }
 
     var body: some View {
         HStack(spacing: 16) {
