@@ -73,12 +73,7 @@ struct ChallengeListView: View {
     }
 
     private var header: some View {
-        HStack(alignment: .center) {
-            Text("Challenges")
-                .font(.largeTitle.bold())
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("challengesTitle")
-            Spacer()
+        TabHeader(title: "Challenges", identifier: "challengesTitle") {
             Button {
                 isAddingChallenge = true
             } label: {
@@ -91,8 +86,6 @@ struct ChallengeListView: View {
             .accessibilityLabel("Add challenge")
             .accessibilityIdentifier("addChallengeButton")
         }
-        .padding(.horizontal)
-        .padding(.top, 8)
     }
 
     @ViewBuilder

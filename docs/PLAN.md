@@ -99,6 +99,8 @@ e.g. 0.4.1); see CLAUDE.md.
   the +1/+2/… picker, and a Today → Tomorrow → Goal preview.
 - Long-press a card: Log attempt / Edit today, and Delete challenge (pulled forward
   from PR 5). History rows are tap-to-edit with a hint.
+- 0.4.2: both tabs share one title header, so the title doesn't jump when
+  switching tabs.
 
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
