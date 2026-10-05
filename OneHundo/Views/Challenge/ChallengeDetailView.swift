@@ -77,6 +77,8 @@ struct ChallengeDetailView: View {
         .navigationTitle(challenge.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
+        // A detail screen: no tab bar, which would also fade the bottom rows.
+        .toolbar(.hidden, for: .tabBar)
         .sheet(item: $logRequest) { request in
             LogAttemptView(challenge: challenge, attempt: request.attempt)
         }
