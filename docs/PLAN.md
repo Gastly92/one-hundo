@@ -6,7 +6,11 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 
 ## Approach
 
-- **SwiftUI + SwiftData**, iOS 17. No third-party packages.
+- **SwiftUI + SwiftData**, iOS 17. No third-party packages in the app itself, so it
+  stays small and has no outside code to keep updated. Test and CI tooling is fine
+  (it never ships to the phone).
+- **Checks on every PR**: unit tests, UI tests, Xcode's accessibility audit, and
+  SwiftLint (strict).
 - **Logic is plain Swift, separate from views**, so it can be unit tested:
   today's target, progress, "days to goal", reminder text.
 - **Two test targets**: `OneHundoTests` (unit tests, fast, for the logic) and
@@ -99,6 +103,22 @@ e.g. 0.4.1); see CLAUDE.md.
 - Goal can be raised or lowered any time. Lowering it to at or below the current
   count is treated as reaching it (the celebration itself lands in PR 9).
 - UI test: create a "Plank" challenge in seconds and see its card.
+
+### 5.1 Screen snapshot tests
+Most screens exist by now, and steps 6–9 change a lot of UI, so this is where
+snapshot tests start paying off.
+- Add Point-Free's `swift-snapshot-testing` to the test targets only (SPM via
+  `project.yml`).
+- One snapshot per main screen with seeded data: welcome, Add challenge, each enroll
+  step, list, challenge screen, log sheet and result, custom form, settings. Light
+  and dark mode, and one large text size.
+- Stable rendering: one fixed simulator model and OS, a fixed "now" for seeded dates
+  (e.g. a `-fixedDate` launch argument), animations off.
+- Reference images are committed in the repo, so PR diffs show before/after images.
+  There's no Mac to record them, so CI records them: a manual workflow (or a PR
+  label) re-records and commits the images to the PR branch. On a mismatch, CI
+  uploads the diff images as an artifact and fails.
+- No version bump (nothing user-visible).
 
 ### 6. Daily reminders
 - Ask notification permission when a reminder is first turned on.
