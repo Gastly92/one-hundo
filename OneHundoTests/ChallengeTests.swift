@@ -271,4 +271,12 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(challenge.recordAttempt(count: 100, on: day(4), calendar: calendar).symbol,
                        "trophy.fill")
     }
+
+    func testUnitFormatting() {
+        XCTAssertEqual(ChallengeUnit.reps.format(1), "1")
+        XCTAssertEqual(ChallengeUnit.seconds.format(1), "1 second")
+        XCTAssertEqual(ChallengeUnit.seconds.format(45), "45 seconds")
+        XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
+        XCTAssertEqual(ChallengeUnit.minutes.format(3), "3 minutes")
+    }
 }

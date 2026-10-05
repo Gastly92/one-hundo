@@ -5,6 +5,7 @@
 set -euo pipefail
 
 result="$1"
+# The JSON report lists every file's functions with their line counts.
 report=$(xcrun xccov view --report --json "$result")
 files=$(jq -r '.targets[] | select(.name == "OneHundo.app") | .files[]
   | [.path, .coveredLines, .executableLines] | @tsv' <<<"$report")
@@ -25,9 +26,16 @@ while IFS=$'\t' read -r path covered total; do
   table+="| $name | $total | $covered |\n"
   if [ "$covered" -lt "$total" ]; then
     failed=1
-    uncovered=$(xcrun xccov view --archive --file "$path" "$result" \
-      | awk -F: '$2 ~ /^ *0( |$)/ { gsub(/ /, "", $1); printf "%s ", $1 }')
-    echo "::error file=OneHundo/$name::$((total - covered)) uncovered lines: $uncovered"
+    # Name each function with untested lines, and the line it starts on.
+    gaps=$(jq -r --arg path "$path" '.targets[] | select(.name == "OneHundo.app")
+      | .files[] | select(.path == $path) | (.functions // [])[]
+      | select(.coveredLines < .executableLines)
+      | "\(.name) (line \(.lineNumber)): \(.executableLines - .coveredLines) untested"' \
+      <<<"$report")
+    echo "::error file=OneHundo/$name::$name has $((total - covered)) untested lines"
+    while IFS= read -r gap; do
+      [ -n "$gap" ] && echo "  $name: $gap"
+    done <<<"$gaps"
   fi
 done <<<"$files"
 
