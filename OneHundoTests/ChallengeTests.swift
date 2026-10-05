@@ -240,4 +240,35 @@ final class ChallengeTests: XCTestCase {
         let outcome = challenge.recordAttempt(count: 46, on: day(2), calendar: calendar)
         XCTAssertEqual(outcome.message, "You did 46 seconds. Next time, try for 47 seconds.")
     }
+
+    func testLogButtonTitle() {
+        let challenge = makePushUps()
+        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        // The starting test alone isn't "logged today".
+        XCTAssertEqual(challenge.logButtonTitle(on: day(1), calendar: calendar), "Log attempt")
+        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
+        XCTAssertEqual(challenge.logButtonTitle(on: day(2), calendar: calendar), "Edit today")
+        XCTAssertEqual(challenge.logButtonTitle(on: day(3), calendar: calendar), "Log attempt")
+    }
+
+    func testReplacementNote() {
+        let challenge = makePushUps(start: 30)
+        challenge.unit = .seconds
+        XCTAssertNil(challenge.replacementNote(on: day(2), calendar: calendar))
+        challenge.logAttempt(count: 31, on: day(2), calendar: calendar)
+        XCTAssertEqual(
+            challenge.replacementNote(on: day(2, hour: 20), calendar: calendar),
+            "This replaces the 31 seconds you logged that day."
+        )
+    }
+
+    func testOutcomeSymbols() {
+        let challenge = makePushUps(start: 98, increase: 1)
+        XCTAssertEqual(challenge.recordAttempt(count: 90, on: day(2), calendar: calendar).symbol,
+                       "arrow.up.forward.circle.fill")
+        XCTAssertEqual(challenge.recordAttempt(count: 91, on: day(3), calendar: calendar).symbol,
+                       "hands.clap.fill")
+        XCTAssertEqual(challenge.recordAttempt(count: 100, on: day(4), calendar: calendar).symbol,
+                       "trophy.fill")
+    }
 }

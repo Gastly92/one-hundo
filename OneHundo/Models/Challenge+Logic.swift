@@ -40,6 +40,17 @@ extension Challenge {
         return "Try \(unit.format(target(on: day, calendar: calendar))) today"
     }
 
+    /// The Today button and card menu item: "Log attempt", or "Edit today" once logged.
+    func logButtonTitle(on day: Date = Date(), calendar: Calendar = .current) -> String {
+        loggedAttempt(on: day, calendar: calendar) == nil ? "Log attempt" : "Edit today"
+    }
+
+    /// Shown when logging a day that already has an attempt, which a new log replaces.
+    func replacementNote(on day: Date, calendar: Calendar = .current) -> String? {
+        guard let existing = attempt(on: day, calendar: calendar) else { return nil }
+        return "This replaces the \(unit.format(existing.count)) you logged that day."
+    }
+
     /// Progress label, e.g. "6 / 100".
     var progressText: String { "\(currentCount) / \(goal)" }
 

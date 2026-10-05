@@ -25,6 +25,12 @@ Keep both updated as features land.
 - SwiftLint runs in CI with `--strict` (warnings fail); lines max 100 chars (diffs are read on
   a phone). Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.
+- Compiler warnings are errors, and the app target uses strict concurrency checking.
+- Coverage gate (`.github/scripts/coverage.sh`): every line in `OneHundo/Models/` and
+  `OneHundo/Support/` must run in tests (unit and UI tests count). Keep decisions out
+  of views: put them in those folders and unit test them. Pass in outside pieces
+  (store, clock, notifications) so tests can fake them. Views are reported, not gated.
+- Dependabot opens weekly PRs for GitHub Actions versions; merge them if CI is green.
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
   failures before calling the work done. Re-read Swift changes carefully first, since each
   CI round trip takes a few minutes.

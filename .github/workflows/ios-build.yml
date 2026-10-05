@@ -31,6 +31,7 @@ jobs:
               - 'OneHundoUITests/**'
               - 'project.yml'
               - '.swiftlint.yml'
+              - '.github/scripts/**'
               - '.github/workflows/**'
 
   lint:
@@ -81,6 +82,8 @@ jobs:
             -scheme OneHundo \
             -destination "id=$DEVICE_ID" \
             -derivedDataPath build/test \
+            -resultBundlePath build/test.xcresult \
+            -enableCodeCoverage YES \
             CODE_SIGNING_ALLOWED=NO \
             > build/test.log 2>&1 || status=$?
           grep -E '(Test Case .*(passed|failed)|error:|\*\* TEST)' build/test.log || true
@@ -88,6 +91,9 @@ jobs:
             tail -n 60 build/test.log
           fi
           exit "$status"
+
+      - name: Coverage gate
+        run: .github/scripts/coverage.sh build/test.xcresult
 
       - name: Build simulator app
         run: |

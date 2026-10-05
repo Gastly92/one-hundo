@@ -9,8 +9,12 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 - **SwiftUI + SwiftData**, iOS 17. No third-party packages in the app itself, so it
   stays small and has no outside code to keep updated. Test and CI tooling is fine
   (it never ships to the phone).
-- **Checks on every PR**: unit tests, UI tests, Xcode's accessibility audit, and
-  SwiftLint (strict).
+- **Checks on every PR**: unit tests, UI tests, Xcode's accessibility audit,
+  SwiftLint (strict, 100-character lines), warnings as errors with strict concurrency,
+  and 100% line coverage of non-view code (`Models/`, `Support/`).
+- **Testable by design**: views stay thin; decisions live in `Models/` or `Support/`,
+  and outside pieces (data store, clock, notifications) are passed in so tests can
+  fake them.
 - **Logic is plain Swift, separate from views**, so it can be unit tested:
   today's target, progress, "days to goal", reminder text.
 - **Two test targets**: `OneHundoTests` (unit tests, fast, for the logic) and
@@ -119,6 +123,7 @@ snapshot tests start paying off.
   label) re-records and commits the images to the PR branch. On a mismatch, CI
   uploads the diff images as an artifact and fails.
 - No version bump (nothing user-visible).
+- Then add a coverage gate for views, set from what the snapshots reach.
 
 ### 6. Daily reminders
 - Ask notification permission when a reminder is first turned on.
@@ -153,6 +158,12 @@ snapshot tests start paying off.
 - Bump `MARKETING_VERSION` to 1.0.0 when you're happy with it: the first App Store release.
 
 ## Later
+
+- **80-character lines**: try lowering SwiftLint's limit from 100 for easier
+  reading in portrait on the phone.
+- **Localization prep**: a String Catalog, translatable strings in logic (plurals
+  like "1 day" / "95 days"), and a pseudo-language UI test run. Next PR after the
+  tooling one.
 
 Not scheduled; each would be its own PR series after 1.0.
 
