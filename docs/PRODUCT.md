@@ -126,11 +126,12 @@ Opened from a card or from the calendar.
 - Date: today by default; can be changed to log a past day.
 - **Save**. One attempt per challenge per day: logging the same day again
   replaces that day's count.
+- Editing an attempt (swipe in History, or **Edit today**) opens the same sheet
+  with its count; the date stays fixed.
 - Hitting or beating the target shows a small celebration; falling short shows
-  an encouraging message and tomorrow's target.
-- Beating your highest count ever for this challenge adds a "New personal
-  best!" badge to the celebration (not shown for the first attempt, which is
-  your test).
+  an encouraging message. Both show the next target ("Next time, try for 7").
+- Beating your highest count ever for this challenge (including your starting
+  test) adds a "New personal best!" badge to the celebration.
 
 ### Goal reached
 
