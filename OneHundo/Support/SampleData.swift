@@ -4,7 +4,11 @@ import SwiftData
 /// Challenges for UI tests (launched with -uiTesting -seedSampleData).
 enum SampleData {
     @MainActor
-    static func insert(into context: ModelContext, now: Date = Date(), calendar: Calendar = .current) {
+    static func insert(
+        into context: ModelContext,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) {
         func daysAgo(_ days: Int) -> Date {
             calendar.date(byAdding: .day, value: -days, to: now) ?? now
         }

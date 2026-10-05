@@ -30,7 +30,22 @@ jobs:
               - 'OneHundoTests/**'
               - 'OneHundoUITests/**'
               - 'project.yml'
+              - '.swiftlint.yml'
               - '.github/workflows/**'
+
+  lint:
+    name: SwiftLint
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    container: ghcr.io/realm/swiftlint:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint
+        run: |
+          swiftlint version
+          swiftlint lint --strict --reporter github-actions-logging
 
   build:
     name: Build & test
@@ -119,15 +134,17 @@ jobs:
   # was skipped (docs-only PR) or succeeded.
   gate:
     name: CI Gate
-    needs: [changes, build]
+    needs: [changes, lint, build]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check results
         run: |
-          echo "changes: ${{ needs.changes.result }}, build: ${{ needs.build.result }}"
+          echo "changes: ${{ needs.changes.result }}, lint: ${{ needs.lint.result }}, build: ${{ needs.build.result }}"
           [ "${{ needs.changes.result }}" = "success" ] || exit 1
-          case "${{ needs.build.result }}" in
-            success|skipped) exit 0 ;;
-            *) exit 1 ;;
-          esac
+          for result in "${{ needs.lint.result }}" "${{ needs.build.result }}"; do
+            case "$result" in
+              success|skipped) ;;
+              *) exit 1 ;;
+            esac
+          done

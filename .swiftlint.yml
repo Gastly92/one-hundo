@@ -1,0 +1,27 @@
+# SwiftLint config. CI runs `swiftlint lint --strict`, so warnings fail the build.
+included:
+  - OneHundo
+  - OneHundoTests
+  - OneHundoUITests
+
+disabled_rules:
+  # Multi-line lists end with a trailing comma here, so diffs stay one line.
+  - trailing_comma
+
+opt_in_rules:
+  - contains_over_first_not_nil
+  - empty_count
+  - first_where
+  - last_where
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+
+identifier_name:
+  excluded:
+    - id
+
+# Diffs get read in the GitHub iPhone app; 100 fits in landscape.
+line_length:
+  warning: 100
+  ignores_urls: true

@@ -8,6 +8,8 @@ struct ChallengeDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var logRequest: LogRequest?
+    @ScaledMetric(relativeTo: .largeTitle) private var countSize: CGFloat = 44
+    @ScaledMetric(relativeTo: .largeTitle) private var ringSize: CGFloat = 180
 
     /// Opens the Log attempt sheet, for a new attempt or for editing one.
     private struct LogRequest: Identifiable {
@@ -27,7 +29,7 @@ struct ChallengeDetailView: View {
             }
             .listRowBackground(Color.clear)
 
-            Section("Today") {
+            Section {
                 HStack(spacing: 6) {
                     if todayAttempt != nil {
                         Image(systemName: "checkmark.circle.fill")
@@ -47,9 +49,10 @@ struct ChallengeDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .tint(color)
                 .listRowSeparator(.hidden)
                 .accessibilityIdentifier("logAttemptButton")
+            } header: {
+                sectionHeader("Today")
             }
 
             Section {
@@ -60,20 +63,33 @@ struct ChallengeDetailView: View {
                 ForEach(challenge.sortedAttempts) { attempt in
                     attemptRow(attempt)
                 }
-            } header: {
-                Text("History")
-            } footer: {
                 if !challenge.sortedAttempts.isEmpty {
+                    // A row rather than a section footer, which has low contrast and
+                    // doesn't scale with text size.
                     Text("Tap an attempt to change it, or swipe left to delete.")
+                        .font(.footnote)
+                        .listRowSeparator(.hidden)
                 }
+            } header: {
+                sectionHeader("History")
             }
         }
         .navigationTitle(challenge.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
+        // A detail screen: no tab bar, which would also fade the bottom rows.
+        .toolbar(.hidden, for: .tabBar)
         .sheet(item: $logRequest) { request in
             LogAttemptView(challenge: challenge, attempt: request.attempt)
         }
+    }
+
+    /// Section titles in a standard text style, so they scale and read clearly.
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.headline)
+            .foregroundStyle(.primary)
+            .textCase(nil)
     }
 
     private var header: some View {
@@ -87,24 +103,25 @@ struct ChallengeDetailView: View {
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut, value: challenge.progress)
                 VStack(spacing: 2) {
-                    Image(systemName: challenge.icon)
-                        .font(.title2)
-                        .foregroundStyle(color)
                     Text("\(challenge.currentCount)")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .font(.system(size: countSize, weight: .bold, design: .rounded))
                         .monospacedDigit()
                     Text("of \(challenge.goal)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
-            .frame(width: 180, height: 180)
+            .frame(width: min(ringSize, 280), height: min(ringSize, 280))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Progress")
             .accessibilityValue(challenge.progressText)
 
             HStack {
-                stat("Personal best", value: challenge.unit.format(challenge.personalBest), id: "personalBestValue")
+                stat(
+                    "Personal best",
+                    value: challenge.unit.format(challenge.personalBest),
+                    id: "personalBestValue"
+                )
                 Divider().frame(height: 32)
                 stat("Days logged", value: "\(challenge.daysLogged())", id: "daysLoggedValue")
             }
@@ -130,14 +147,17 @@ struct ChallengeDetailView: View {
             logRequest = LogRequest(attempt: attempt)
         } label: {
             HStack {
-                Text(attempt.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
+                Text(
+                    attempt.date,
+                    format: .dateTime.weekday(.abbreviated).month(.abbreviated).day()
+                )
                 Spacer()
                 Text(challenge.unit.format(attempt.count))
                     .bold()
                     .monospacedDigit()
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
             .contentShape(Rectangle())

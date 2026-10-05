@@ -63,7 +63,8 @@ final class ChallengeListTests: XCTestCase {
     func testCalendarTabShowsPlaceholder() {
         let app = launch()
         app.tabBars.buttons["Calendar"].tap()
-        XCTAssertTrue(app.staticTexts["Coming soon: your attempts, day by day."].waitForExistence(timeout: 5))
+        let placeholder = app.staticTexts["Coming soon: your attempts, day by day."]
+        XCTAssertTrue(placeholder.waitForExistence(timeout: 5))
         app.tabBars.buttons["Challenges"].tap()
         XCTAssertTrue(app.staticTexts["welcomeTitle"].waitForExistence(timeout: 5))
     }
@@ -81,8 +82,8 @@ final class ChallengeListTests: XCTestCase {
         deleteItem.tap()
 
         // The confirmation's button has the same label as the menu item, which is gone by now.
-        XCTAssertTrue(app.staticTexts["This deletes the challenge and all its attempts. You can't undo this."]
-            .waitForExistence(timeout: 5))
+        let warning = "This deletes the challenge and all its attempts. You can't undo this."
+        XCTAssertTrue(app.staticTexts[warning].waitForExistence(timeout: 5))
         app.buttons["Delete challenge"].firstMatch.tap()
 
         XCTAssertTrue(pullUps.waitForNonExistence(timeout: 5))

@@ -31,15 +31,14 @@ struct EnrollFlowView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
                 content
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .scrollDismissesKeyboard(.interactively)
+        // Solid backgrounds: the sheet's translucent default lowers text contrast.
+        .background(Color(.systemBackground))
         .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationTitle(builtIn.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -61,6 +60,7 @@ struct EnrollFlowView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(color)
                 .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
             Text(builtIn.summary)
                 .font(.title3)
             Text("Good form")
@@ -99,15 +99,7 @@ struct EnrollFlowView: View {
                 NumberEntry(value: $goal, range: 1...9999, identifier: "goal")
                 HStack(spacing: 8) {
                     ForEach(Self.goalChoices.filter { $0 > startingCount }, id: \.self) { choice in
-                        Button {
-                            goal = choice
-                        } label: {
-                            Text("\(choice)").frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(goal == choice ? Color.accentColor : Color.gray)
-                        .accessibilityAddTraits(goal == choice ? .isSelected : [])
-                        .accessibilityIdentifier("goalChoice.\(choice)")
+                        goalChip(choice)
                     }
                 }
             }
@@ -131,20 +123,17 @@ struct EnrollFlowView: View {
     /// "5 today → 6 tomorrow → 100 goal", plus how long it should take.
     private var planPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                previewStep(value: startingCount, label: "Today")
-                previewArrow
-                previewStep(
-                    value: Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal),
-                    label: "Tomorrow"
-                )
-                previewArrow
-                previewStep(value: goal, label: "Goal")
-            }
-            .opacity(goal > startingCount ? 1 : 0.4)
-            .accessibilityElement(children: .combine)
+            // One sentence, so it wraps instead of clipping at large text sizes.
+            let today = Text("\(startingCount)").bold()
+            let tomorrow = Text("\(tomorrowTarget)").bold()
+            let target = Text("\(goal)").bold()
+            Text("\(today) today  →  \(tomorrow) tomorrow  →  \(target) goal")
+                .font(.title3)
+                .monospacedDigit()
+                .fixedSize(horizontal: false, vertical: true)
+                .opacity(goal > startingCount ? 1 : 0.4)
 
-            Text(Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease))
+            Text(paceText)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(goal > startingCount ? Color.primary : Color.red)
         }
@@ -153,23 +142,32 @@ struct EnrollFlowView: View {
         .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private func previewStep(value: Int, label: String) -> some View {
-        VStack(spacing: 2) {
-            Text("\(value)")
-                .font(.title2.bold())
-                .monospacedDigit()
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+    /// A quick goal button; the selected one is filled.
+    private func goalChip(_ choice: Int) -> some View {
+        let isSelected = goal == choice
+        return Button {
+            goal = choice
+        } label: {
+            Text("\(choice)")
+                .font(.body.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .background(
+                    isSelected ? Color.accentColor : Color(.tertiarySystemFill),
+                    in: Capsule()
+                )
         }
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier("goalChoice.\(choice)")
     }
 
-    private var previewArrow: some View {
-        Image(systemName: "arrow.right")
-            .font(.footnote.weight(.semibold))
-            .foregroundStyle(.secondary)
-            .accessibilityHidden(true)
+    private var tomorrowTarget: Int {
+        Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal)
+    }
+
+    private var paceText: String {
+        Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease)
     }
 
     private var reminder: some View {
@@ -187,14 +185,33 @@ struct EnrollFlowView: View {
     }
 
     private var bottomBar: some View {
+        // The step count lives here, on a solid background: at the top of the scroll
+        // view, iOS fades content under the navigation bar.
+        VStack(spacing: 10) {
+            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+                .font(.subheadline.weight(.medium))
+            buttons
+        }
+        .padding()
+        .background(Color(.systemBackground))
+    }
+
+    private var buttons: some View {
         HStack(spacing: 12) {
             if step != .intro {
                 Button {
                     move(by: -1)
                 } label: {
-                    Text("Back").frame(maxWidth: .infinity)
+                    Text("Back")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Color.primary)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(
+                            Color(.secondarySystemBackground),
+                            in: RoundedRectangle(cornerRadius: 12)
+                        )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.plain)
                 .accessibilityIdentifier("enrollBackButton")
             }
 
@@ -218,8 +235,6 @@ struct EnrollFlowView: View {
             }
         }
         .controlSize(.large)
-        .padding()
-        .background(.bar)
     }
 
     private func advance() {

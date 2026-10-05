@@ -9,18 +9,23 @@ struct NumberEntry: View {
     var identifier: String = "number"
 
     @State private var text = ""
+    // The number scales fully with the user's text size setting. The − / + buttons
+    // grow less, so a three-digit number and both buttons still fit across the screen.
+    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 56
+    @ScaledMetric(relativeTo: .body) private var scaledButtonSize: CGFloat = 44
+    private var buttonSize: CGFloat { min(scaledButtonSize, 56) }
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 8) {
             stepButton(systemImage: "minus.circle.fill", label: "Decrease", delta: -1)
                 .accessibilityIdentifier("\(identifier).decrement")
 
             TextField("0", text: $text)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.center)
-                .font(.system(size: 56, weight: .bold, design: .rounded))
+                .font(.system(size: numberSize, weight: .bold, design: .rounded))
                 .monospacedDigit()
-                .frame(minWidth: 120)
+                .frame(minWidth: 100)
                 .accessibilityIdentifier("\(identifier).field")
 
             stepButton(systemImage: "plus.circle.fill", label: "Increase", delta: 1)
@@ -48,7 +53,7 @@ struct NumberEntry: View {
             value = clamp(value + delta)
         } label: {
             Image(systemName: systemImage)
-                .font(.system(size: 44))
+                .font(.system(size: buttonSize))
                 .symbolRenderingMode(.hierarchical)
         }
         .accessibilityLabel(label)

@@ -82,7 +82,8 @@ struct LogAttemptView: View {
                 }
 
                 if let replacedAttempt {
-                    Text("This replaces the \(challenge.unit.format(replacedAttempt.count)) you logged that day.")
+                    let replaced = challenge.unit.format(replacedAttempt.count)
+                    Text("This replaces the \(replaced) you logged that day.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -106,19 +107,21 @@ struct LogAttemptView: View {
             Text(outcome.message)
                 .font(.title3)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .foregroundStyle(.secondary)
             if outcome.isNewBest {
                 HStack(spacing: 6) {
                     Image(systemName: "star.fill")
+                        .foregroundStyle(color)
                         .accessibilityHidden(true)
                     Text("New personal best!")
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityIdentifier("newBestBadge")
                 }
                 .font(.headline)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .foregroundStyle(.white)
-                .background(color, in: Capsule())
+                .background(color.opacity(0.18), in: Capsule())
             }
             Spacer()
             Button {
