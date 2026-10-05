@@ -82,7 +82,8 @@ struct LogAttemptView: View {
                 }
 
                 if let replacedAttempt {
-                    Text("This replaces the \(challenge.unit.format(replacedAttempt.count)) you logged that day.")
+                    let replaced = challenge.unit.format(replacedAttempt.count)
+                    Text("This replaces the \(replaced) you logged that day.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

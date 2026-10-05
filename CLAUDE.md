@@ -22,7 +22,8 @@ Keep both updated as features land.
 - `AccessibilityTests` runs Xcode's accessibility audit on each main screen. Add new screens to it.
   Use system colors and text styles (or `@ScaledMetric` for big custom sizes) so text scales
   and both light and dark mode work.
-- SwiftLint runs in CI with `--strict` (warnings fail). Config: `.swiftlint.yml`. It can't be
+- SwiftLint runs in CI with `--strict` (warnings fail); lines max 100 chars (diffs are read on
+  a phone). Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
   failures before calling the work done. Re-read Swift changes carefully first, since each

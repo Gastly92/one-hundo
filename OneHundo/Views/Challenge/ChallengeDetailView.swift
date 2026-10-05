@@ -106,7 +106,11 @@ struct ChallengeDetailView: View {
             .accessibilityValue(challenge.progressText)
 
             HStack {
-                stat("Personal best", value: challenge.unit.format(challenge.personalBest), id: "personalBestValue")
+                stat(
+                    "Personal best",
+                    value: challenge.unit.format(challenge.personalBest),
+                    id: "personalBestValue"
+                )
                 Divider().frame(height: 32)
                 stat("Days logged", value: "\(challenge.daysLogged())", id: "daysLoggedValue")
             }
@@ -132,7 +136,10 @@ struct ChallengeDetailView: View {
             logRequest = LogRequest(attempt: attempt)
         } label: {
             HStack {
-                Text(attempt.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
+                Text(
+                    attempt.date,
+                    format: .dateTime.weekday(.abbreviated).month(.abbreviated).day()
+                )
                 Spacer()
                 Text(challenge.unit.format(attempt.count))
                     .bold()

@@ -134,23 +134,28 @@ struct EnrollFlowView: View {
             HStack(spacing: 8) {
                 previewStep(value: startingCount, label: "Today")
                 previewArrow
-                previewStep(
-                    value: Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal),
-                    label: "Tomorrow"
-                )
+                previewStep(value: tomorrowTarget, label: "Tomorrow")
                 previewArrow
                 previewStep(value: goal, label: "Goal")
             }
             .opacity(goal > startingCount ? 1 : 0.4)
             .accessibilityElement(children: .combine)
 
-            Text(Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease))
+            Text(paceText)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(goal > startingCount ? Color.primary : Color.red)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var tomorrowTarget: Int {
+        Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal)
+    }
+
+    private var paceText: String {
+        Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease)
     }
 
     private func previewStep(value: Int, label: String) -> some View {

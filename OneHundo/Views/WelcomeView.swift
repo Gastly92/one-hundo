@@ -34,7 +34,8 @@ struct WelcomeView: View {
                         number: 3,
                         icon: "trophy",
                         title: "Reach 100",
-                        detail: "Small steps add up. Missed a day? No problem, pick up where you left off."
+                        detail: "Small steps add up. Missed a day? "
+                            + "No problem, pick up where you left off."
                     )
                 }
 

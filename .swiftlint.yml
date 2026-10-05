@@ -20,3 +20,8 @@ opt_in_rules:
 identifier_name:
   excluded:
     - id
+
+# Diffs get read in the GitHub iPhone app; 100 fits in landscape.
+line_length:
+  warning: 100
+  ignores_urls: true

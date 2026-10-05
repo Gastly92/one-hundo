@@ -99,7 +99,11 @@ extension Challenge {
     /// Logs a count from the Log attempt sheet and says how it went: whether it hit
     /// that day's target, whether it's a new personal best, and the next target.
     @discardableResult
-    func recordAttempt(count: Int, on date: Date = Date(), calendar: Calendar = .current) -> LogOutcome {
+    func recordAttempt(
+        count: Int,
+        on date: Date = Date(),
+        calendar: Calendar = .current
+    ) -> LogOutcome {
         let dayTarget = target(on: date, calendar: calendar)
         let isNewBest = count > best(excludingDayOf: date, calendar: calendar)
         logAttempt(count: count, on: date, calendar: calendar)
@@ -107,7 +111,11 @@ extension Challenge {
             count: count,
             target: dayTarget,
             goal: goal,
-            nextTarget: Progression.target(baseline: currentCount, dailyIncrease: dailyIncrease, goal: goal),
+            nextTarget: Progression.target(
+                baseline: currentCount,
+                dailyIncrease: dailyIncrease,
+                goal: goal
+            ),
             isNewBest: isNewBest,
             unit: unit
         )
