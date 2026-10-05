@@ -118,12 +118,3 @@ private extension XCUIElement {
         return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
     }
 }
-
-private extension XCUIElement {
-    /// Waits until the element exists and can be tapped.
-    func waitForHittable(timeout: TimeInterval) -> Bool {
-        let predicate = NSPredicate(format: "exists == true AND hittable == true")
-        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: self)
-        return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
-    }
-}
