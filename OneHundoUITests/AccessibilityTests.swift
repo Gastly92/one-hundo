@@ -68,7 +68,6 @@ final class AccessibilityTests: XCTestCase {
         let app = launch(seeded: true)
         let pushUps = app.staticTexts["Push-ups"]
         XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
-        try audit(app, screen: "List")
 
         pushUps.tap()
         let logButton = app.buttons["logAttemptButton"]
@@ -80,7 +79,15 @@ final class AccessibilityTests: XCTestCase {
         try audit(app, screen: "Log sheet")
 
         app.buttons["logSaveButton"].tap()
-        XCTAssertTrue(app.buttons["logDoneButton"].waitForExistence(timeout: 5))
+        let done = app.buttons["logDoneButton"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
         try audit(app, screen: "Log result")
+
+        // The list last: the audit can leave it scrolled or resized, which would
+        // throw off a tap that follows it.
+        done.tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.staticTexts["challengesTitle"].waitForExistence(timeout: 5))
+        try audit(app, screen: "List")
     }
 }

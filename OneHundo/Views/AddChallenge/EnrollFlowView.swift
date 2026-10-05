@@ -39,6 +39,8 @@ struct EnrollFlowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .scrollDismissesKeyboard(.interactively)
+        // Solid backgrounds: the sheet's translucent default lowers text contrast.
+        .background(Color(.systemBackground))
         .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationTitle(builtIn.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -123,13 +125,15 @@ struct EnrollFlowView: View {
     /// "5 today → 6 tomorrow → 100 goal", plus how long it should take.
     private var planPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Side by side when it fits; stacked at very large text sizes.
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { previewSteps }
-                VStack(alignment: .leading, spacing: 8) { previewSteps }
-            }
-            .opacity(goal > startingCount ? 1 : 0.4)
-            .accessibilityElement(children: .combine)
+            // One sentence, so it wraps instead of clipping at large text sizes.
+            let today = Text("\(startingCount)").bold()
+            let tomorrow = Text("\(tomorrowTarget)").bold()
+            let target = Text("\(goal)").bold()
+            Text("\(today) today  →  \(tomorrow) tomorrow  →  \(target) goal")
+                .font(.title3)
+                .monospacedDigit()
+                .fixedSize(horizontal: false, vertical: true)
+                .opacity(goal > startingCount ? 1 : 0.4)
 
             Text(paceText)
                 .font(.subheadline.weight(.medium))
@@ -168,34 +172,6 @@ struct EnrollFlowView: View {
         Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease)
     }
 
-    @ViewBuilder
-    private var previewSteps: some View {
-        previewStep(value: startingCount, label: "Today")
-        previewArrow
-        previewStep(value: tomorrowTarget, label: "Tomorrow")
-        previewArrow
-        previewStep(value: goal, label: "Goal")
-    }
-
-    private func previewStep(value: Int, label: String) -> some View {
-        VStack(spacing: 2) {
-            Text("\(value)")
-                .font(.title2.bold())
-                .monospacedDigit()
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private var previewArrow: some View {
-        Image(systemName: "arrow.right")
-            .font(.footnote.weight(.semibold))
-            .foregroundStyle(.secondary)
-            .accessibilityHidden(true)
-    }
-
     private var reminder: some View {
         VStack(alignment: .leading, spacing: 24) {
             Text("Daily reminder")
@@ -216,10 +192,16 @@ struct EnrollFlowView: View {
                 Button {
                     move(by: -1)
                 } label: {
-                    Text("Back").frame(maxWidth: .infinity)
+                    Text("Back")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Color.primary)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(
+                            Color(.secondarySystemBackground),
+                            in: RoundedRectangle(cornerRadius: 12)
+                        )
                 }
-                .buttonStyle(.bordered)
-                .tint(Color.primary)
+                .buttonStyle(.plain)
                 .accessibilityIdentifier("enrollBackButton")
             }
 
@@ -244,7 +226,7 @@ struct EnrollFlowView: View {
         }
         .controlSize(.large)
         .padding()
-        .background(.bar)
+        .background(Color(.systemBackground))
     }
 
     private func advance() {

@@ -32,14 +32,18 @@ struct AddChallengeView: View {
                 }
 
                 Section {
-                    // The custom challenge form lands in plan step 5.
-                    ChallengeChoiceRow(
-                        icon: "square.and.pencil",
-                        color: .gray,
-                        title: "Custom challenge",
-                        subtitle: "Coming soon",
-                        isDimmed: true
-                    )
+                    // The custom challenge form lands in plan step 5. A disabled button,
+                    // like the in-progress built-ins, so it reads as unavailable.
+                    Button {} label: {
+                        ChallengeChoiceRow(
+                            icon: "square.and.pencil",
+                            color: .gray,
+                            title: "Custom challenge",
+                            subtitle: "Coming soon",
+                            isDimmed: true
+                        )
+                    }
+                    .disabled(true)
                 }
             }
             .navigationTitle("Add challenge")

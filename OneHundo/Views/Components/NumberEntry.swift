@@ -9,15 +9,14 @@ struct NumberEntry: View {
     var identifier: String = "number"
 
     @State private var text = ""
-    // Big, and scales with the user's text size setting up to a cap, so four digits
-    // and both buttons still fit across the screen.
-    @ScaledMetric(relativeTo: .largeTitle) private var scaledNumberSize: CGFloat = 56
-    @ScaledMetric(relativeTo: .largeTitle) private var scaledButtonSize: CGFloat = 44
-    private var numberSize: CGFloat { min(scaledNumberSize, 80) }
+    // The number scales fully with the user's text size setting. The − / + buttons
+    // grow less, so a three-digit number and both buttons still fit across the screen.
+    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 56
+    @ScaledMetric(relativeTo: .body) private var scaledButtonSize: CGFloat = 44
     private var buttonSize: CGFloat { min(scaledButtonSize, 56) }
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 8) {
             stepButton(systemImage: "minus.circle.fill", label: "Decrease", delta: -1)
                 .accessibilityIdentifier("\(identifier).decrement")
 
@@ -26,7 +25,7 @@ struct NumberEntry: View {
                 .multilineTextAlignment(.center)
                 .font(.system(size: numberSize, weight: .bold, design: .rounded))
                 .monospacedDigit()
-                .frame(minWidth: 120)
+                .frame(minWidth: 100)
                 .accessibilityIdentifier("\(identifier).field")
 
             stepButton(systemImage: "plus.circle.fill", label: "Increase", delta: 1)
