@@ -8,18 +8,16 @@ struct TabHeader<Trailing: View>: View {
     @ViewBuilder var trailing: Trailing
 
     var body: some View {
-        HStack(alignment: .center) {
-            Text(title)
-                .font(.largeTitle.bold())
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier(identifier)
-            Spacer()
-            trailing
-        }
-        // Same height with or without a button, so titles line up across tabs.
-        .frame(minHeight: 44)
-        .padding(.horizontal)
-        .padding(.top, 8)
+        Text(title)
+            .font(.largeTitle.bold())
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier(identifier)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // The button floats on the title's line without changing the row's
+            // height, so the title sits in the same place on every tab.
+            .overlay(alignment: .trailing) { trailing }
+            .padding(.horizontal)
+            .padding(.top, 8)
     }
 }
 
