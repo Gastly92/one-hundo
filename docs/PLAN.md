@@ -69,7 +69,7 @@ e.g. 0.4.1); see CLAUDE.md.
 
 **Milestone:** you can start real challenges. Worth a TestFlight build.
 
-### 4. Challenge screen and logging
+### 4. Challenge screen and logging ✅
 - Challenge screen: header with progress ring, Today section, attempt list.
 - Log attempt sheet with the replace-same-day rule, plus edit and delete attempts.
 - Small celebration / encouragement after logging, with a "New personal best!"
@@ -77,6 +77,11 @@ e.g. 0.4.1); see CLAUDE.md.
 - Header stats: personal best and days logged.
 - Unit tests for the personal-best and days-logged logic.
 - UI test: log 6, card shows "Done: 6"; log again the same day replaces it.
+- As built: a new best means beating the starting test and every attempt on other
+  days (re-logging a day doesn't compete with itself). Days logged counts the
+  starting test's day. Editing an attempt changes its count only; to move it to
+  another day, delete it and log that day. The result says "Next time, try for 7"
+  (latest count + increase), which also reads right when logging a past day.
 
 **Milestone:** the core daily loop works. Ship to TestFlight and use it daily.
 

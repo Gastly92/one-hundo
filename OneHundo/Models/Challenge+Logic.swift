@@ -78,6 +78,41 @@ extension Challenge {
 
     var isGoalReached: Bool { currentCount >= goal }
 
+    /// The highest count ever, including the starting test.
+    var personalBest: Int {
+        max(startingCount, (attempts ?? []).map(\.count).max() ?? 0)
+    }
+
+    /// Number of days with an attempt (the starting test counts). Missed days are fine;
+    /// this is shown instead of a streak.
+    func daysLogged(calendar: Calendar = .current) -> Int {
+        Set((attempts ?? []).map { calendar.startOfDay(for: $0.date) }).count
+    }
+
+    /// The best count on any day other than `day`'s, or the starting count. Logging
+    /// a day replaces that day's count, so it's left out when checking for a new best.
+    func best(excludingDayOf day: Date, calendar: Calendar = .current) -> Int {
+        let others = (attempts ?? []).filter { !calendar.isDate($0.date, inSameDayAs: day) }
+        return max(startingCount, others.map(\.count).max() ?? 0)
+    }
+
+    /// Logs a count from the Log attempt sheet and says how it went: whether it hit
+    /// that day's target, whether it's a new personal best, and the next target.
+    @discardableResult
+    func recordAttempt(count: Int, on date: Date = Date(), calendar: Calendar = .current) -> LogOutcome {
+        let dayTarget = target(on: date, calendar: calendar)
+        let isNewBest = count > best(excludingDayOf: date, calendar: calendar)
+        logAttempt(count: count, on: date, calendar: calendar)
+        return LogOutcome(
+            count: count,
+            target: dayTarget,
+            goal: goal,
+            nextTarget: Progression.target(baseline: currentCount, dailyIncrease: dailyIncrease, goal: goal),
+            isNewBest: isNewBest,
+            unit: unit
+        )
+    }
+
     /// Logs a count for the day of `date`. Logging the same day again replaces
     /// that day's count, keeping one attempt per day.
     @discardableResult
@@ -121,5 +156,39 @@ enum Progression {
     static func progress(current: Int, goal: Int) -> Double {
         guard goal > 0 else { return 0 }
         return min(max(Double(current) / Double(goal), 0), 1)
+    }
+}
+
+/// What the Log attempt sheet shows after saving: a small celebration or an
+/// encouraging message, plus the next target.
+struct LogOutcome: Equatable {
+    let count: Int
+    /// That day's target.
+    let target: Int
+    let goal: Int
+    /// The latest count plus the daily increase, capped at the goal.
+    let nextTarget: Int
+    let isNewBest: Bool
+    let unit: ChallengeUnit
+
+    var hitTarget: Bool { count >= target }
+    var reachedGoal: Bool { count >= goal }
+
+    var title: String {
+        if reachedGoal { return "Goal reached!" }
+        return hitTarget ? "Nice work!" : "Good effort!"
+    }
+
+    var message: String {
+        if reachedGoal { return "You hit your goal of \(unit.format(goal))." }
+        let next = "Next time, try for \(unit.format(nextTarget))."
+        if hitTarget { return "You did \(unit.format(count)). \(next)" }
+        return "You did \(unit.format(count)), and every one counts. \(next)"
+    }
+
+    /// SF Symbol for the result screen.
+    var symbol: String {
+        if reachedGoal { return "trophy.fill" }
+        return hitTarget ? "hands.clap.fill" : "arrow.up.forward.circle.fill"
     }
 }

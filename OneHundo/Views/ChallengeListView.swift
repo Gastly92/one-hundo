@@ -4,6 +4,7 @@ import SwiftUI
 struct ChallengeListView: View {
     @Query(sort: \Challenge.createdDate) private var challenges: [Challenge]
     @State private var isAddingChallenge = false
+    @State private var path: [Challenge] = []
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -16,7 +17,7 @@ struct ChallengeListView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack(spacing: 0) {
                 header
                 if activeChallenges.isEmpty {
@@ -26,7 +27,11 @@ struct ChallengeListView: View {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 12) {
                             ForEach(activeChallenges) { challenge in
+                                // A tap gesture rather than a NavigationLink, so the card's
+                                // texts stay separate accessibility elements for UI tests.
                                 ChallengeCard(challenge: challenge)
+                                    .contentShape(RoundedRectangle(cornerRadius: 16))
+                                    .onTapGesture { path.append(challenge) }
                             }
                         }
                         .padding()
@@ -37,6 +42,9 @@ struct ChallengeListView: View {
             // A custom header instead of the system bar, so the + sits on the
             // same line as the big title.
             .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: Challenge.self) { challenge in
+                ChallengeDetailView(challenge: challenge)
+            }
             .sheet(isPresented: $isAddingChallenge) {
                 AddChallengeView()
             }
