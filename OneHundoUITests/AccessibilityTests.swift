@@ -43,13 +43,15 @@ final class AccessibilityTests: XCTestCase {
         file: StaticString,
         line: UInt
     ) throws {
-        // Navigation bar buttons (Close, Cancel, Save) are iOS's own and don't scale.
-        let barButtonFrames = app.navigationBars.buttons.allElementsBoundByIndex.map(\.frame)
+        // The navigation bar (title, Close, Cancel, Save) is iOS's own: it doesn't scale
+        // with text size, and its glass can read as low contrast mid-animation.
+        let barFrames = app.navigationBars.descendants(matching: .any)
+            .allElementsBoundByIndex.map(\.frame)
         try app.performAccessibilityAudit { issue in
             // "Nearly passed" contrast passes at larger text sizes; iOS's own secondary
             // text color gets it. Real contrast failures still fail.
             if issue.compactDescription.contains("nearly passed") { return true }
-            if let found = issue.element, barButtonFrames.contains(found.frame) { return true }
+            if let found = issue.element, barFrames.contains(found.frame) { return true }
             // Standard text styles in the last section of a list: at large text sizes
             // they move off screen, so the audit can't confirm they scale.
             if issue.auditType == .dynamicType, let found = issue.element,
