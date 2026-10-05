@@ -12,14 +12,18 @@ extension Challenge {
 
     var builtIn: BuiltInChallenge? { BuiltInChallenge.with(id: kind) }
 
+    /// All attempts, in no particular order. SwiftData leaves the relationship nil
+    /// until something is added, so this treats nil as none.
+    var allAttempts: [Attempt] { attempts ?? [] }
+
     /// Attempts, newest first.
     var sortedAttempts: [Attempt] {
-        (attempts ?? []).sorted { $0.date > $1.date }
+        allAttempts.sorted { $0.date > $1.date }
     }
 
     /// The attempt logged on the same calendar day as `day`, if any.
     func attempt(on day: Date, calendar: Calendar = .current) -> Attempt? {
-        (attempts ?? []).first { calendar.isDate($0.date, inSameDayAs: day) }
+        allAttempts.first { calendar.isDate($0.date, inSameDayAs: day) }
     }
 
     /// The attempt that counts as "done" for `day`. On the day the challenge was
@@ -59,7 +63,7 @@ extension Challenge {
     /// logging today doesn't move today's target.
     func baseline(before day: Date, calendar: Calendar = .current) -> Int {
         let startOfDay = calendar.startOfDay(for: day)
-        let earlier = (attempts ?? []).filter { $0.date < startOfDay }
+        let earlier = allAttempts.filter { $0.date < startOfDay }
         return earlier.max { $0.date < $1.date }?.count ?? startingCount
     }
 
@@ -74,7 +78,7 @@ extension Challenge {
 
     /// The latest logged count, or the starting count if nothing is logged yet.
     var currentCount: Int {
-        (attempts ?? []).max { $0.date < $1.date }?.count ?? startingCount
+        allAttempts.max { $0.date < $1.date }?.count ?? startingCount
     }
 
     /// Progress toward the goal, from 0 to 1 (current / goal).
@@ -91,19 +95,19 @@ extension Challenge {
 
     /// The highest count ever, including the starting test.
     var personalBest: Int {
-        max(startingCount, (attempts ?? []).map(\.count).max() ?? 0)
+        max(startingCount, allAttempts.map(\.count).max() ?? 0)
     }
 
     /// Number of days with an attempt (the starting test counts). Missed days are fine;
     /// this is shown instead of a streak.
     func daysLogged(calendar: Calendar = .current) -> Int {
-        Set((attempts ?? []).map { calendar.startOfDay(for: $0.date) }).count
+        Set(allAttempts.map { calendar.startOfDay(for: $0.date) }).count
     }
 
     /// The best count on any day other than `day`'s, or the starting count. Logging
     /// a day replaces that day's count, so it's left out when checking for a new best.
     func best(excludingDayOf day: Date, calendar: Calendar = .current) -> Int {
-        let others = (attempts ?? []).filter { !calendar.isDate($0.date, inSameDayAs: day) }
+        let others = allAttempts.filter { !calendar.isDate($0.date, inSameDayAs: day) }
         return max(startingCount, others.map(\.count).max() ?? 0)
     }
 

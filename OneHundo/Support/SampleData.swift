@@ -10,7 +10,8 @@ enum SampleData {
         calendar: Calendar = .current
     ) {
         func daysAgo(_ days: Int) -> Date {
-            calendar.date(byAdding: .day, value: -days, to: now) ?? now
+            // 24-hour steps: always an earlier calendar day for sample data.
+            now.addingTimeInterval(-Double(days) * 24 * 60 * 60)
         }
 
         // Logged yesterday: "Try 11 today", "10 / 100".

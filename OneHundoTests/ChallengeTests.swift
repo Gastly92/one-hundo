@@ -279,4 +279,18 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
         XCTAssertEqual(ChallengeUnit.minutes.format(3), "3 minutes")
     }
+
+    func testMissingAttemptsListCountsAsNone() {
+        let challenge = makePushUps()
+        challenge.attempts = nil
+        XCTAssertTrue(challenge.allAttempts.isEmpty)
+        XCTAssertEqual(challenge.currentCount, 5)
+        XCTAssertEqual(challenge.daysLogged(calendar: calendar), 0)
+    }
+
+    func testUnknownStoredUnitFallsBackToReps() {
+        let challenge = makePushUps()
+        challenge.unitRaw = "laps"
+        XCTAssertEqual(challenge.unit, .reps)
+    }
 }
