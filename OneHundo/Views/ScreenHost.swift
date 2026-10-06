@@ -12,6 +12,7 @@ struct ScreenHost: View {
 
   @Query(sort: \Challenge.createdDate)
   private var challenges: [Challenge]
+  @Environment(\.now) private var now
 
   /// The seeded Push-ups challenge: started 3
   /// days ago, with attempts.
@@ -69,18 +70,22 @@ struct ScreenHost: View {
       }
     case .logAttempt:
       if let pushUps {
-        LogAttemptView(pushUps)
+        LogAttemptView(pushUps, on: now)
       }
     case .editAttempt:
       if let pushUps {
         LogAttemptView(
-          pushUps, editing: lastAttempt
+          pushUps,
+          editing: lastAttempt,
+          on: now
         )
       }
     case .logResult:
       if let pushUps {
         LogAttemptView(
-          pushUps, outcome: Self.outcome
+          pushUps,
+          on: now,
+          outcome: Self.outcome
         )
       }
     case .storeError:

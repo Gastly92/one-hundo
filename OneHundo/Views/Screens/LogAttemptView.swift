@@ -25,19 +25,25 @@ struct LogAttemptView: View {
     Date.FormatStyle.dateTime
       .weekday(.wide).month().day()
 
-  /// `outcome` lets UI tests open the result
-  /// directly (see `ScreenHost`).
+  /// The latest day that can be picked.
+  private let today: Date
+
+  /// `now` is today (a new attempt's default
+  /// day). `outcome` lets UI tests open the
+  /// result directly (see `ScreenHost`).
   init(
     _ challenge: Challenge,
     editing attempt: Attempt? = nil,
+    on now: Date = Date(),
     outcome: LogOutcome? = nil
   ) {
     self.challenge = challenge
     self.attempt = attempt
+    today = now
     let start = attempt?.count
-      ?? challenge.target()
+      ?? challenge.target(on: now)
     _count = State(initialValue: start)
-    let day = attempt?.date ?? Date()
+    let day = attempt?.date ?? now
     _date = State(initialValue: day)
     _outcome = State(initialValue: outcome)
   }
@@ -130,7 +136,7 @@ struct LogAttemptView: View {
       DatePicker(
         "Date",
         selection: $date,
-        in: ...Date(),
+        in: ...today,
         displayedComponents: .date
       )
     } else {

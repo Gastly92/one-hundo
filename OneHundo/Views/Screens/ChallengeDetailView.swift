@@ -13,6 +13,7 @@ struct ChallengeDetailView: View {
 
   @Environment(\.modelContext)
   private var modelContext
+  @Environment(\.now) private var now
   @State private var sheet: LogSheet?
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
@@ -53,7 +54,9 @@ struct ChallengeDetailView: View {
     .toolbar(.hidden, for: .tabBar)
     .sheet(item: $sheet) {
       LogAttemptView(
-        challenge, editing: $0.attempt
+        challenge,
+        editing: $0.attempt,
+        on: now
       )
     }
   }
@@ -154,11 +157,11 @@ struct ChallengeDetailView: View {
   /// button. Reads today's attempt once so
   /// both agree.
   private var today: some View {
-    let done = challenge.attempt(on: Date())
+    let done = challenge.attempt(on: now)
     return Section {
       HStack(spacing: 6) {
         if done != nil { DoneMark() }
-        Text(challenge.todayText())
+        Text(challenge.todayText(on: now))
           .testID("todayText")
       }
       .font(.title2.bold())
@@ -174,7 +177,7 @@ struct ChallengeDetailView: View {
     Button {
       openLog(attempt)
     } label: {
-      Text(challenge.logButtonTitle())
+      Text(challenge.logButtonTitle(on: now))
         .fullWidth()
     }
     .buttonStyle(.borderedProminent)

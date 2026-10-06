@@ -14,6 +14,7 @@ struct ChallengeListView: View {
   @State private var deleting: Challenge?
   @Environment(\.modelContext)
   private var modelContext
+  @Environment(\.now) private var now
   @ScaledMetric(relativeTo: .headline)
   private var tileHeight: CGFloat = 120
 
@@ -95,9 +96,9 @@ struct ChallengeListView: View {
   private func logSheet(
     _ challenge: Challenge
   ) -> some View {
-    let today = challenge.attempt(on: Date())
+    let today = challenge.attempt(on: now)
     return LogAttemptView(
-      challenge, editing: today
+      challenge, editing: today, on: now
     )
   }
 
@@ -167,7 +168,7 @@ struct ChallengeListView: View {
       logging = challenge
     } label: {
       Label(
-        challenge.logButtonTitle(),
+        challenge.logButtonTitle(on: now),
         systemImage: "plus.circle"
       )
     }

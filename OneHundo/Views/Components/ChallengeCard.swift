@@ -5,9 +5,11 @@ import SwiftUI
 struct ChallengeCard: View {
   let challenge: Challenge
 
+  @Environment(\.now) private var now
+
   private var color: Color { challenge.color }
   private var isDoneToday: Bool {
-    challenge.attempt(on: Date()) != nil
+    challenge.attempt(on: now) != nil
   }
 
   var body: some View {
@@ -46,7 +48,7 @@ struct ChallengeCard: View {
   private var today: some View {
     HStack(spacing: 4) {
       if isDoneToday { DoneMark() }
-      Text(challenge.todayText())
+      Text(challenge.todayText(on: now))
         .wrapsText()
     }
     .font(.title3.bold())

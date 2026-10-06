@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+    # `labeled`: adding the record-snapshots
+    # label records every snapshot again.
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - labeled
   workflow_dispatch:
 
 concurrency:
@@ -116,6 +123,12 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
     timeout-minutes: 30
+    # Write access only to commit recorded
+    # snapshot images to the PR branch.
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v7
 
@@ -129,7 +142,35 @@ jobs:
       run: xcodegen generate
 
     - name: Run tests
+      env:
+        LABELS: >-
+          ${{ toJSON(
+          github.event.pull_request.labels.*.name
+          ) }}
       run: .github/scripts/run-tests.sh
+
+    # New screens' images (or all, with the
+    # label) go to the PR branch, and CI runs
+    # again on that commit.
+    - name: Save snapshot images
+      if: >-
+        always()
+        && github.event_name == 'pull_request'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        BRANCH: ${{ github.head_ref }}
+        PR: ${{ github.event.number }}
+      run: .github/scripts/save-snapshots.sh
+
+    # On a mismatch: the reference, the new
+    # image and their difference.
+    - name: Upload snapshot diffs
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: snapshot-diffs
+        path: build/snapshot-diffs
+        if-no-files-found: ignore
 
     - name: Coverage gate
       run: >-
