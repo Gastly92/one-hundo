@@ -12,12 +12,16 @@ final class DisplayTextTests: ChallengeTestCase {
     }
 
     func testCustomChallengesShowTheirOwnName() {
-        let plank = Challenge(name: "Plank", colorName: "teal", startingCount: 30)
+        let plank = Challenge(
+            name: "Plank", colorName: "teal", startingCount: 30
+        )
         XCTAssertEqual(plank.displayName, "Plank")
     }
 
     func testUnitNames() {
-        XCTAssertEqual(ChallengeUnit.allCases.map(\.name), ["reps", "seconds", "minutes"])
+        XCTAssertEqual(
+            ChallengeUnit.allCases.map(\.name), ["reps", "seconds", "minutes"]
+        )
     }
 
     func testBuiltInTestQuestions() {

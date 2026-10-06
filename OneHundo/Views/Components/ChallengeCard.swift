@@ -29,7 +29,8 @@ struct ChallengeCard: View {
                 Text(challenge.progressText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                // The text above already says this; a 4-point bar isn't a useful target.
+                // The text above already says this; a 4-point bar isn't a
+                // useful target.
                 ProgressView(value: challenge.progress)
                     .tint(color)
                     .accessibilityHidden(true)
@@ -37,7 +38,13 @@ struct ChallengeCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(color.opacity(0.3)))
+        .background(
+            Color(.secondarySystemBackground),
+            in: RoundedRectangle(cornerRadius: 16)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .strokeBorder(color.opacity(0.3))
+        )
     }
 }

@@ -19,7 +19,10 @@ final class AppLaunchTests: XCTestCase {
         XCTAssertFalse(launch.isUITesting)
         XCTAssertEqual(askedInMemory, false)
         let container = try launch.store.get()
-        XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<Challenge>()), 0)
+        XCTAssertEqual(
+            try container.mainContext.fetchCount(FetchDescriptor<Challenge>()),
+            0
+        )
     }
 
     func testUITestingUsesInMemoryStore() throws {
@@ -31,7 +34,10 @@ final class AppLaunchTests: XCTestCase {
         XCTAssertTrue(launch.isUITesting)
         XCTAssertEqual(askedInMemory, true)
         let container = try launch.store.get()
-        XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<Challenge>()), 0)
+        XCTAssertEqual(
+            try container.mainContext.fetchCount(FetchDescriptor<Challenge>()),
+            0
+        )
     }
 
     func testSampleDataIsSeededOnlyForUITests() throws {
@@ -40,15 +46,24 @@ final class AppLaunchTests: XCTestCase {
             makeContainer: inMemoryStore
         )
         let seededContext = try seeded.store.get().mainContext
-        XCTAssertEqual(try seededContext.fetchCount(FetchDescriptor<Challenge>()), 3)
+        XCTAssertEqual(
+            try seededContext.fetchCount(FetchDescriptor<Challenge>()), 3
+        )
 
         // -seedSampleData alone is ignored, so it can never touch real data.
-        let real = AppLaunch(arguments: ["-seedSampleData"], makeContainer: inMemoryStore)
-        XCTAssertEqual(try real.store.get().mainContext.fetchCount(FetchDescriptor<Challenge>()), 0)
+        let real = AppLaunch(
+            arguments: ["-seedSampleData"], makeContainer: inMemoryStore
+        )
+        let realContext = try real.store.get().mainContext
+        XCTAssertEqual(
+            try realContext.fetchCount(FetchDescriptor<Challenge>()), 0
+        )
     }
 
     func testStoreFailureIsReportedNotFatal() {
-        let launch = AppLaunch(arguments: ["-uiTesting", "-seedSampleData"]) { _ in
+        let launch = AppLaunch(
+            arguments: ["-uiTesting", "-seedSampleData"]
+        ) { _ in
             throw StoreUnavailable()
         }
         guard case .failure(let error) = launch.store else {
@@ -63,9 +78,12 @@ final class AppLaunchTests: XCTestCase {
             makeContainer: inMemoryStore
         )
         XCTAssertEqual(detail.screen, .challengeDetail)
-        // Screens that show challenges get the sample data; the rest start empty.
+        // Screens that show challenges get the sample data; the rest start
+        // empty.
         let detailContext = try detail.store.get().mainContext
-        XCTAssertEqual(try detailContext.fetchCount(FetchDescriptor<Challenge>()), 3)
+        XCTAssertEqual(
+            try detailContext.fetchCount(FetchDescriptor<Challenge>()), 3
+        )
 
         let welcome = AppLaunch(
             arguments: ["-uiTesting", "-showScreen", "welcome"],
@@ -73,7 +91,9 @@ final class AppLaunchTests: XCTestCase {
         )
         XCTAssertEqual(welcome.screen, .welcome)
         let welcomeContext = try welcome.store.get().mainContext
-        XCTAssertEqual(try welcomeContext.fetchCount(FetchDescriptor<Challenge>()), 0)
+        XCTAssertEqual(
+            try welcomeContext.fetchCount(FetchDescriptor<Challenge>()), 0
+        )
     }
 
     func testShowScreenNeedsUITestingAndAKnownScreen() {
@@ -85,7 +105,9 @@ final class AppLaunchTests: XCTestCase {
         ]
         for arguments in cases {
             XCTAssertNil(
-                AppLaunch(arguments: arguments, makeContainer: inMemoryStore).screen,
+                AppLaunch(
+                    arguments: arguments, makeContainer: inMemoryStore
+                ).screen,
                 "\(arguments)"
             )
         }

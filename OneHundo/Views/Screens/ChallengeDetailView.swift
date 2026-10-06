@@ -64,9 +64,11 @@ struct ChallengeDetailView: View {
                     attemptRow(attempt)
                 }
                 if !challenge.sortedAttempts.isEmpty {
-                    // A row rather than a section footer, which has low contrast and
-                    // doesn't scale with text size.
-                    Text("Tap an attempt to change it, or swipe left to delete.")
+                    // A row rather than a section footer, which has low
+                    // contrast and doesn't scale with text size.
+                    Text("""
+                        Tap an attempt to change it, or swipe left to delete.
+                        """)
                         .font(.footnote)
                         .listRowSeparator(.hidden)
                 }
@@ -99,12 +101,17 @@ struct ChallengeDetailView: View {
                     .stroke(color.opacity(0.2), lineWidth: 14)
                 Circle()
                     .trim(from: 0, to: challenge.progress)
-                    .stroke(color, style: StrokeStyle(lineWidth: 14, lineCap: .round))
+                    .stroke(
+                        color,
+                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                    )
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut, value: challenge.progress)
                 VStack(spacing: 2) {
                     Text("\(challenge.currentCount)")
-                        .font(.system(size: countSize, weight: .bold, design: .rounded))
+                        .font(.system(
+                            size: countSize, weight: .bold, design: .rounded
+                        ))
                         .monospacedDigit()
                     Text("of \(challenge.goal)")
                         .font(.subheadline)
@@ -123,13 +130,19 @@ struct ChallengeDetailView: View {
                     id: "personalBestValue"
                 )
                 Divider().frame(height: 32)
-                stat("Days logged", value: "\(challenge.daysLogged())", id: "daysLoggedValue")
+                stat(
+                    "Days logged",
+                    value: "\(challenge.daysLogged())",
+                    id: "daysLoggedValue"
+                )
             }
         }
         .frame(maxWidth: .infinity)
     }
 
-    private func stat(_ title: LocalizedStringKey, value: String, id: String) -> some View {
+    private func stat(
+        _ title: LocalizedStringKey, value: String, id: String
+    ) -> some View {
         VStack(spacing: 2) {
             Text(value)
                 .font(.title3.bold())
@@ -149,7 +162,8 @@ struct ChallengeDetailView: View {
             HStack {
                 Text(
                     attempt.date,
-                    format: .dateTime.weekday(.abbreviated).month(.abbreviated).day()
+                    format: .dateTime
+                        .weekday(.abbreviated).month(.abbreviated).day()
                 )
                 .accessibilityIdentifier("attemptDate")
                 Spacer()

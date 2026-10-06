@@ -9,7 +9,8 @@ final class ChallengeScreenTests: XCTestCase {
     func testLogAttemptThenReplaceSameDay() {
         let app = XCUIApplication.launchForTesting(seeded: true)
 
-        // Push-ups started 3 days ago at 8, logged 10 yesterday: "Try 11 today".
+        // Push-ups started 3 days ago at 8, logged 10 yesterday:
+        // "Try 11 today".
         let pushUps = app.staticTexts["Push-ups"]
         XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
         pushUps.tap()
@@ -32,7 +33,9 @@ final class ChallengeScreenTests: XCTestCase {
         XCTAssertEqual(field.value as? String, "13")
         app.buttons["logSaveButton"].tap()
 
-        XCTAssertTrue(app.staticTexts["logOutcomeTitle"].waitForExistence(timeout: 5))
+        XCTAssertTrue(
+            app.staticTexts["logOutcomeTitle"].waitForExistence(timeout: 5)
+        )
         XCTAssertEqual(app.staticTexts["logOutcomeTitle"].label, "Nice work!")
         XCTAssertTrue(app.staticTexts["newBestBadge"].exists)
         app.buttons["logDoneButton"].tap()
@@ -74,9 +77,13 @@ final class ChallengeScreenTests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()
 
-        XCTAssertTrue(app.navigationBars["Edit attempt"].waitForExistence(timeout: 5))
+        XCTAssertTrue(
+            app.navigationBars["Edit attempt"].waitForExistence(timeout: 5)
+        )
         XCTAssertEqual(app.textFields["logCount.field"].value as? String, "10")
         app.buttons["Cancel"].tap()
-        XCTAssertTrue(app.buttons["logAttemptButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(
+            app.buttons["logAttemptButton"].waitForExistence(timeout: 5)
+        )
     }
 }

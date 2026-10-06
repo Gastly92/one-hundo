@@ -7,8 +7,8 @@ struct BuiltInChallenge: Identifiable, Hashable {
     let name: String
     /// One-line description for the Add challenge list.
     let summary: String
-    /// The "Test yourself" question. A whole sentence per challenge, since other
-    /// languages can't build it from the name.
+    /// The "Test yourself" question. A whole sentence per challenge, since
+    /// other languages can't build it from the name.
     let testQuestion: String
     let colorName: String
     let tips: [String]
@@ -23,12 +23,20 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "pushups",
         name: String(localized: "Push-ups"),
         summary: String(localized: "The classic: chest, shoulders, and arms."),
-        testQuestion: String(localized: "How many push-ups can you do in one go?"),
+        testQuestion: String(
+            localized: "How many push-ups can you do in one go?"
+        ),
         colorName: "orange",
         tips: [
             String(localized: "Hands just wider than your shoulders."),
-            String(localized: "Keep your body in a straight line from head to heels."),
-            String(localized: "Lower until your chest nearly touches the floor."),
+            String(
+                localized: """
+                    Keep your body in a straight line from head to heels.
+                    """
+            ),
+            String(
+                localized: "Lower until your chest nearly touches the floor."
+            ),
         ]
     )
 
@@ -36,11 +44,17 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "situps",
         name: String(localized: "Sit-ups"),
         summary: String(localized: "Core strength, one rep at a time."),
-        testQuestion: String(localized: "How many sit-ups can you do in one go?"),
+        testQuestion: String(
+            localized: "How many sit-ups can you do in one go?"
+        ),
         colorName: "blue",
         tips: [
             String(localized: "Bend your knees and keep your feet flat."),
-            String(localized: "Cross your arms over your chest; don't pull on your neck."),
+            String(
+                localized: """
+                    Cross your arms over your chest; don't pull on your neck.
+                    """
+            ),
             String(localized: "Come up with control, not momentum."),
         ]
     )
@@ -49,7 +63,9 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "pullups",
         name: String(localized: "Pull-ups"),
         summary: String(localized: "Back and arms. Even one is a great start."),
-        testQuestion: String(localized: "How many pull-ups can you do in one go?"),
+        testQuestion: String(
+            localized: "How many pull-ups can you do in one go?"
+        ),
         colorName: "green",
         tips: [
             String(localized: "Start from a full hang with straight arms."),

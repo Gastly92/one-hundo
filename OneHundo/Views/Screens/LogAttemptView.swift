@@ -1,8 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// Log a new attempt (today by default, or a past day), or edit an existing one.
-/// After saving, shows a small celebration or an encouraging message.
+/// Log a new attempt (today by default, or a past day), or edit an existing
+/// one. After saving, shows a small celebration or an encouraging message.
 struct LogAttemptView: View {
     let challenge: Challenge
     /// The attempt being edited, or nil to log a new one.
@@ -27,7 +27,8 @@ struct LogAttemptView: View {
 
     private var color: Color { Color(challengeColorName: challenge.colorName) }
 
-    /// Set when a new log would replace that day's attempt (one attempt per day).
+    /// Set when a new log would replace that day's attempt (one attempt per
+    /// day).
     private var replacementNote: String? {
         attempt == nil ? challenge.replacementNote(on: date) : nil
     }
@@ -41,7 +42,9 @@ struct LogAttemptView: View {
                     form
                 }
             }
-            .navigationTitle(attempt == nil ? Text("Log attempt") : Text("Edit attempt"))
+            .navigationTitle(
+                attempt == nil ? Text("Log attempt") : Text("Edit attempt")
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if outcome == nil {
@@ -63,7 +66,9 @@ struct LogAttemptView: View {
             VStack(alignment: .leading, spacing: 24) {
                 Text("How many did you do?")
                     .font(.title2.bold())
-                NumberEntry(value: $count, range: 0...9999, identifier: "logCount")
+                NumberEntry(
+                    value: $count, range: 0...9999, identifier: "logCount"
+                )
                 if challenge.unit != .reps {
                     Text(challenge.unit.name)
                         .foregroundStyle(.secondary)
@@ -79,7 +84,10 @@ struct LogAttemptView: View {
                     )
                 } else {
                     LabeledContent("Date") {
-                        Text(date, format: .dateTime.weekday(.wide).month().day())
+                        Text(
+                            date,
+                            format: .dateTime.weekday(.wide).month().day()
+                        )
                             .accessibilityIdentifier("attemptDate")
                     }
                 }
@@ -140,7 +148,9 @@ struct LogAttemptView: View {
     }
 
     private func save() {
-        let result = challenge.recordAttempt(count: count, on: attempt?.date ?? date)
+        let result = challenge.recordAttempt(
+            count: count, on: attempt?.date ?? date
+        )
         try? modelContext.save()
         withAnimation { outcome = result }
     }

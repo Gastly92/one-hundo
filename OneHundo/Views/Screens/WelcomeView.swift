@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The first screen, before any challenge exists: what the app does in three steps,
-/// and one button to start.
+/// The first screen, before any challenge exists: what the app does in three
+/// steps, and one button to start.
 struct WelcomeView: View {
     let onStart: () -> Void
 
@@ -12,7 +12,10 @@ struct WelcomeView: View {
                     Text("Get to 100 in one go.")
                         .font(.title.bold())
                         .accessibilityIdentifier("welcomeTitle")
-                    Text("100 push-ups, sit-ups, or anything else, one small step a day.")
+                    Text("""
+                        100 push-ups, sit-ups, or anything else, \
+                        one small step a day.
+                        """)
                         .font(.title3)
                         .foregroundStyle(.secondary)
                 }
@@ -28,7 +31,10 @@ struct WelcomeView: View {
                         number: 2,
                         icon: "arrow.up.right",
                         title: "Do one more each day",
-                        detail: "Tomorrow, try 6. The app keeps track of your target."
+                        detail: """
+                            Tomorrow, try 6. \
+                            The app keeps track of your target.
+                            """
                     )
                     step(
                         number: 3,

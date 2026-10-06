@@ -149,6 +149,12 @@ e.g. 0.4.1); see CLAUDE.md.
 - Step 5.1's snapshot tests can loop over the same list.
 - No version bump (nothing visible changes).
 
+#### 4.6 80-character lines ✅
+- SwiftLint's line limit drops from 100 to 80, so diffs wrap less on the phone (a
+  portrait diff fits only about 45 characters, so long lines still wrap there). All
+  Swift code and comments are rewrapped; no text changes.
+- No version bump (nothing visible changes).
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
 - Settings screen for any challenge (goal, increase, reminder; name, unit, and
@@ -209,9 +215,6 @@ snapshot tests start paying off.
 - Bump `MARKETING_VERSION` to 1.0.0 when you're happy with it: the first App Store release.
 
 ## Later
-
-- **80-character lines**: try lowering SwiftLint's limit from 100 for easier
-  reading in portrait on the phone.
 
 Not scheduled; each would be its own PR series after 1.0.
 
