@@ -32,21 +32,28 @@ final class SnapshotTests: XCTestCase {
   /// Each look's name and traits. 2x scale
   /// keeps the images small but readable.
   private static let looks = [
-    ("light", UITraitCollection {
-      $0.userInterfaceStyle = .light
-      $0.displayScale = 2
-    }),
-    ("dark", UITraitCollection {
-      $0.userInterfaceStyle = .dark
-      $0.displayScale = 2
-    }),
-    ("large", UITraitCollection {
-      $0.userInterfaceStyle = .light
-      $0.displayScale = 2
-      $0.preferredContentSizeCategory =
-        .accessibilityExtraLarge
-    }),
+    ("light", traits(.light)),
+    ("dark", traits(.dark)),
+    ("large", traits(.light, large: true)),
   ]
+
+  /// sRGB color: in the app's window images
+  /// are otherwise wide color (Display P3),
+  /// which compares unreliably once saved.
+  private static func traits(
+    _ style: UIUserInterfaceStyle,
+    large: Bool = false
+  ) -> UITraitCollection {
+    UITraitCollection {
+      $0.userInterfaceStyle = style
+      $0.displayScale = 2
+      $0.displayGamut = .SRGB
+      if large {
+        $0.preferredContentSizeCategory =
+          .accessibilityExtraLarge
+      }
+    }
+  }
 
   func testEveryScreen() throws {
     for screen in ScreenID.allCases {
