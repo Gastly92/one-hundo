@@ -48,6 +48,19 @@ jobs:
           swiftlint version
           swiftlint lint --strict --reporter github-actions-logging
 
+  # Every screen must be in the screen list (ScreenID / ScreenHost), so the
+  # accessibility audit and localization check cover it.
+  screens:
+    name: Screen list
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check every screen is listed
+        run: .github/scripts/check-screens.sh
+
   build:
     name: Build & test
     needs: changes
@@ -162,17 +175,18 @@ jobs:
   # was skipped (docs-only PR) or succeeded.
   gate:
     name: CI Gate
-    needs: [changes, lint, build, release]
+    needs: [changes, lint, screens, build, release]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check results
         run: |
           echo "changes: ${{ needs.changes.result }}, lint: ${{ needs.lint.result }}," \
-            "build: ${{ needs.build.result }}, release: ${{ needs.release.result }}"
+            "screens: ${{ needs.screens.result }}, build: ${{ needs.build.result }}," \
+            "release: ${{ needs.release.result }}"
           [ "${{ needs.changes.result }}" = "success" ] || exit 1
-          for result in "${{ needs.lint.result }}" "${{ needs.build.result }}" \
-            "${{ needs.release.result }}"; do
+          for result in "${{ needs.lint.result }}" "${{ needs.screens.result }}" \
+            "${{ needs.build.result }}" "${{ needs.release.result }}"; do
             case "$result" in
               success|skipped) ;;
               *) exit 1 ;;

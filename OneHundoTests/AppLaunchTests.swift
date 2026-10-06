@@ -57,6 +57,40 @@ final class AppLaunchTests: XCTestCase {
         XCTAssertTrue(error is StoreUnavailable)
     }
 
+    func testShowScreenOpensOneScreenWithItsData() throws {
+        let detail = AppLaunch(
+            arguments: ["-uiTesting", "-showScreen", "challengeDetail"],
+            makeContainer: inMemoryStore
+        )
+        XCTAssertEqual(detail.screen, .challengeDetail)
+        // Screens that show challenges get the sample data; the rest start empty.
+        let detailContext = try detail.store.get().mainContext
+        XCTAssertEqual(try detailContext.fetchCount(FetchDescriptor<Challenge>()), 3)
+
+        let welcome = AppLaunch(
+            arguments: ["-uiTesting", "-showScreen", "welcome"],
+            makeContainer: inMemoryStore
+        )
+        XCTAssertEqual(welcome.screen, .welcome)
+        let welcomeContext = try welcome.store.get().mainContext
+        XCTAssertEqual(try welcomeContext.fetchCount(FetchDescriptor<Challenge>()), 0)
+    }
+
+    func testShowScreenNeedsUITestingAndAKnownScreen() {
+        let cases: [[String]] = [
+            ["-showScreen", "welcome"],  // Never outside UI tests.
+            ["-uiTesting", "-showScreen", "noSuchScreen"],
+            ["-uiTesting", "-showScreen"],  // No screen name after the flag.
+            ["-uiTesting"],
+        ]
+        for arguments in cases {
+            XCTAssertNil(
+                AppLaunch(arguments: arguments, makeContainer: inMemoryStore).screen,
+                "\(arguments)"
+            )
+        }
+    }
+
     func testDefaultStoreOpens() throws {
         XCTAssertNoThrow(try AppStore.makeContainer(inMemory: true))
     }

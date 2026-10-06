@@ -34,11 +34,7 @@ struct AddChallengeView: View {
                 Section {
                     // The custom challenge form lands in plan step 5.
                     NavigationLink {
-                        ContentUnavailableView(
-                            "Custom challenges",
-                            systemImage: "square.and.pencil",
-                            description: Text("Coming soon: track anything, like planks.")
-                        )
+                        CustomChallengeComingSoonView()
                     } label: {
                         ChallengeChoiceRow(
                             title: String(localized: "Custom challenge"),

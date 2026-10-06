@@ -53,6 +53,8 @@ targets:
     platform: iOS
     sources:
       - OneHundoUITests
+      # The app's list of screens, so UI tests loop over every one.
+      - path: OneHundo/Support/ScreenID.swift
     dependencies:
       - target: OneHundo
     settings:

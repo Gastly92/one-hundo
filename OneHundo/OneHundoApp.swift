@@ -13,8 +13,14 @@ struct OneHundoApp: App {
         WindowGroup {
             switch launch.store {
             case .success(let container):
-                RootView()
-                    .modelContainer(container)
+                Group {
+                    if let screen = launch.screen {
+                        ScreenHost(screen: screen)
+                    } else {
+                        RootView()
+                    }
+                }
+                .modelContainer(container)
             case .failure(let error):
                 StoreErrorView(details: error.localizedDescription)
             }

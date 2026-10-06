@@ -15,7 +15,9 @@ struct StoreErrorView: View {
                 If this keeps happening, free up some storage on your iPhone.
                 """)
         } actions: {
+            // The system's own error text (already in the user's language).
             Text(details)
+                .accessibilityIdentifier("errorDetails")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

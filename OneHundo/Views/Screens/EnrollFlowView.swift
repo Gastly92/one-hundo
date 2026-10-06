@@ -9,11 +9,18 @@ struct EnrollFlowView: View {
 
     @Environment(\.modelContext) private var modelContext
 
-    private enum Step: Int, CaseIterable {
+    enum Step: Int, CaseIterable {
         case intro, test, goal, reminder
     }
 
-    @State private var step: Step = .intro
+    @State private var step: Step
+
+    /// `startAt` lets UI tests open a later step directly (see `ScreenHost`).
+    init(builtIn: BuiltInChallenge, startAt step: Step = .intro, onStarted: @escaping () -> Void) {
+        self.builtIn = builtIn
+        self.onStarted = onStarted
+        _step = State(initialValue: step)
+    }
     @State private var startingCount = 1
     @State private var goal = 100
     @State private var dailyIncrease = 1

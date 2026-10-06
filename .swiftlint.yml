@@ -25,3 +25,20 @@ identifier_name:
 line_length:
   warning: 100
   ignores_urls: true
+
+# A switch over an enum (e.g. ScreenHost) isn't complex, however many cases it has.
+cyclomatic_complexity:
+  ignores_case_statements: true
+
+custom_rules:
+  # Sentences shown to users must be translatable. In views, literals passed to Text
+  # are; in logic they need String(localized:). Catches e.g. `return "Nice work!"`.
+  untranslated_logic_text:
+    name: "Untranslated text"
+    message: "Wrap user-facing text in String(localized:) so it can be translated."
+    included: "OneHundo/(Models|Support)/.*\\.swift"
+    regex: '(?<!localized)(\breturn|\?|:)\s+"[A-Z][^"\n]* [^"\n]*"'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    severity: error

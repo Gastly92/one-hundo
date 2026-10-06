@@ -8,6 +8,13 @@ struct AppLaunch {
     let isUITesting: Bool
     /// The opened store, or the error that stopped it from opening.
     let store: Result<ModelContainer, any Error>
+    /// A single screen to show instead of the app (`-showScreen <id>`, UI tests only).
+    let screen: ScreenID?
+
+    /// Screens shown with the sample challenges; the rest show an empty app.
+    static let seededScreens: Set<ScreenID> = [
+        .challengeList, .challengeDetail, .logAttempt, .editAttempt, .logResult,
+    ]
 
     typealias MakeContainer = (_ inMemory: Bool) throws -> ModelContainer
 
@@ -16,9 +23,21 @@ struct AppLaunch {
         isUITesting = arguments.contains("-uiTesting")
         let inMemory = isUITesting
         store = Result { try makeContainer(inMemory) }
-        let wantsSampleData = isUITesting && arguments.contains("-seedSampleData")
+        let screen = isUITesting ? Self.screen(in: arguments) : nil
+        self.screen = screen
+        let screenNeedsData = screen.map { Self.seededScreens.contains($0) } ?? false
+        let wantsSampleData = isUITesting
+            && (arguments.contains("-seedSampleData") || screenNeedsData)
         if wantsSampleData, case .success(let container) = store {
             SampleData.insert(into: container.mainContext)
         }
+    }
+
+    /// The screen named after `-showScreen`, if any and if it exists.
+    private static func screen(in arguments: [String]) -> ScreenID? {
+        guard let flag = arguments.firstIndex(of: "-showScreen"),
+              flag + 1 < arguments.count
+        else { return nil }
+        return ScreenID(rawValue: arguments[flag + 1])
     }
 }

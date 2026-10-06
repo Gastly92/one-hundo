@@ -15,4 +15,10 @@ extension XCUIApplication {
         app.launch()
         return app
     }
+
+    /// Launches straight into one screen (see `ScreenID` and the app's `ScreenHost`).
+    @MainActor
+    static func launchForTesting(screen: ScreenID, arguments: [String] = []) -> XCUIApplication {
+        launchForTesting(arguments: ["-showScreen", screen.rawValue] + arguments)
+    }
 }

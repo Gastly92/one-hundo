@@ -21,7 +21,13 @@ Keep both updated as features land.
   keep its name stable, and add new code paths to the `changes` filter.
 - Tests: `OneHundoTests/` (unit tests for logic in `OneHundo/Models/`) and `OneHundoUITests/`
   (XCTest UI tests that launch the app and check the screen). Both run in the scheme's test action.
-- `AccessibilityTests` runs Xcode's accessibility audit on each main screen. Add new screens to it.
+- Screens: every full screen is a view in `OneHundo/Views/Screens/` (one per file; pieces
+  of screens go in `Views/Components/`). Each screen and screen state has a case in
+  `ScreenID` (`Support/`, also compiled into the UI tests) and is shown by `ScreenHost`,
+  which UI tests open directly with `-showScreen <id>`. CI's `Screen list` job fails if a
+  screen in `Views/Screens/` isn't in `ScreenHost`. Screens that need challenges are
+  listed in `AppLaunch.seededScreens`.
+- `AccessibilityTests` runs Xcode's accessibility audit on every `ScreenID`.
   Use system colors and text styles (or `@ScaledMetric` for big custom sizes) so text scales
   and both light and dark mode work.
 - All user-facing text must be translatable (English only for now):
@@ -29,11 +35,11 @@ Keep both updated as features land.
     reach `Text` are `LocalizedStringKey`, not `String`. Never join text with `+`
     (one literal, or a `"""` literal with `\` line breaks).
   - Text built in `Models/` or `Support/` uses `String(localized:)`, as whole
-    sentences (no gluing words together).
+    sentences (no gluing words together). A SwiftLint rule flags plain sentences there.
   - Words that change with a number ("1 day" / "2 days") get plural forms in
     `OneHundo/Localizable.xcstrings`; edit its JSON by hand (no Xcode here).
-  - `LocalizationTests` runs screens in a pseudo-language that brackets translatable
-    text and fails on unbracketed text. Add new screens to it.
+  - `LocalizationTests` runs every `ScreenID` in a pseudo-language that brackets
+    translatable text, and fails on unbracketed text.
 - SwiftLint runs in CI with `--strict` (warnings fail); lines max 100 chars (diffs are read on
   a phone). Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.
