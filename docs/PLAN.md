@@ -325,11 +325,16 @@ go in first.
 - Then add a coverage gate for views, set from
   what the snapshots reach.
 
-#### 4.12 Dark mode and large text audit
+#### 4.12 Dark mode and large text audit ✅
 - Run the accessibility audit on every screen
-  in dark mode and at the largest text size
-  too (about 2–3 more minutes of CI).
-- No version bump (nothing visible changes).
+  in dark mode (contrast only) and at the
+  largest text size (all checks but Dynamic
+  Type, which can't grow further).
+- Fix: at accessibility text sizes, a
+  challenge card's checkmark sits above
+  "Done: 20" instead of squeezing it into
+  breaking mid-word (seen in the snapshots).
+- Version 0.4.6 (the card fix shows).
 
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
