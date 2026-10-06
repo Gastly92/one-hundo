@@ -75,8 +75,8 @@ final class RecordAttemptTests: ChallengeTestCase {
     func testLogButtonTitle() {
         let challenge = makePushUps()
         challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        // The starting test alone isn't "logged today".
-        XCTAssertEqual(challenge.logButtonTitle(on: day(1), calendar: calendar), "Log attempt")
+        // The starting test counts as that day's attempt.
+        XCTAssertEqual(challenge.logButtonTitle(on: day(1), calendar: calendar), "Edit today")
         challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
         XCTAssertEqual(challenge.logButtonTitle(on: day(2), calendar: calendar), "Edit today")
         XCTAssertEqual(challenge.logButtonTitle(on: day(3), calendar: calendar), "Log attempt")

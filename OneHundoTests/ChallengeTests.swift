@@ -84,13 +84,13 @@ final class ChallengeTests: ChallengeTestCase {
         XCTAssertEqual(challenge.progressText, "6 / 100")
     }
 
-    func testStartingTestAloneIsNotDoneOnStartDay() {
+    func testStartingTestCountsAsDoneOnStartDay() {
         let challenge = makePushUps()
         challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        XCTAssertNil(challenge.loggedAttempt(on: day(1), calendar: calendar))
-        XCTAssertEqual(challenge.todayText(on: day(1), calendar: calendar), "Try 6 today")
+        XCTAssertEqual(challenge.todayText(on: day(1), calendar: calendar), "Done: 5")
+        XCTAssertEqual(challenge.todayText(on: day(2), calendar: calendar), "Try 6 today")
 
-        // Logging again on the start day replaces the test and counts as done.
+        // Logging again on the start day replaces the test.
         challenge.logAttempt(count: 6, on: day(1, hour: 18), calendar: calendar)
         XCTAssertEqual(challenge.todayText(on: day(1), calendar: calendar), "Done: 6")
         XCTAssertEqual(challenge.target(on: day(2), calendar: calendar), 7)

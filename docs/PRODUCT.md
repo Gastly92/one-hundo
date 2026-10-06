@@ -57,7 +57,7 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 
 - The name, e.g. "Push-ups". No icons: challenges are told apart by name and color.
 - Today's target, large: "Try 6 today", or "Done: 6" with a checkmark once
-  logged today.
+  logged today. On the day you start, your test counts: "Done: 5" until tomorrow.
 - Progress toward the goal: "6 / 100" with a thin progress bar.
 - Tapping the card opens the challenge screen.
 - Long-pressing the card opens a menu: **Log attempt** (or **Edit today**) and
