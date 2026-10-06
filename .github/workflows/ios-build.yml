@@ -52,6 +52,34 @@ jobs:
     - name: Check line length
       run: .github/scripts/check-lines.py
 
+  # Static checks for the CI workflows
+  # (actionlint) and shell scripts
+  # (ShellCheck), so a broken TestFlight
+  # workflow shows up before it's run.
+  # Pinned; same versions run locally.
+  scripts:
+    name: Workflows & scripts
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install checkers
+      run: |
+        venv="$RUNNER_TEMP/venv"
+        python3 -m venv "$venv"
+        "$venv/bin/pip" install -q \
+          shellcheck-py==0.11.0.1 \
+          actionlint-py==1.7.12.25
+        echo "$venv/bin" >> "$GITHUB_PATH"
+
+    - name: ShellCheck
+      run: shellcheck .github/scripts/*.sh
+
+    # Also runs ShellCheck on each `run:`
+    # block.
+    - name: actionlint
+      run: actionlint
+
   lint:
     name: SwiftLint
     needs: changes
@@ -164,6 +192,7 @@ jobs:
     needs:
     - changes
     - lines
+    - scripts
     - lint
     - screens
     - build
@@ -175,17 +204,19 @@ jobs:
       env:
         CHANGES: ${{ needs.changes.result }}
         LINES: ${{ needs.lines.result }}
+        SCRIPTS: ${{ needs.scripts.result }}
         LINT: ${{ needs.lint.result }}
         SCREENS: ${{ needs.screens.result }}
         BUILD: ${{ needs.build.result }}
         RELEASE: ${{ needs.release.result }}
       run: |
-        for job in CHANGES LINES LINT \
-          SCREENS BUILD RELEASE; do
+        for job in CHANGES LINES SCRIPTS \
+          LINT SCREENS BUILD RELEASE; do
           echo "$job: ${!job}"
         done
         [ "$CHANGES" = success ] || exit 1
         [ "$LINES" = success ] || exit 1
+        [ "$SCRIPTS" = success ] || exit 1
         for result in "$LINT" "$SCREENS" \
           "$BUILD" "$RELEASE"; do
           case "$result" in

@@ -46,11 +46,11 @@ struct AppLaunch {
     let seedFlag = args.contains(
       "-seedSampleData"
     )
-    if isUITesting, seedFlag || needsData,
-       case .success(let container) = store {
-      let context = container.mainContext
-      SampleData.insert(into: context)
-    }
+    guard isUITesting, seedFlag || needsData,
+      case .success(let container) = store
+    else { return }
+    let context = container.mainContext
+    SampleData.insert(into: context)
   }
 
   /// The screen named after `-showScreen`, if
@@ -60,7 +60,7 @@ struct AppLaunch {
   ) -> ScreenID? {
     let flag = "-showScreen"
     guard let pos = args.firstIndex(of: flag),
-          pos + 1 < args.count
+      pos + 1 < args.count
     else { return nil }
     return ScreenID(rawValue: args[pos + 1])
   }

@@ -121,6 +121,16 @@ features land.
   stops the app and fails the test. UI tests
   launch the app with `App.start(seeded:)`,
   which sets this up.
+- CI's `Workflows & scripts` job runs
+  actionlint on `.github/workflows/` and
+  ShellCheck on `.github/scripts/`. Both
+  install here with
+  `pip install shellcheck-py actionlint-py`,
+  so run them before pushing workflow or
+  script changes.
+- Wrapped Swift lines go in one level (2
+  spaces), never aligned by hand: SwiftLint's
+  `indentation_width` rule checks it.
 - Periphery (CI step after tests) fails on
   unused code. Delete it rather than ignore
   it; for a real false positive, add a `//
