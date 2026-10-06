@@ -84,9 +84,11 @@ jobs:
             -derivedDataPath build/test \
             -resultBundlePath build/test.xcresult \
             -enableCodeCoverage YES \
+            -enableThreadSanitizer YES \
             CODE_SIGNING_ALLOWED=NO \
             > build/test.log 2>&1 || status=$?
-          grep -E '(Test Case .*(passed|failed)|error:|\*\* TEST)' build/test.log || true
+          grep -E '(Test Case .*(passed|failed)|error:|ThreadSanitizer|\*\* TEST)' build/test.log \
+            || true
           if [ "$status" -ne 0 ]; then
             tail -n 60 build/test.log
           fi
@@ -94,6 +96,21 @@ jobs:
 
       - name: Coverage gate
         run: .github/scripts/coverage.sh build/test.xcresult
+
+      # Unused code (functions, properties, types). Reuses the test build's index.
+      - name: Periphery
+        run: |
+          brew install periphery
+          periphery version
+          periphery scan \
+            --project OneHundo.xcodeproj \
+            --schemes OneHundo \
+            --skip-build \
+            --index-store-path build/test/Index.noindex/DataStore \
+            --retain-swift-ui-previews \
+            --relative-results \
+            --format github-actions \
+            --strict
 
       - name: Build simulator app
         run: |

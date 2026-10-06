@@ -7,10 +7,7 @@ final class ChallengeListTests: XCTestCase {
 
     @MainActor
     private func launch(seeded: Bool = false) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"] + (seeded ? ["-seedSampleData"] : [])
-        app.launch()
-        return app
+        XCUIApplication.launchForTesting(seeded: seeded)
     }
 
     @MainActor
