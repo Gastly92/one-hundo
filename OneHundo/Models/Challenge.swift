@@ -13,10 +13,6 @@ final class Challenge {
     var name: String = ""
     /// Raw value of `ChallengeUnit`; use `unit` instead.
     var unitRaw: String = "reps"
-    // periphery:ignore
-    /// No longer shown (challenges are told apart by name and color). Kept so stored
-    /// data still matches `DataSchemaV1`; remove it in a future schema version.
-    var icon: String = "figure.strengthtraining.traditional"
     /// Name of a color in the app's palette.
     var colorName: String = "orange"
     var startingCount: Int = 0

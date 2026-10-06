@@ -108,8 +108,8 @@ e.g. 0.4.1); see CLAUDE.md.
   which still bounced a little when switching tabs. The + becomes an "Add challenge"
   tile at the end of the grid, so the title bar stays plain.
 - 0.4.4: no challenge icons. Apple has no push-up, sit-up, or pull-up symbol, so
-  challenges are told apart by name and color. `Challenge.icon` stays in the stored
-  data (unused) so no migration is needed; drop it in a later schema version.
+  challenges are told apart by name and color. `Challenge.icon` is removed from the
+  stored data: the first schema migration (V1 → V2), tested with a 0.4-style store.
 
 #### 4.2 Safety tooling before bigger changes ✅
 - Stored data versioning (`DataSchemaV1` and a migration plan), with a test that data

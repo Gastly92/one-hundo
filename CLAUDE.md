@@ -37,9 +37,10 @@ Keep both updated as features land.
   Homebrew marks it deprecated (archived upstream, disabled 2027-08); if it stops
   installing or supporting the current Xcode, remove the CI step.
 - Stored data is versioned (`OneHundo/Models/DataSchema.swift`). Before changing a
-  `@Model` (adding, renaming, or retyping a stored property), follow the steps in that
-  file: freeze the old models in `DataSchemaV1`, add the next version and a migration
-  stage, and test that old data still opens. Users' data must never be lost.
+  `@Model` (adding, removing, renaming, or retyping a stored property), follow the steps
+  in that file: freeze the current models in a new `DataSchemaVn`, add the next version
+  and a migration stage, and test that old data still opens. Users' data must never be
+  lost.
 - `OneHundo/PrivacyInfo.xcprivacy` is the App Store privacy manifest. Update it when
   adding tracking, collecting data, or using APIs Apple requires a reason for
   (e.g. `UserDefaults`/`@AppStorage`: reason `CA92.1`).
