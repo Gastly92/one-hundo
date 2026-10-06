@@ -129,6 +129,10 @@ features land.
   in `OneHundoTests/__Snapshots__/`. CI
   records missing ones and commits them to
   the PR branch (pull before pushing again).
+  A bot push needs approval to merge, so
+  look at the images, then push the next
+  real change (or the owner approves).
+  Deleting images re-records them too.
   After an intended visual change, add the
   `record-snapshots` label to the PR to
   record all of them again; a failed
