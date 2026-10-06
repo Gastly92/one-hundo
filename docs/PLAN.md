@@ -35,7 +35,7 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
   minutes), color, starting count, goal, daily increase, reminder on/off
   and time, created date, completed date (optional), attempts.
 - `Attempt`: date (one per challenge per day), count.
-- `BuiltInChallenge` (static data in code, not stored): id, name, description,
+- `BuiltIn` (static data in code, not stored): id, name, description,
   form tips, image names.
 
 Today's target = the latest attempt *before today* (or the starting count if there
@@ -161,6 +161,15 @@ e.g. 0.4.1); see CLAUDE.md.
   helpers where nesting was deep (screen sections, `DoneMark`, `wrapsText()`), and
   `"""` literals for long text. Tests use short helpers (`pushUps.log(5, day: 1)`,
   `element.appears()`).
+- No version bump (nothing visible changes).
+
+#### 4.8 46-character lines ✅
+- SwiftLint's line limit drops to 46, so each diff line fits a phone in portrait.
+  Code is indented with 2 spaces.
+- Shorter names: `BuiltIn` (was `BuiltInChallenge`), `CountUnit` (was
+  `ChallengeUnit`); helpers `LeadingStack`, `.testID`, `.fullWidth`; UI tests use
+  `App.start` and `app.text(_:)`/`button(_:)`. A few test IDs got shorter (`addTile`,
+  `enrollNext`, `testCount.plus`).
 - No version bump (nothing visible changes).
 
 ### 5. Custom challenges and challenge settings

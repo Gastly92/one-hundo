@@ -22,11 +22,12 @@ identifier_name:
   excluded:
     - id
 
-# Diffs get read in the GitHub iPhone app; shorter lines
-# wrap less there. Long lines also point at names that
-# could be shorter.
+# Diffs get read in the GitHub iPhone app; 46
+# fits a portrait line without wrapping. Long
+# lines also point at names that could be
+# shorter.
 line_length:
-  warning: 60
+  warning: 46
   ignores_urls: true
 
 # A switch over an enum (e.g. ScreenHost) isn't complex, however many cases it

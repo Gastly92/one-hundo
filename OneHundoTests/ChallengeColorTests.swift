@@ -3,15 +3,15 @@ import XCTest
 @testable import OneHundo
 
 final class ChallengeColorTests: XCTestCase {
-    func testKnownNamesUsePalette() {
-        for entry in Color.palette {
-            XCTAssertEqual(
-                Color(paletteName: entry.name), entry.color
-            )
-        }
+  func testKnownNamesUsePalette() {
+    for (name, color) in Color.palette {
+      let found = Color(paletteName: name)
+      XCTAssertEqual(found, color)
     }
+  }
 
-    func testUnknownNameFallsBackToOrange() {
-        XCTAssertEqual(Color(paletteName: "plaid"), .orange)
-    }
+  func testUnknownNameIsOrange() {
+    let color = Color(paletteName: "plaid")
+    XCTAssertEqual(color, .orange)
+  }
 }
