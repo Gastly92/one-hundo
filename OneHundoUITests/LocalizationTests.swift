@@ -8,19 +8,6 @@ final class LocalizationTests: XCTestCase {
         continueAfterFailure = true
     }
 
-    @MainActor
-    private func launch(seeded: Bool) -> XCUIApplication {
-        XCUIApplication.launchForTesting(
-            seeded: seeded,
-            arguments: ["-NSSurroundLocalizedStrings", "YES"]
-        )
-    }
-
-    @MainActor
-    private func labelContaining(_ text: String, in app: XCUIApplication) -> XCUIElement {
-        app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
-    }
-
     /// Fails for each visible text or button label that has letters but no brackets.
     @MainActor
     private func assertTranslatable(
@@ -41,8 +28,7 @@ final class LocalizationTests: XCTestCase {
             let label = element.label
             guard label.rangeOfCharacter(from: .letters) != nil else { continue }
             if label.contains("[#") { bracketed += 1; continue }
-            // Dates are formatted by the system for the user's language.
-            if Self.dateIdentifiers.contains(element.identifier) { continue }
+            if Self.systemTextIdentifiers.contains(element.identifier) { continue }
             if systemFrames.contains(element.frame) { continue }
             XCTFail("[\(screen)] Not translatable: '\(label)' "
                 + "(id '\(element.identifier)')", file: file, line: line)
@@ -52,51 +38,25 @@ final class LocalizationTests: XCTestCase {
                              file: file, line: line)
     }
 
-    private static let dateIdentifiers: Set<String> = ["attemptRow", "attemptDate"]
+    /// System-formatted text: dates, and the system's own error description.
+    private static let systemTextIdentifiers: Set<String> = [
+        "attemptRow", "attemptDate", "errorDetails",
+    ]
 
+    /// Every screen in the app (`ScreenID`), each opened directly with sample data.
     @MainActor
-    func testWelcomeAndEnrollFlow() {
-        let app = launch(seeded: false)
-        let start = app.buttons["startFirstChallengeButton"]
-        XCTAssertTrue(start.waitForExistence(timeout: 10))
-        assertTranslatable(app, screen: "Welcome")
-
-        start.tap()
-        let pushUps = app.buttons["builtIn.pushups"]
-        XCTAssertTrue(pushUps.waitForExistence(timeout: 5))
-        assertTranslatable(app, screen: "Add challenge")
-
-        pushUps.tap()
-        let next = app.buttons["enrollNextButton"]
-        for step in 1...3 {
-            XCTAssertTrue(labelContaining("Step \(step) of 4", in: app)
-                .waitForExistence(timeout: 5))
-            assertTranslatable(app, screen: "Enroll step \(step)")
-            next.tap()
+    func testEveryScreen() {
+        for screen in ScreenID.allCases {
+            let app = XCUIApplication.launchForTesting(
+                screen: screen,
+                arguments: ["-NSSurroundLocalizedStrings", "YES"]
+            )
+            guard app.staticTexts.firstMatch.waitForExistence(timeout: 10) else {
+                XCTFail("[\(screen)] didn't show any text")
+                continue
+            }
+            assertTranslatable(app, screen: screen.rawValue)
+            app.terminate()
         }
-        XCTAssertTrue(labelContaining("Step 4 of 4", in: app).waitForExistence(timeout: 5))
-        assertTranslatable(app, screen: "Enroll step 4")
-    }
-
-    @MainActor
-    func testListChallengeScreenAndLogSheet() {
-        let app = launch(seeded: true)
-        let pushUps = labelContaining("Push-ups", in: app)
-        XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
-        assertTranslatable(app, screen: "List")
-
-        pushUps.tap()
-        let logButton = app.buttons["logAttemptButton"]
-        XCTAssertTrue(logButton.waitForExistence(timeout: 5))
-        assertTranslatable(app, screen: "Challenge")
-
-        logButton.tap()
-        let save = app.buttons["logSaveButton"]
-        XCTAssertTrue(save.waitForExistence(timeout: 5))
-        assertTranslatable(app, screen: "Log sheet")
-
-        save.tap()
-        XCTAssertTrue(app.buttons["logDoneButton"].waitForExistence(timeout: 5))
-        assertTranslatable(app, screen: "Log result")
     }
 }

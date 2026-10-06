@@ -7,11 +7,6 @@ final class AccessibilityTests: XCTestCase {
         continueAfterFailure = true
     }
 
-    @MainActor
-    private func launch(seeded: Bool) -> XCUIApplication {
-        XCUIApplication.launchForTesting(seeded: seeded)
-    }
-
     private static let offscreenAtLargeSizes: Set<String> = [
         "History", "Custom challenge", "Coming soon",
         "Tap an attempt to change it, or swipe left to delete.",
@@ -68,53 +63,21 @@ final class AccessibilityTests: XCTestCase {
         }
     }
 
+    /// Every screen in the app (`ScreenID`), each opened directly with sample data.
     @MainActor
-    func testWelcomeAndEnrollFlow() throws {
-        let app = launch(seeded: false)
-        XCTAssertTrue(app.staticTexts["welcomeTitle"].waitForExistence(timeout: 10))
-        try audit(app, screen: "Welcome")
-
-        app.buttons["startFirstChallengeButton"].tap()
-        let pushUps = app.buttons["builtIn.pushups"]
-        XCTAssertTrue(pushUps.waitForExistence(timeout: 5))
-        try audit(app, screen: "Add challenge")
-
-        pushUps.tap()
-        let next = app.buttons["enrollNextButton"]
-        for (step, name) in ["Intro", "Test yourself", "Set your plan"].enumerated() {
-            XCTAssertTrue(app.staticTexts["Step \(step + 1) of 4"].waitForExistence(timeout: 5))
-            try audit(app, screen: name)
-            next.tap()
+    func testEveryScreen() {
+        for screen in ScreenID.allCases {
+            let app = XCUIApplication.launchForTesting(screen: screen)
+            guard app.staticTexts.firstMatch.waitForExistence(timeout: 10) else {
+                XCTFail("[\(screen)] didn't show any text")
+                continue
+            }
+            do {
+                try audit(app, screen: screen.rawValue)
+            } catch {
+                XCTFail("[\(screen)] audit didn't finish: \(error)")
+            }
+            app.terminate()
         }
-        XCTAssertTrue(app.staticTexts["Step 4 of 4"].waitForExistence(timeout: 5))
-        try audit(app, screen: "Reminder")
-    }
-
-    @MainActor
-    func testListChallengeScreenAndLogSheet() throws {
-        let app = launch(seeded: true)
-        let pushUps = app.staticTexts["Push-ups"]
-        XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
-
-        pushUps.tap()
-        let logButton = app.buttons["logAttemptButton"]
-        XCTAssertTrue(logButton.waitForExistence(timeout: 5))
-        try audit(app, screen: "Challenge")
-
-        logButton.tap()
-        XCTAssertTrue(app.buttons["logSaveButton"].waitForExistence(timeout: 5))
-        try audit(app, screen: "Log sheet")
-
-        app.buttons["logSaveButton"].tap()
-        let done = app.buttons["logDoneButton"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
-        try audit(app, screen: "Log result")
-
-        // The list last: the audit can leave it scrolled or resized, which would
-        // throw off a tap that follows it.
-        done.tap()
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.navigationBars["Challenges"].waitForExistence(timeout: 5))
-        try audit(app, screen: "List")
     }
 }

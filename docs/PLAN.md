@@ -140,6 +140,15 @@ e.g. 0.4.1); see CLAUDE.md.
   translatable string, and fails on any visible text without brackets.
 - No version bump (nothing visible changes in English).
 
+#### 4.5 Screen list ✅
+- Every screen and screen state is a `ScreenID` case, shown on its own by `ScreenHost`
+  (`-showScreen <id>`, with sample data where needed). The accessibility audit and the
+  localization check loop over all of them, so new screens are covered automatically.
+- Screens live in `Views/Screens/`; CI fails if one isn't in the list.
+- A SwiftLint rule flags untranslated sentences in `Models/` and `Support/`.
+- Step 5.1's snapshot tests can loop over the same list.
+- No version bump (nothing visible changes).
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
 - Settings screen for any challenge (goal, increase, reminder; name, unit, and
@@ -153,9 +162,8 @@ Most screens exist by now, and steps 6–9 change a lot of UI, so this is where
 snapshot tests start paying off.
 - Add Point-Free's `swift-snapshot-testing` to the test targets only (SPM via
   `project.yml`).
-- One snapshot per main screen with seeded data: welcome, Add challenge, each enroll
-  step, list, challenge screen, log sheet and result, custom form, settings. Light
-  and dark mode, and one large text size.
+- One snapshot per `ScreenID` (opened with `-showScreen`, as the accessibility and
+  localization tests do). Light and dark mode, and one large text size.
 - Stable rendering: one fixed simulator model and OS, a fixed "now" for seeded dates
   (e.g. a `-fixedDate` launch argument), animations off.
 - Reference images are committed in the repo, so PR diffs show before/after images.

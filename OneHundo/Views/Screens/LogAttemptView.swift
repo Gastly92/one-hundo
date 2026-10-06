@@ -16,11 +16,13 @@ struct LogAttemptView: View {
     @State private var outcome: LogOutcome?
     @State private var bounce = 0
 
-    init(challenge: Challenge, attempt: Attempt?) {
+    /// `outcome` lets UI tests open the result directly (see `ScreenHost`).
+    init(challenge: Challenge, attempt: Attempt?, outcome: LogOutcome? = nil) {
         self.challenge = challenge
         self.attempt = attempt
         _count = State(initialValue: attempt?.count ?? challenge.target())
         _date = State(initialValue: attempt?.date ?? Date())
+        _outcome = State(initialValue: outcome)
     }
 
     private var color: Color { Color(challengeColorName: challenge.colorName) }
