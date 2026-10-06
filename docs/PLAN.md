@@ -150,8 +150,9 @@ e.g. 0.4.1); see CLAUDE.md.
 - No version bump (nothing visible changes).
 
 #### 4.6 80-character lines ✅
-- SwiftLint's line limit drops from 100 to 80, so diffs read without wrapping in
-  portrait on the phone. All Swift code and comments are rewrapped; no text changes.
+- SwiftLint's line limit drops from 100 to 80, so diffs wrap less on the phone (a
+  portrait diff fits only about 45 characters, so long lines still wrap there). All
+  Swift code and comments are rewrapped; no text changes.
 - No version bump (nothing visible changes).
 
 ### 5. Custom challenges and challenge settings

@@ -41,7 +41,7 @@ Keep both updated as features land.
   - `LocalizationTests` runs every `ScreenID` in a pseudo-language that brackets
     translatable text, and fails on unbracketed text.
 - SwiftLint runs in CI with `--strict` (warnings fail); lines max 80 chars (diffs are read on
-  a phone in portrait). Long text literals use a `"""` literal with `\` line breaks rather
+  a phone, where shorter lines wrap less). Long text literals use a `"""` literal with `\` line breaks rather
   than `+`. Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.
 - Compiler warnings are errors, and the app target uses strict concurrency checking.

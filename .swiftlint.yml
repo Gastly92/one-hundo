@@ -22,7 +22,7 @@ identifier_name:
   excluded:
     - id
 
-# Diffs get read in the GitHub iPhone app; 80 fits without wrapping.
+# Diffs get read in the GitHub iPhone app; shorter lines wrap less there.
 line_length:
   warning: 80
   ignores_urls: true
