@@ -121,6 +121,16 @@ e.g. 0.4.1); see CLAUDE.md.
 - Thread Sanitizer on every test run, and Periphery for unused code, both in CI.
 - No version bump (nothing user-visible).
 
+#### 4.4 Localization prep ✅
+- All text is translatable, still English only: a String Catalog
+  (`Localizable.xcstrings`) with plural forms ("1 day" / "95 days", seconds, minutes),
+  `String(localized:)` for text built in code, and `LocalizedStringKey` for view helpers.
+- Built-in challenges show their name in the user's language even if started in another,
+  and the "Test yourself" question is a whole sentence per challenge.
+- `LocalizationTests` runs the main screens in a pseudo-language that brackets every
+  translatable string, and fails on any visible text without brackets.
+- No version bump (nothing visible changes in English).
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
 - Settings screen for any challenge (goal, increase, reminder; name, unit, and
@@ -185,9 +195,6 @@ snapshot tests start paying off.
 
 - **80-character lines**: try lowering SwiftLint's limit from 100 for easier
   reading in portrait on the phone.
-- **Localization prep**: a String Catalog, translatable strings in logic (plurals
-  like "1 day" / "95 days"), and a pseudo-language UI test run. Next PR after the
-  tooling one.
 
 Not scheduled; each would be its own PR series after 1.0.
 

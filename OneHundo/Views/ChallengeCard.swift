@@ -9,7 +9,7 @@ struct ChallengeCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(challenge.name)
+            Text(challenge.displayName)
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
 

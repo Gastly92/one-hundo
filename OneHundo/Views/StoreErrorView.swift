@@ -9,8 +9,11 @@ struct StoreErrorView: View {
         ContentUnavailableView {
             Label("Can't open your challenges", systemImage: "exclamationmark.triangle")
         } description: {
-            Text("Your data is safe. Close the app and open it again. "
-                + "If this keeps happening, free up some storage on your iPhone.")
+            // One literal (not joined with +) so it stays translatable.
+            Text("""
+                Your data is safe. Close the app and open it again. \
+                If this keeps happening, free up some storage on your iPhone.
+                """)
         } actions: {
             Text(details)
                 .font(.footnote)

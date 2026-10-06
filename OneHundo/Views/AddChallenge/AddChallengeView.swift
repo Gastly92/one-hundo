@@ -20,7 +20,9 @@ struct AddChallengeView: View {
                         NavigationLink(value: builtIn) {
                             ChallengeChoiceRow(
                                 title: builtIn.name,
-                                subtitle: active ? "In progress" : builtIn.summary,
+                                subtitle: active
+                                    ? String(localized: "In progress")
+                                    : builtIn.summary,
                                 isDimmed: active
                             )
                         }
@@ -39,8 +41,8 @@ struct AddChallengeView: View {
                         )
                     } label: {
                         ChallengeChoiceRow(
-                            title: "Custom challenge",
-                            subtitle: "Coming soon"
+                            title: String(localized: "Custom challenge"),
+                            subtitle: String(localized: "Coming soon")
                         )
                     }
                     .accessibilityIdentifier("customChallenge")

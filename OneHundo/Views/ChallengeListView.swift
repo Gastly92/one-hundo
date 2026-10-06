@@ -56,7 +56,7 @@ struct ChallengeListView: View {
                 LogAttemptView(challenge: challenge, attempt: challenge.attempt(on: Date()))
             }
             .confirmationDialog(
-                "Delete \(deletingChallenge?.name ?? "challenge")?",
+                "Delete \(deletingChallenge?.displayName ?? String(localized: "challenge"))?",
                 isPresented: Binding(
                     get: { deletingChallenge != nil },
                     set: { if !$0 { deletingChallenge = nil } }

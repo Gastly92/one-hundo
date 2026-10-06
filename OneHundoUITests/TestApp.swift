@@ -5,9 +5,12 @@ extension XCUIApplication {
     /// with sample challenges. If Thread Sanitizer finds a data race, the app stops,
     /// so the test fails.
     @MainActor
-    static func launchForTesting(seeded: Bool = false) -> XCUIApplication {
+    static func launchForTesting(
+        seeded: Bool = false,
+        arguments: [String] = []
+    ) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"] + (seeded ? ["-seedSampleData"] : [])
+        app.launchArguments = ["-uiTesting"] + (seeded ? ["-seedSampleData"] : []) + arguments
         app.launchEnvironment["TSAN_OPTIONS"] = "halt_on_error=1"
         app.launch()
         return app

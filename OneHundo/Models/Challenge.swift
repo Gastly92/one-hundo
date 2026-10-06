@@ -69,11 +69,21 @@ enum ChallengeUnit: String, CaseIterable, Codable {
     case reps, seconds, minutes
 
     /// A count with its unit for labels: "6" for reps, "46 seconds", "1 minute".
+    /// The String Catalog holds the plural forms ("1 second" / "2 seconds").
     func format(_ count: Int) -> String {
         switch self {
-        case .reps: return "\(count)"
-        case .seconds: return count == 1 ? "1 second" : "\(count) seconds"
-        case .minutes: return count == 1 ? "1 minute" : "\(count) minutes"
+        case .reps: return count.formatted()
+        case .seconds: return String(localized: "\(count) seconds")
+        case .minutes: return String(localized: "\(count) minutes")
+        }
+    }
+
+    /// The unit's name, shown under the number when logging, e.g. "seconds".
+    var name: String {
+        switch self {
+        case .reps: return String(localized: "reps")
+        case .seconds: return String(localized: "seconds")
+        case .minutes: return String(localized: "minutes")
         }
     }
 }
