@@ -298,7 +298,7 @@ to TestFlight and use it daily.
   go in one level, not aligned by hand).
 - No version bump (nothing visible changes).
 
-#### 4.11 Screen snapshot tests
+#### 4.11 Screen snapshot tests ✅
 Most screens exist by now, and steps 5–9
 change a lot of UI (step 5 reworks shared
 pieces like the number entry), so snapshots

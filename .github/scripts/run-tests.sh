@@ -24,6 +24,21 @@ fi
 echo "Testing on simulator $device"
 
 mkdir -p build
+
+# Snapshot tests record any missing images
+# (all of them when the PR has the
+# `record-snapshots` label), and save the
+# images of a failed comparison.
+mode=missing
+if grep -q '"record-snapshots"' \
+  <<<"${LABELS:-}"; then
+  mode=all
+fi
+echo "Snapshot record mode: $mode"
+export \
+  TEST_RUNNER_SNAPSHOT_TESTING_RECORD="$mode"
+diffs="$PWD/build/snapshot-diffs"
+export TEST_RUNNER_SNAPSHOT_ARTIFACTS="$diffs"
 common=(
   -project OneHundo.xcodeproj
   -scheme OneHundo

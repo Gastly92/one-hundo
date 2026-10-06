@@ -121,6 +121,19 @@ features land.
   stops the app and fails the test. UI tests
   launch the app with `App.start(seeded:)`,
   which sets this up.
+- Snapshot tests (`SnapshotTests`) take a
+  picture of every `ScreenID` in light,
+  dark and large text, on a fixed day
+  (`\.now` environment value; views read
+  "today" from it, not `Date()`). Images live
+  in `OneHundoTests/__Snapshots__/`. CI
+  records missing ones and commits them to
+  the PR branch (pull before pushing again).
+  After an intended visual change, add the
+  `record-snapshots` label to the PR to
+  record all of them again; a failed
+  comparison uploads `snapshot-diffs`.
+  Re-record after Xcode or iOS updates.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
   ShellCheck on `.github/scripts/`. Both
