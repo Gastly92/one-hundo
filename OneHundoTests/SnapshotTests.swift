@@ -10,6 +10,11 @@ import XCTest
 /// `__Snapshots__/`. A screen that looks
 /// different fails until its images are
 /// recorded again (see CLAUDE.md).
+///
+/// Pictures are drawn in the app's window:
+/// iOS 26's glass bars only show their real
+/// colors there (offscreen, small titles came
+/// out white on white).
 @MainActor
 final class SnapshotTests: XCTestCase {
   /// The fixed "now": noon, Jan 15 2026, UTC,
@@ -50,6 +55,7 @@ final class SnapshotTests: XCTestCase {
         assertSnapshot(
           of: view,
           as: .image(
+            drawHierarchyInKeyWindow: true,
             precision: 0.99,
             perceptualPrecision: 0.98,
             layout: Self.phone,
