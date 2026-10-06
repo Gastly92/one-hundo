@@ -67,6 +67,9 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      # Build once, then run the tests on two simulators at once (Xcode's parallel
+      # testing gives each test class to a free simulator). One result bundle, so
+      # coverage still counts unit and UI tests together.
       - name: Run tests
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j \
@@ -76,19 +79,31 @@ jobs:
           fi
           echo "Testing on simulator $DEVICE_ID"
           mkdir -p build
+          common=(-project OneHundo.xcodeproj -scheme OneHundo -destination "id=$DEVICE_ID"
+            -derivedDataPath build/test -enableCodeCoverage YES -enableThreadSanitizer YES
+            CODE_SIGNING_ALLOWED=NO)
           status=0
-          xcodebuild test \
-            -project OneHundo.xcodeproj \
-            -scheme OneHundo \
-            -destination "id=$DEVICE_ID" \
-            -derivedDataPath build/test \
+          start=$SECONDS
+          xcodebuild build-for-testing "${common[@]}" > build/build.log 2>&1 || status=$?
+          built=$SECONDS
+          if [ "$status" -ne 0 ]; then
+            grep -E 'error:' build/build.log || tail -n 60 build/build.log
+            exit "$status"
+          fi
+          xcodebuild test-without-building "${common[@]}" \
             -resultBundlePath build/test.xcresult \
-            -enableCodeCoverage YES \
-            -enableThreadSanitizer YES \
-            CODE_SIGNING_ALLOWED=NO \
+            -parallel-testing-enabled YES -parallel-testing-worker-count 2 \
             > build/test.log 2>&1 || status=$?
+          tested=$SECONDS
           grep -E '(Test Case .*(passed|failed)|error:|ThreadSanitizer|\*\* TEST)' build/test.log \
             || true
+          {
+            echo "### Test timings"
+            echo "| Phase | Seconds |"
+            echo "|---|---|"
+            echo "| Build for testing | $((built - start)) |"
+            echo "| Run tests (2 simulators) | $((tested - built)) |"
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ "$status" -ne 0 ]; then
             tail -n 60 build/test.log
           fi
@@ -112,21 +127,24 @@ jobs:
             --format github-actions \
             --strict
 
-      - name: Build simulator app
-        run: |
-          set -o pipefail
-          xcodebuild build \
-            -project OneHundo.xcodeproj \
-            -scheme OneHundo \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -derivedDataPath build/sim \
-            CODE_SIGNING_ALLOWED=NO \
-            | tail -n 20
-          cd build/sim/Build/Products/Debug-iphonesimulator
-          zip -qry "$GITHUB_WORKSPACE/build/OneHundo-simulator.zip" OneHundo.app
+  # The Release build for a real iPhone, in parallel with the tests so it doesn't add
+  # to the wait. Catches anything that only breaks with optimizations on.
+  release:
+    name: Release build
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
 
-      - name: Build unsigned device IPA
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build for device (Release)
         run: |
           set -o pipefail
           xcodebuild build \
@@ -137,35 +155,22 @@ jobs:
             -derivedDataPath build/device \
             CODE_SIGNING_ALLOWED=NO \
             | tail -n 20
-          mkdir -p build/ipa/Payload
-          cp -R build/device/Build/Products/Release-iphoneos/OneHundo.app build/ipa/Payload/
-          cd build/ipa && zip -qry "$GITHUB_WORKSPACE/build/OneHundo-unsigned.ipa" Payload
-
-      - name: Upload simulator app
-        uses: actions/upload-artifact@v7
-        with:
-          name: OneHundo-simulator
-          path: build/OneHundo-simulator.zip
-
-      - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v7
-        with:
-          name: OneHundo-unsigned-ipa
-          path: build/OneHundo-unsigned.ipa
 
   # Single pass/fail check for a PR. It always reports, passing when the build
   # was skipped (docs-only PR) or succeeded.
   gate:
     name: CI Gate
-    needs: [changes, lint, build]
+    needs: [changes, lint, build, release]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check results
         run: |
-          echo "changes: ${{ needs.changes.result }}, lint: ${{ needs.lint.result }}, build: ${{ needs.build.result }}"
+          echo "changes: ${{ needs.changes.result }}, lint: ${{ needs.lint.result }}," \
+            "build: ${{ needs.build.result }}, release: ${{ needs.release.result }}"
           [ "${{ needs.changes.result }}" = "success" ] || exit 1
-          for result in "${{ needs.lint.result }}" "${{ needs.build.result }}"; do
+          for result in "${{ needs.lint.result }}" "${{ needs.build.result }}" \
+            "${{ needs.release.result }}"; do
             case "$result" in
               success|skipped) ;;
               *) exit 1 ;;

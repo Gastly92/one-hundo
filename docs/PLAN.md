@@ -115,6 +115,13 @@ e.g. 0.4.1); see CLAUDE.md.
 - Thread Sanitizer on every test run, and Periphery for unused code, both in CI.
 - No version bump (nothing user-visible).
 
+#### 4.3 Faster CI
+- Tests build once and run on two simulators in parallel (one result bundle, so the
+  coverage gate still counts unit and UI tests together).
+- The Release device build moves to its own job alongside the tests; the unused
+  simulator app build and downloadable app files are dropped. Every check still gates PRs.
+- The CI summary shows build and test times.
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
 - Settings screen for any challenge (goal, increase, reminder; name, unit, icon,

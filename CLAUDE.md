@@ -14,7 +14,9 @@ Keep both updated as features land.
 ## Building
 - This container is Linux: nothing Swift/Xcode builds locally. CI is the compiler.
 - `.github/workflows/ios-build.yml` runs on every PR and push to `main` (macOS runner,
-  `macos-26`). It generates the project, runs tests on a simulator, and builds.
+  `macos-26`). It generates the project, builds once, and runs all tests on two
+  simulators in parallel; a Release device build runs in its own job alongside.
+  The CI summary shows how long building and testing took.
   Docs-only PRs skip the macOS job. The `CI Gate` job is the single pass/fail check for a PR;
   keep its name stable, and add new code paths to the `changes` filter.
 - Tests: `OneHundoTests/` (unit tests for logic in `OneHundo/Models/`) and `OneHundoUITests/`
