@@ -56,11 +56,6 @@ struct EnrollFlowView: View {
 
     private var intro: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Image(systemName: builtIn.icon)
-                .font(.system(size: 64))
-                .foregroundStyle(color)
-                .frame(maxWidth: .infinity)
-                .accessibilityHidden(true)
             Text(builtIn.summary)
                 .font(.title3)
             Text("Good form")
@@ -254,7 +249,6 @@ struct EnrollFlowView: View {
         let challenge = Challenge(
             kind: builtIn.id,
             name: builtIn.name,
-            icon: builtIn.icon,
             colorName: builtIn.colorName,
             startingCount: startingCount,
             goal: goal,

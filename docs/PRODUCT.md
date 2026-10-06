@@ -37,7 +37,7 @@ Each built-in challenge has tips, and images where helpful, explaining good form
 and common mistakes.
 
 **Custom challenges** let you track anything else. You name it, pick a unit
-(reps, seconds, or minutes), icon, and color, give it a starting count and a goal,
+(reps, seconds, or minutes) and a color, give it a starting count and a goal,
 and it works like the built-in ones (no form tips).
 
 ## Screens
@@ -55,7 +55,7 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 
 ### Challenge card
 
-- Icon and name, e.g. a push-up icon and "Push-ups".
+- The name, e.g. "Push-ups". No icons: challenges are told apart by name and color.
 - Today's target, large: "Try 6 today", or "Done: 6" with a checkmark once
   logged today.
 - Progress toward the goal: "6 / 100" with a thin progress bar.
@@ -67,7 +67,7 @@ The app has two tabs at the bottom: **Challenges** and **Calendar**.
 
 The first step of starting a challenge. A list of choices:
 
-- Each built-in challenge, with icon, name, and a one-line description.
+- Each built-in challenge, with its name and a one-line description.
   Built-ins you're currently doing are shown greyed out with "In progress", so
   there is only one active challenge per built-in. Once it's completed, the
   built-in is available to start again (as a fresh challenge). Custom
@@ -102,7 +102,6 @@ Opened from Add challenge. One scrolling form:
 - **Name** (required), e.g. "Plank" or "Burpees".
 - **Unit**: picker of reps, seconds, or minutes (default reps). The unit is used
   in labels, e.g. "Try 46 seconds today". Higher is always better.
-- **Icon**: a grid of a few dozen fitness-style symbols to pick from.
 - **Color**: a row of color swatches for the card.
 - Then the same fields as the enroll flow: starting count, goal (default 100),
   daily increase (default 1), and reminder.
@@ -112,7 +111,7 @@ Opened from Add challenge. One scrolling form:
 
 Opened from a card or from the calendar.
 
-- **Header**: icon, name, and a large progress ring showing current / goal.
+- **Header**: name and a large progress ring showing current / goal.
   Below it, small stats: personal best and days logged.
 - **Today**: today's target and a big **Log attempt** button. If already logged
   today, it shows your count and the button becomes **Edit today**.
@@ -121,7 +120,7 @@ Opened from a card or from the calendar.
   long-press to delete it.
 - **Form tips** (built-ins only): the tips and images, collapsible.
 - **Settings** (the gear in the top bar): edit goal, daily increase, reminder,
-  and for custom challenges name, unit, icon, and color. A red **Delete
+  and for custom challenges name, unit, and color. A red **Delete
   challenge** button at the bottom, with a confirmation.
   - The goal can be raised or lowered at any time. Lowering it to at or below
     your current count counts as reaching it: you get the goal-reached

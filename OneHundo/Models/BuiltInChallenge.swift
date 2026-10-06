@@ -7,8 +7,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
     let name: String
     /// One-line description for the Add challenge list.
     let summary: String
-    /// SF Symbol name.
-    let icon: String
     let colorName: String
     let tips: [String]
 
@@ -22,7 +20,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "pushups",
         name: "Push-ups",
         summary: "The classic: chest, shoulders, and arms.",
-        icon: "figure.strengthtraining.functional",
         colorName: "orange",
         tips: [
             "Hands just wider than your shoulders.",
@@ -35,7 +32,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "situps",
         name: "Sit-ups",
         summary: "Core strength, one rep at a time.",
-        icon: "figure.core.training",
         colorName: "blue",
         tips: [
             "Bend your knees and keep your feet flat.",
@@ -48,7 +44,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
         id: "pullups",
         name: "Pull-ups",
         summary: "Back and arms. Even one is a great start.",
-        icon: "figure.climbing",
         colorName: "green",
         tips: [
             "Start from a full hang with straight arms.",

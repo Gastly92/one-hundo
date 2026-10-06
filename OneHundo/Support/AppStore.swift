@@ -6,12 +6,10 @@ enum AppStore {
         try makeContainer(configuration: ModelConfiguration(isStoredInMemoryOnly: inMemory))
     }
 
-    /// Opens the store at its latest data version, migrating older data first.
+    /// Before 1.0 there's no migration plan: SwiftData adapts the store to simple model
+    /// changes by itself, and for bigger ones the owner reinstalls the app. Plan step 9
+    /// adds versioned schemas, so App Store users' data is never lost.
     static func makeContainer(configuration: ModelConfiguration) throws -> ModelContainer {
-        try ModelContainer(
-            for: Schema(versionedSchema: DataSchemaV1.self),
-            migrationPlan: DataMigrationPlan.self,
-            configurations: [configuration]
-        )
+        try ModelContainer(for: Challenge.self, Attempt.self, configurations: configuration)
     }
 }

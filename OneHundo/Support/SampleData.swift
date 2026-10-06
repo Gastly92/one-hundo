@@ -38,7 +38,6 @@ enum SampleData {
         Challenge(
             kind: builtIn.id,
             name: builtIn.name,
-            icon: builtIn.icon,
             colorName: builtIn.colorName,
             startingCount: start,
             createdDate: created

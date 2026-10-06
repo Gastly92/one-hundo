@@ -35,7 +35,6 @@ class ChallengeTestCase: XCTestCase {
         let challenge = Challenge(
             kind: BuiltInChallenge.pushUps.id,
             name: "Push-ups",
-            icon: BuiltInChallenge.pushUps.icon,
             colorName: BuiltInChallenge.pushUps.colorName,
             startingCount: start,
             goal: goal,

@@ -13,8 +13,6 @@ final class Challenge {
     var name: String = ""
     /// Raw value of `ChallengeUnit`; use `unit` instead.
     var unitRaw: String = "reps"
-    /// SF Symbol name.
-    var icon: String = "figure.strengthtraining.traditional"
     /// Name of a color in the app's palette.
     var colorName: String = "orange"
     var startingCount: Int = 0
@@ -32,7 +30,6 @@ final class Challenge {
         kind: String = "custom",
         name: String,
         unit: ChallengeUnit = .reps,
-        icon: String,
         colorName: String,
         startingCount: Int,
         goal: Int = 100,
@@ -44,7 +41,6 @@ final class Challenge {
         self.kind = kind
         self.name = name
         self.unitRaw = unit.rawValue
-        self.icon = icon
         self.colorName = colorName
         self.startingCount = startingCount
         self.goal = goal

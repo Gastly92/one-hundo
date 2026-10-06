@@ -19,8 +19,6 @@ struct AddChallengeView: View {
                         let active = isActive(builtIn)
                         NavigationLink(value: builtIn) {
                             ChallengeChoiceRow(
-                                icon: builtIn.icon,
-                                color: Color(challengeColorName: builtIn.colorName),
                                 title: builtIn.name,
                                 subtitle: active ? "In progress" : builtIn.summary,
                                 isDimmed: active
@@ -41,8 +39,6 @@ struct AddChallengeView: View {
                         )
                     } label: {
                         ChallengeChoiceRow(
-                            icon: "square.and.pencil",
-                            color: .gray,
                             title: "Custom challenge",
                             subtitle: "Coming soon"
                         )
@@ -65,8 +61,6 @@ struct AddChallengeView: View {
 }
 
 private struct ChallengeChoiceRow: View {
-    let icon: String
-    let color: Color
     let title: String
     let subtitle: String
     /// Unavailable rows use secondary text rather than fading the whole row, so the
@@ -74,20 +68,13 @@ private struct ChallengeChoiceRow: View {
     var isDimmed = false
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(isDimmed ? Color.secondary : color)
-                .frame(width: 36)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(isDimmed ? Color.secondary : Color.primary)
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(isDimmed ? Color.primary : Color.secondary)
-            }
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(isDimmed ? Color.secondary : Color.primary)
+            Text(subtitle)
+                .font(.subheadline)
+                .foregroundStyle(isDimmed ? Color.primary : Color.secondary)
         }
         .padding(.vertical, 4)
     }

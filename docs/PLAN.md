@@ -13,8 +13,9 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
   SwiftLint (strict, 100-character lines), warnings as errors with strict concurrency,
   100% line coverage of non-view code (`Models/`, `Support/`), Thread Sanitizer
   on all tests, and Periphery for unused code.
-- **Data safety**: stored data is versioned with a migration plan from 0.4 on, so
-  model changes in later steps never lose data on phones.
+- **Stored data**: before 1.0 the models change freely (a big change may need the app
+  reinstalled). From 1.0 on, schemas are versioned with migrations, so App Store users
+  never lose data.
 - **Testable by design**: views stay thin; decisions live in `Models/` or `Support/`,
   and outside pieces (data store, clock, notifications) are passed in so tests can
   fake them.
@@ -31,11 +32,11 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 ## Data model
 
 - `Challenge`: id, kind (built-in id or custom), name, unit (reps / seconds /
-  minutes), icon, color, starting count, goal, daily increase, reminder on/off
+  minutes), color, starting count, goal, daily increase, reminder on/off
   and time, created date, completed date (optional), attempts.
 - `Attempt`: date (one per challenge per day), count.
 - `BuiltInChallenge` (static data in code, not stored): id, name, description,
-  icon, form tips, image names.
+  form tips, image names.
 
 Today's target = the latest attempt *before today* (or the starting count if there
 is none) + daily increase, capped at the goal. Missed days don't change it, and
@@ -107,17 +108,19 @@ e.g. 0.4.1); see CLAUDE.md.
 - 0.4.3: both tabs use the standard iOS large title instead of a custom header,
   which still bounced a little when switching tabs. The + becomes an "Add challenge"
   tile at the end of the grid, so the title bar stays plain.
+- 0.4.4: no challenge icons. Apple has no push-up, sit-up, or pull-up symbol, so
+  challenges are told apart by name and color. `Challenge.icon` is removed from the
+  stored data, and the pre-1.0 schema versioning from 4.2 goes too (see Stored data).
 
 #### 4.2 Safety tooling before bigger changes ✅
-- Stored data versioning (`DataSchemaV1` and a migration plan), with a test that data
-  saved by 0.4 still opens.
+- Stored data versioning (dropped in 0.4.4 until 1.0, see Stored data above).
 - App Store privacy manifest (no tracking, no data collected), checked by a test.
 - Thread Sanitizer on every test run, and Periphery for unused code, both in CI.
 - No version bump (nothing user-visible).
 
 ### 5. Custom challenges and challenge settings
-- Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
-- Settings screen for any challenge (goal, increase, reminder; name, unit, icon,
+- Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
+- Settings screen for any challenge (goal, increase, reminder; name, unit, and
   color for custom), and Delete challenge with confirmation.
 - Goal can be raised or lowered any time. Lowering it to at or below the current
   count is treated as reaching it (the celebration itself lands in PR 9).
@@ -170,6 +173,9 @@ snapshot tests start paying off.
 - UI test: log the goal count, see the celebration, tap Done, card is under
   Completed; Continue moves it back.
 - App icon, accent color, haptics, and a pass on empty and error states.
+- Stored data versioning: freeze the 1.0 models as schema V1 (a `VersionedSchema`) with
+  a `SchemaMigrationPlan`, and a test that a 1.0 store reopens. Every later model change
+  adds a version, a migration stage, and a test that the previous version's data opens.
 - Bump `MARKETING_VERSION` to 1.0.0 when you're happy with it: the first App Store release.
 
 ## Later
