@@ -11,7 +11,10 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
   (it never ships to the phone).
 - **Checks on every PR**: unit tests, UI tests, Xcode's accessibility audit,
   SwiftLint (strict, 100-character lines), warnings as errors with strict concurrency,
-  and 100% line coverage of non-view code (`Models/`, `Support/`).
+  100% line coverage of non-view code (`Models/`, `Support/`), Thread Sanitizer
+  on all tests, and Periphery for unused code.
+- **Data safety**: stored data is versioned with a migration plan from 0.4 on, so
+  model changes in later steps never lose data on phones.
 - **Testable by design**: views stay thin; decisions live in `Models/` or `Support/`,
   and outside pieces (data store, clock, notifications) are passed in so tests can
   fake them.
@@ -104,6 +107,13 @@ e.g. 0.4.1); see CLAUDE.md.
 - 0.4.3: both tabs use the standard iOS large title instead of a custom header,
   which still bounced a little when switching tabs. The + becomes an "Add challenge"
   tile at the end of the grid, so the title bar stays plain.
+
+#### 4.2 Safety tooling before bigger changes ✅
+- Stored data versioning (`DataSchemaV1` and a migration plan), with a test that data
+  saved by 0.4 still opens.
+- App Store privacy manifest (no tracking, no data collected), checked by a test.
+- Thread Sanitizer on every test run, and Periphery for unused code, both in CI.
+- No version bump (nothing user-visible).
 
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.

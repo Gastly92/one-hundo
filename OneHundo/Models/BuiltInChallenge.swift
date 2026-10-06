@@ -11,8 +11,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
     let icon: String
     let colorName: String
     let tips: [String]
-    /// Asset catalog image names for form tips (added later).
-    let imageNames: [String]
 
     static let all: [BuiltInChallenge] = [pushUps, sitUps, pullUps]
 
@@ -30,8 +28,7 @@ struct BuiltInChallenge: Identifiable, Hashable {
             "Hands just wider than your shoulders.",
             "Keep your body in a straight line from head to heels.",
             "Lower until your chest nearly touches the floor.",
-        ],
-        imageNames: []
+        ]
     )
 
     static let sitUps = BuiltInChallenge(
@@ -44,8 +41,7 @@ struct BuiltInChallenge: Identifiable, Hashable {
             "Bend your knees and keep your feet flat.",
             "Cross your arms over your chest; don't pull on your neck.",
             "Come up with control, not momentum.",
-        ],
-        imageNames: []
+        ]
     )
 
     static let pullUps = BuiltInChallenge(
@@ -58,7 +54,6 @@ struct BuiltInChallenge: Identifiable, Hashable {
             "Start from a full hang with straight arms.",
             "Pull until your chin is over the bar.",
             "Lower slowly; no swinging or kipping.",
-        ],
-        imageNames: []
+        ]
     )
 }

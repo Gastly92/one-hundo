@@ -7,9 +7,7 @@ final class EnrollFlowTests: XCTestCase {
 
     @MainActor
     func testStartPushUpsShowsCard() {
-        let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"]
-        app.launch()
+        let app = XCUIApplication.launchForTesting()
 
         let startFirst = app.buttons["startFirstChallengeButton"]
         XCTAssertTrue(startFirst.waitForExistence(timeout: 10))

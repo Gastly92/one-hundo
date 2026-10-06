@@ -6,7 +6,12 @@ enum AppStore {
         try makeContainer(configuration: ModelConfiguration(isStoredInMemoryOnly: inMemory))
     }
 
+    /// Opens the store at its latest data version, migrating older data first.
     static func makeContainer(configuration: ModelConfiguration) throws -> ModelContainer {
-        try ModelContainer(for: Challenge.self, Attempt.self, configurations: configuration)
+        try ModelContainer(
+            for: Schema(versionedSchema: DataSchemaV1.self),
+            migrationPlan: DataMigrationPlan.self,
+            configurations: [configuration]
+        )
     }
 }

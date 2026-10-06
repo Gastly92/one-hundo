@@ -9,10 +9,7 @@ final class AccessibilityTests: XCTestCase {
 
     @MainActor
     private func launch(seeded: Bool) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"] + (seeded ? ["-seedSampleData"] : [])
-        app.launch()
-        return app
+        XCUIApplication.launchForTesting(seeded: seeded)
     }
 
     private static let offscreenAtLargeSizes: Set<String> = [
