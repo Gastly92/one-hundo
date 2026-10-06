@@ -23,8 +23,7 @@ struct ChallengeListView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            VStack(spacing: 0) {
-                header
+            Group {
                 if activeChallenges.isEmpty {
                     WelcomeView { isAddingChallenge = true }
                 } else {
@@ -43,10 +42,18 @@ struct ChallengeListView: View {
                     }
                 }
             }
+            // The system large title: iOS keeps it steady when switching tabs.
             .navigationTitle("Challenges")
-            // A custom header instead of the system bar, so the + sits on the
-            // same line as the big title.
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isAddingChallenge = true
+                    } label: {
+                        Label("Add challenge", systemImage: "plus")
+                    }
+                    .accessibilityIdentifier("addChallengeButton")
+                }
+            }
             .navigationDestination(for: Challenge.self) { challenge in
                 ChallengeDetailView(challenge: challenge)
             }
@@ -69,22 +76,6 @@ struct ChallengeListView: View {
             } message: { _ in
                 Text("This deletes the challenge and all its attempts. You can't undo this.")
             }
-        }
-    }
-
-    private var header: some View {
-        TabHeader(title: "Challenges", identifier: "challengesTitle") {
-            Button {
-                isAddingChallenge = true
-            } label: {
-                Image(systemName: "plus")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 36, height: 36)
-            }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Add challenge")
-            .accessibilityIdentifier("addChallengeButton")
         }
     }
 

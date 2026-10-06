@@ -117,7 +117,7 @@ final class AccessibilityTests: XCTestCase {
         // throw off a tap that follows it.
         done.tap()
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.staticTexts["challengesTitle"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Challenges"].waitForExistence(timeout: 5))
         try audit(app, screen: "List")
     }
 }

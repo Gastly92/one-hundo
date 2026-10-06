@@ -50,13 +50,11 @@ final class ChallengeListTests: XCTestCase {
     }
 
     @MainActor
-    func testAddButtonIsAlignedWithTitle() {
+    func testAddButtonIsInTheNavigationBar() {
         let app = launch()
-        let title = app.staticTexts["challengesTitle"]
-        let addButton = app.buttons["addChallengeButton"]
-        XCTAssertTrue(title.waitForExistence(timeout: 10))
-        XCTAssertTrue(addButton.exists)
-        XCTAssertEqual(title.frame.midY, addButton.frame.midY, accuracy: 4)
+        let bar = app.navigationBars["Challenges"]
+        XCTAssertTrue(bar.waitForExistence(timeout: 10))
+        XCTAssertTrue(bar.buttons["addChallengeButton"].exists)
     }
 
     @MainActor
@@ -98,12 +96,12 @@ final class ChallengeListTests: XCTestCase {
     @MainActor
     func testTabTitlesLineUp() {
         let app = launch()
-        let challengesTitle = app.staticTexts["challengesTitle"]
+        let challengesTitle = app.navigationBars["Challenges"].staticTexts["Challenges"].firstMatch
         XCTAssertTrue(challengesTitle.waitForExistence(timeout: 10))
         let challengesFrame = challengesTitle.frame
 
         app.tabBars.buttons["Calendar"].tap()
-        let calendarTitle = app.staticTexts["calendarTitle"]
+        let calendarTitle = app.navigationBars["Calendar"].staticTexts["Calendar"].firstMatch
         XCTAssertTrue(calendarTitle.waitForExistence(timeout: 5))
         XCTAssertEqual(calendarTitle.frame.minY, challengesFrame.minY, accuracy: 1)
         XCTAssertEqual(calendarTitle.frame.minX, challengesFrame.minX, accuracy: 1)

@@ -101,6 +101,9 @@ e.g. 0.4.1); see CLAUDE.md.
   from PR 5). History rows are tap-to-edit with a hint.
 - 0.4.2: both tabs share one title header, so the title doesn't jump when
   switching tabs.
+- 0.4.3: both tabs use the standard iOS large title instead of a custom header,
+  which still bounced a little when switching tabs. The + moves to the top-right
+  corner of the bar.
 
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
