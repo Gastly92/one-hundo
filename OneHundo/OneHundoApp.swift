@@ -3,30 +3,32 @@ import SwiftUI
 
 @main
 struct OneHundoApp: App {
-    private let launch: AppLaunch
+  private let launch: AppLaunch
 
-    init() {
-        let args = ProcessInfo.processInfo.arguments
-        launch = AppLaunch(arguments: args)
-    }
+  init() {
+    let info = ProcessInfo.processInfo
+    launch = AppLaunch(
+      arguments: info.arguments
+    )
+  }
 
-    var body: some Scene {
-        WindowGroup {
-            switch launch.store {
-            case .success(let container):
-                Group {
-                    if let screen = launch.screen {
-                        ScreenHost(screen: screen)
-                    } else {
-                        RootView()
-                    }
-                }
-                .modelContainer(container)
-            case .failure(let error):
-                StoreErrorView(
-                    details: error.localizedDescription
-                )
-            }
+  var body: some Scene {
+    WindowGroup {
+      switch launch.store {
+      case .success(let container):
+        Group {
+          if let screen = launch.screen {
+            ScreenHost(screen: screen)
+          } else {
+            RootView()
+          }
         }
+        .modelContainer(container)
+      case .failure(let error):
+        StoreErrorView(
+          details: error.localizedDescription
+        )
+      }
     }
+  }
 }

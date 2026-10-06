@@ -4,105 +4,120 @@ import XCTest
 
 @MainActor
 final class AppLaunchTests: XCTestCase {
-    private struct StoreUnavailable: Error {}
+  private struct StoreDown: Error {}
 
-    private func memoryStore(
-        _: Bool
-    ) throws -> ModelContainer {
-        try AppStore.open(inMemory: true)
+  private func memory(
+    _: Bool
+  ) throws -> ModelContainer {
+    try AppStore.open(inMemory: true)
+  }
+
+  /// A launch with an in-memory store.
+  private func start(
+    _ args: [String]
+  ) -> AppLaunch {
+    AppLaunch(arguments: args, open: memory)
+  }
+
+  /// How many challenges the launch's store
+  /// holds.
+  private func count(
+    _ launch: AppLaunch
+  ) throws -> Int {
+    let store = try launch.store.get()
+    return try store.mainContext.fetchCount(
+      FetchDescriptor<Challenge>()
+    )
+  }
+
+  func testNormalLaunchIsEmpty() throws {
+    var asked: Bool?
+    let launch = AppLaunch(
+      arguments: ["OneHundo"]
+    ) {
+      asked = $0
+      return try self.memory($0)
     }
+    XCTAssertFalse(launch.isUITesting)
+    XCTAssertEqual(asked, false)
+    XCTAssertEqual(try count(launch), 0)
+  }
 
-    /// A launch with an in-memory store.
-    private func start(_ args: [String]) -> AppLaunch {
-        AppLaunch(arguments: args, openStore: memoryStore)
+  func testUITestingIsInMemory() throws {
+    var asked: Bool?
+    let launch = AppLaunch(
+      arguments: ["-uiTesting"]
+    ) {
+      asked = $0
+      return try self.memory($0)
     }
+    XCTAssertTrue(launch.isUITesting)
+    XCTAssertEqual(asked, true)
+    XCTAssertEqual(try count(launch), 0)
+  }
 
-    /// How many challenges the launch's store holds.
-    private func challenges(
-        in launch: AppLaunch
-    ) throws -> Int {
-        let context = try launch.store.get().mainContext
-        return try context.fetchCount(
-            FetchDescriptor<Challenge>()
-        )
+  func testSampleDataOnlyInUITests() throws {
+    let seeded = start(
+      ["-uiTesting", "-seedSampleData"]
+    )
+    XCTAssertEqual(try count(seeded), 3)
+
+    // -seedSampleData alone is ignored, so it
+    // can never touch real data.
+    let real = start(["-seedSampleData"])
+    XCTAssertEqual(try count(real), 0)
+  }
+
+  func testStoreFailureIsNotFatal() {
+    let launch = AppLaunch(
+      arguments: [
+        "-uiTesting", "-seedSampleData",
+      ]
+    ) { _ in
+      throw StoreDown()
     }
+    XCTAssertThrowsError(
+      try launch.store.get()
+    ) { XCTAssertTrue($0 is StoreDown) }
+  }
 
-    func testNormalLaunchHasNoSampleData() throws {
-        var askedInMemory: Bool?
-        let launch = AppLaunch(arguments: ["OneHundo"]) {
-            askedInMemory = $0
-            return try self.memoryStore($0)
-        }
-        XCTAssertFalse(launch.isUITesting)
-        XCTAssertEqual(askedInMemory, false)
-        XCTAssertEqual(try challenges(in: launch), 0)
+  func testShowScreenWithItsData() throws {
+    let detail = start([
+      "-uiTesting",
+      "-showScreen", "challengeDetail",
+    ])
+    XCTAssertEqual(
+      detail.screen, .challengeDetail
+    )
+    // Screens that show challenges get the
+    // sample data; the rest start empty.
+    XCTAssertEqual(try count(detail), 3)
+
+    let welcome = start(
+      ["-uiTesting", "-showScreen", "welcome"]
+    )
+    XCTAssertEqual(welcome.screen, .welcome)
+    XCTAssertEqual(try count(welcome), 0)
+  }
+
+  func testShowScreenNeedsUITesting() {
+    let cases: [[String]] = [
+      // Never outside UI tests.
+      ["-showScreen", "welcome"],
+      ["-uiTesting", "-showScreen", "nope"],
+      // No screen name after the flag.
+      ["-uiTesting", "-showScreen"],
+      ["-uiTesting"],
+    ]
+    for args in cases {
+      let screen = start(args).screen
+      XCTAssertNil(screen, "\(args)")
     }
+  }
 
-    func testUITestingUsesInMemoryStore() throws {
-        var askedInMemory: Bool?
-        let launch = AppLaunch(arguments: ["-uiTesting"]) {
-            askedInMemory = $0
-            return try self.memoryStore($0)
-        }
-        XCTAssertTrue(launch.isUITesting)
-        XCTAssertEqual(askedInMemory, true)
-        XCTAssertEqual(try challenges(in: launch), 0)
-    }
-
-    func testSampleDataIsSeededOnlyForUITests() throws {
-        let seeded = start(
-            ["-uiTesting", "-seedSampleData"]
-        )
-        XCTAssertEqual(try challenges(in: seeded), 3)
-
-        // -seedSampleData alone is ignored, so it can never
-        // touch real data.
-        let real = start(["-seedSampleData"])
-        XCTAssertEqual(try challenges(in: real), 0)
-    }
-
-    func testStoreFailureIsReportedNotFatal() {
-        let args = ["-uiTesting", "-seedSampleData"]
-        let launch = AppLaunch(arguments: args) { _ in
-            throw StoreUnavailable()
-        }
-        guard case .failure(let error) = launch.store else {
-            return XCTFail("Expected the store to fail")
-        }
-        XCTAssertTrue(error is StoreUnavailable)
-    }
-
-    func testShowScreenOpensOneScreenWithItsData() throws {
-        let detail = start(
-            ["-uiTesting", "-showScreen", "challengeDetail"]
-        )
-        XCTAssertEqual(detail.screen, .challengeDetail)
-        // Screens that show challenges get the sample data;
-        // the rest start empty.
-        XCTAssertEqual(try challenges(in: detail), 3)
-
-        let welcome = start(
-            ["-uiTesting", "-showScreen", "welcome"]
-        )
-        XCTAssertEqual(welcome.screen, .welcome)
-        XCTAssertEqual(try challenges(in: welcome), 0)
-    }
-
-    func testShowScreenNeedsUITestingAndAKnownScreen() {
-        let cases: [[String]] = [
-            // Never outside UI tests.
-            ["-showScreen", "welcome"],
-            ["-uiTesting", "-showScreen", "noSuchScreen"],
-            // No screen name after the flag.
-            ["-uiTesting", "-showScreen"],
-            ["-uiTesting"],
-        ]
-        for args in cases {
-            XCTAssertNil(start(args).screen, "\(args)")
-        }
-    }
-
-    func testDefaultStoreOpens() throws {
-        XCTAssertNoThrow(try AppStore.open(inMemory: true))
-    }
+  func testDefaultStoreOpens() throws {
+    XCTAssertNoThrow(
+      try AppStore.open(inMemory: true)
+    )
+  }
 }
