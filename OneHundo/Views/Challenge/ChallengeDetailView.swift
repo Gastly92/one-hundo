@@ -44,7 +44,7 @@ struct ChallengeDetailView: View {
                 Button {
                     logRequest = LogRequest(attempt: todayAttempt)
                 } label: {
-                    Text(todayAttempt == nil ? "Log attempt" : "Edit today")
+                    Text(challenge.logButtonTitle())
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)

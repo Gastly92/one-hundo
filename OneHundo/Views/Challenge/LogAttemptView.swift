@@ -25,9 +25,9 @@ struct LogAttemptView: View {
 
     private var color: Color { Color(challengeColorName: challenge.colorName) }
 
-    /// The attempt a new log would replace (one attempt per day).
-    private var replacedAttempt: Attempt? {
-        attempt == nil ? challenge.attempt(on: date) : nil
+    /// Set when a new log would replace that day's attempt (one attempt per day).
+    private var replacementNote: String? {
+        attempt == nil ? challenge.replacementNote(on: date) : nil
     }
 
     var body: some View {
@@ -81,9 +81,8 @@ struct LogAttemptView: View {
                     }
                 }
 
-                if let replacedAttempt {
-                    let replaced = challenge.unit.format(replacedAttempt.count)
-                    Text("This replaces the \(replaced) you logged that day.")
+                if let replacementNote {
+                    Text(replacementNote)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

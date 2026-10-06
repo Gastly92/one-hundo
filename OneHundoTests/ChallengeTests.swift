@@ -2,48 +2,8 @@ import SwiftData
 import XCTest
 @testable import OneHundo
 
-@MainActor
-final class ChallengeTests: XCTestCase {
-    private var container: ModelContainer!
-    private var context: ModelContext { container.mainContext }
-
-    private var calendar: Calendar = {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "UTC")!
-        return calendar
-    }()
-
-    override func setUp() async throws {
-        container = try ModelContainer(
-            for: Challenge.self, Attempt.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-    }
-
-    override func tearDown() async throws {
-        container = nil
-    }
-
-    /// Noon on the given day of January 2026, UTC.
-    private func day(_ day: Int, hour: Int = 12) -> Date {
-        calendar.date(from: DateComponents(year: 2026, month: 1, day: day, hour: hour))!
-    }
-
-    private func makePushUps(start: Int = 5, goal: Int = 100, increase: Int = 1) -> Challenge {
-        let challenge = Challenge(
-            kind: BuiltInChallenge.pushUps.id,
-            name: "Push-ups",
-            icon: BuiltInChallenge.pushUps.icon,
-            colorName: BuiltInChallenge.pushUps.colorName,
-            startingCount: start,
-            goal: goal,
-            dailyIncrease: increase,
-            createdDate: day(1)
-        )
-        context.insert(challenge)
-        return challenge
-    }
-
+/// Targets, progress, card text, and stats.
+final class ChallengeTests: ChallengeTestCase {
     func testTargetWithNoAttemptsUsesStartingCount() {
         let challenge = makePushUps()
         XCTAssertEqual(challenge.target(on: day(1), calendar: calendar), 6)
@@ -173,71 +133,25 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(challenge.daysLogged(calendar: calendar), 3)
     }
 
-    func testRecordAttemptHittingTargetIsNewBest() {
+    func testUnitFormatting() {
+        XCTAssertEqual(ChallengeUnit.reps.format(1), "1")
+        XCTAssertEqual(ChallengeUnit.seconds.format(1), "1 second")
+        XCTAssertEqual(ChallengeUnit.seconds.format(45), "45 seconds")
+        XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
+        XCTAssertEqual(ChallengeUnit.minutes.format(3), "3 minutes")
+    }
+
+    func testMissingAttemptsListCountsAsNone() {
         let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        let outcome = challenge.recordAttempt(count: 6, on: day(2), calendar: calendar)
-        XCTAssertEqual(outcome.target, 6)
-        XCTAssertTrue(outcome.hitTarget)
-        XCTAssertTrue(outcome.isNewBest)
-        XCTAssertEqual(outcome.nextTarget, 7)
-        XCTAssertEqual(outcome.title, "Nice work!")
-        XCTAssertEqual(outcome.message, "You did 6. Next time, try for 7.")
+        challenge.attempts = nil
+        XCTAssertTrue(challenge.allAttempts.isEmpty)
+        XCTAssertEqual(challenge.currentCount, 5)
+        XCTAssertEqual(challenge.daysLogged(calendar: calendar), 0)
     }
 
-    func testRecordAttemptFallingShort() {
+    func testUnknownStoredUnitFallsBackToReps() {
         let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
-        let outcome = challenge.recordAttempt(count: 4, on: day(3), calendar: calendar)
-        XCTAssertEqual(outcome.target, 7)
-        XCTAssertFalse(outcome.hitTarget)
-        XCTAssertFalse(outcome.isNewBest)
-        XCTAssertEqual(outcome.nextTarget, 5)
-        XCTAssertEqual(outcome.title, "Good effort!")
-        XCTAssertEqual(outcome.message, "You did 4, and every one counts. Next time, try for 5.")
-    }
-
-    func testMatchingBestIsNotNewBest() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 8, on: day(2), calendar: calendar)
-        XCTAssertFalse(challenge.recordAttempt(count: 8, on: day(3), calendar: calendar).isNewBest)
-        XCTAssertTrue(challenge.recordAttempt(count: 9, on: day(4), calendar: calendar).isNewBest)
-    }
-
-    func testReplacingSameDayComparesWithOtherDaysOnly() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.recordAttempt(count: 7, on: day(2, hour: 9), calendar: calendar)
-        // Re-logging day 2 with 6: still above the earlier best of 5, and replaces the 7.
-        let outcome = challenge.recordAttempt(count: 6, on: day(2, hour: 18), calendar: calendar)
-        XCTAssertTrue(outcome.isNewBest)
-        XCTAssertEqual(outcome.target, 6)
-        XCTAssertEqual(challenge.attempts?.count, 2)
-        XCTAssertEqual(challenge.personalBest, 6)
-    }
-
-    func testBeatingStartingTestOnStartDayIsNewBest() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1, hour: 8), calendar: calendar)
-        let outcome = challenge.recordAttempt(count: 6, on: day(1, hour: 18), calendar: calendar)
-        XCTAssertTrue(outcome.isNewBest)
-        XCTAssertEqual(challenge.attempts?.count, 1)
-    }
-
-    func testRecordAttemptReachingGoal() {
-        let challenge = makePushUps(start: 98, increase: 5)
-        let outcome = challenge.recordAttempt(count: 100, on: day(2), calendar: calendar)
-        XCTAssertTrue(outcome.reachedGoal)
-        XCTAssertEqual(outcome.title, "Goal reached!")
-        XCTAssertEqual(outcome.message, "You hit your goal of 100.")
-        XCTAssertEqual(outcome.nextTarget, 100)
-    }
-
-    func testOutcomeMessageUsesUnit() {
-        let challenge = makePushUps(start: 45)
-        challenge.unit = .seconds
-        let outcome = challenge.recordAttempt(count: 46, on: day(2), calendar: calendar)
-        XCTAssertEqual(outcome.message, "You did 46 seconds. Next time, try for 47 seconds.")
+        challenge.unitRaw = "laps"
+        XCTAssertEqual(challenge.unit, .reps)
     }
 }

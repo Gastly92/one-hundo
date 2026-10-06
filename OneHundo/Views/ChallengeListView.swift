@@ -94,7 +94,7 @@ struct ChallengeListView: View {
             loggingChallenge = challenge
         } label: {
             Label(
-                challenge.loggedAttempt(on: Date()) == nil ? "Log attempt" : "Edit today",
+                challenge.logButtonTitle(),
                 systemImage: "plus.circle"
             )
         }

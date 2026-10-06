@@ -10,6 +10,8 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"
     DEVELOPMENT_TEAM: ""
+    # Every compiler warning fails the build, so none pile up unread.
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
 targets:
   OneHundo:
     type: application
@@ -29,6 +31,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
+        # Swift 6's data-race checks, in Swift 5 mode (warnings, so errors above).
+        SWIFT_STRICT_CONCURRENCY: complete
   OneHundoTests:
     type: bundle.unit-test
     platform: iOS
@@ -59,6 +63,9 @@ schemes:
       targets:
         OneHundo: all
     test:
+      gatherCoverageData: true
+      coverageTargets:
+        - OneHundo
       targets:
         - OneHundoTests
         - OneHundoUITests
