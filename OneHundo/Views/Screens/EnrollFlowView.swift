@@ -69,6 +69,95 @@ struct EnrollFlowView: View {
         }
     }
 
+    private var bottomBar: some View {
+        // The step count lives here, on a solid background: at the top of the
+        // scroll view, iOS fades content under the navigation bar.
+        VStack(spacing: 10) {
+            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+                .font(.subheadline.weight(.medium))
+            buttons
+        }
+        .padding()
+        .background(Color(.systemBackground))
+    }
+
+    private var buttons: some View {
+        HStack(spacing: 12) {
+            if step != .intro {
+                Button {
+                    move(by: -1)
+                } label: {
+                    Text("Back")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Color.primary)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(
+                            Color(.secondarySystemBackground),
+                            in: RoundedRectangle(cornerRadius: 12)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("enrollBackButton")
+            }
+
+            if step == .reminder {
+                Button {
+                    start()
+                } label: {
+                    Text("Start").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("enrollStartButton")
+            } else {
+                Button {
+                    advance()
+                } label: {
+                    Text("Next").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(step == .goal && goal <= startingCount)
+                .accessibilityIdentifier("enrollNextButton")
+            }
+        }
+        .controlSize(.large)
+    }
+
+    private func advance() {
+        if step == .test && goal <= startingCount {
+            goal = startingCount + 10
+        }
+        move(by: 1)
+    }
+
+    private func move(by offset: Int) {
+        guard let next = Step(rawValue: step.rawValue + offset) else { return }
+        withAnimation { step = next }
+    }
+
+    private func start() {
+        let time = Calendar.current.dateComponents(
+            [.hour, .minute], from: reminderTime
+        )
+        let challenge = Challenge(
+            kind: builtIn.id,
+            name: builtIn.name,
+            colorName: builtIn.colorName,
+            startingCount: startingCount,
+            goal: goal,
+            dailyIncrease: dailyIncrease,
+            reminderEnabled: reminderEnabled,
+            reminderMinutes: (time.hour ?? 18) * 60 + (time.minute ?? 0)
+        )
+        modelContext.insert(challenge)
+        // Today's test is the first attempt.
+        challenge.logAttempt(count: startingCount)
+        try? modelContext.save()
+        onStarted()
+    }
+}
+
+// The pages of each step, kept apart so the main type stays short.
+extension EnrollFlowView {
     private var intro: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(builtIn.summary)
@@ -219,91 +308,5 @@ struct EnrollFlowView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
-    }
-
-    private var bottomBar: some View {
-        // The step count lives here, on a solid background: at the top of the
-        // scroll view, iOS fades content under the navigation bar.
-        VStack(spacing: 10) {
-            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-                .font(.subheadline.weight(.medium))
-            buttons
-        }
-        .padding()
-        .background(Color(.systemBackground))
-    }
-
-    private var buttons: some View {
-        HStack(spacing: 12) {
-            if step != .intro {
-                Button {
-                    move(by: -1)
-                } label: {
-                    Text("Back")
-                        .font(.body.weight(.semibold))
-                        .foregroundStyle(Color.primary)
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(
-                            Color(.secondarySystemBackground),
-                            in: RoundedRectangle(cornerRadius: 12)
-                        )
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("enrollBackButton")
-            }
-
-            if step == .reminder {
-                Button {
-                    start()
-                } label: {
-                    Text("Start").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .accessibilityIdentifier("enrollStartButton")
-            } else {
-                Button {
-                    advance()
-                } label: {
-                    Text("Next").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(step == .goal && goal <= startingCount)
-                .accessibilityIdentifier("enrollNextButton")
-            }
-        }
-        .controlSize(.large)
-    }
-
-    private func advance() {
-        if step == .test && goal <= startingCount {
-            goal = startingCount + 10
-        }
-        move(by: 1)
-    }
-
-    private func move(by offset: Int) {
-        guard let next = Step(rawValue: step.rawValue + offset) else { return }
-        withAnimation { step = next }
-    }
-
-    private func start() {
-        let time = Calendar.current.dateComponents(
-            [.hour, .minute], from: reminderTime
-        )
-        let challenge = Challenge(
-            kind: builtIn.id,
-            name: builtIn.name,
-            colorName: builtIn.colorName,
-            startingCount: startingCount,
-            goal: goal,
-            dailyIncrease: dailyIncrease,
-            reminderEnabled: reminderEnabled,
-            reminderMinutes: (time.hour ?? 18) * 60 + (time.minute ?? 0)
-        )
-        modelContext.insert(challenge)
-        // Today's test is the first attempt.
-        challenge.logAttempt(count: startingCount)
-        try? modelContext.save()
-        onStarted()
     }
 }
