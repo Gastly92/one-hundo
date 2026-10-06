@@ -103,6 +103,10 @@ jobs:
             echo "| Run tests | $((tested - built)) |"
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$status" -ne 0 ]; then
+            # Each failed test's step-by-step record (taps, waits, what it found).
+            awk '/Test Case .* started/ { buf = "" } { buf = buf "\n" $0 }
+              /Test Case .* failed/ { print "::group::" $0; print buf; print "::endgroup::" }' \
+              build/test.log
             tail -n 60 build/test.log
           fi
           exit "$status"
