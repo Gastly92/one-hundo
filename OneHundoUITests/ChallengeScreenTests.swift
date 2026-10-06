@@ -7,9 +7,7 @@ final class ChallengeScreenTests: XCTestCase {
 
     @MainActor
     func testLogAttemptThenReplaceSameDay() {
-        let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting", "-seedSampleData"]
-        app.launch()
+        let app = XCUIApplication.launchForTesting(seeded: true)
 
         // Pull-ups was started today with a test of 3: "Try 4 today".
         let pullUps = app.staticTexts["Pull-ups"]
@@ -64,9 +62,7 @@ final class ChallengeScreenTests: XCTestCase {
 
     @MainActor
     func testTapHistoryRowEditsAttempt() {
-        let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting", "-seedSampleData"]
-        app.launch()
+        let app = XCUIApplication.launchForTesting(seeded: true)
 
         // Push-ups has attempts of 8 (start) and 10 (yesterday).
         let pushUps = app.staticTexts["Push-ups"]

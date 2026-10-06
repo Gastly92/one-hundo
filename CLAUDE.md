@@ -30,6 +30,17 @@ Keep both updated as features land.
   `OneHundo/Support/` must run in tests (unit and UI tests count). Keep decisions out
   of views: put them in those folders and unit test them. Pass in outside pieces
   (store, clock, notifications) so tests can fake them. Views are reported, not gated.
+- Tests run with Thread Sanitizer: a data race stops the app and fails the test. UI tests
+  launch the app with `XCUIApplication.launchForTesting(seeded:)`, which sets this up.
+- Periphery (CI step after tests) fails on unused code. Delete it rather than ignore it;
+  for a real false positive, add a `// periphery:ignore` comment saying why.
+- Stored data is versioned (`OneHundo/Models/DataSchema.swift`). Before changing a
+  `@Model` (adding, renaming, or retyping a stored property), follow the steps in that
+  file: freeze the old models in `DataSchemaV1`, add the next version and a migration
+  stage, and test that old data still opens. Users' data must never be lost.
+- `OneHundo/PrivacyInfo.xcprivacy` is the App Store privacy manifest. Update it when
+  adding tracking, collecting data, or using APIs Apple requires a reason for
+  (e.g. `UserDefaults`/`@AppStorage`: reason `CA92.1`).
 - Dependabot opens weekly PRs for GitHub Actions versions; merge them if CI is green.
 - After pushing, check CI with the GitHub MCP tools (`actions_list`, `get_job_logs`) and fix
   failures before calling the work done. Re-read Swift changes carefully first, since each
