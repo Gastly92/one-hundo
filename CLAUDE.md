@@ -153,10 +153,10 @@ features land.
   or script changes.
 - Swift packages (in `project.yml`) use
   `exactVersion`. Dependabot can't see them,
-  so CI's `Workflows & scripts` job shows a
-  notice when one has a newer release. Bump
-  it, then re-record snapshots if they
-  change.
+  so the session start hook (and a CI
+  notice) reports newer releases. Mention
+  one to the owner, then bump it and
+  re-record snapshots if they change.
 - Wrapped Swift lines go in one level (2
   spaces), never aligned by hand: SwiftLint's
   `indentation_width` rule checks it.
