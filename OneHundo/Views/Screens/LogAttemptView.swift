@@ -1,8 +1,9 @@
 import SwiftData
 import SwiftUI
 
-/// Log a new attempt (today by default, or a past day), or edit an existing
-/// one. After saving, shows a small celebration or an encouraging message.
+/// Log a new attempt (today by default, or a past day), or
+/// edit an existing one. After saving, shows a small
+/// celebration or an encouraging message.
 struct LogAttemptView: View {
     let challenge: Challenge
     /// The attempt being edited, or nil to log a new one.
@@ -16,49 +17,70 @@ struct LogAttemptView: View {
     @State private var outcome: LogOutcome?
     @State private var bounce = 0
 
-    /// `outcome` lets UI tests open the result directly (see `ScreenHost`).
-    init(challenge: Challenge, attempt: Attempt?, outcome: LogOutcome? = nil) {
+    /// E.g. "Monday, January 5".
+    private static let dayFormat = Date.FormatStyle
+        .dateTime.weekday(.wide).month().day()
+
+    /// `outcome` lets UI tests open the result directly
+    /// (see `ScreenHost`).
+    init(
+        _ challenge: Challenge,
+        editing attempt: Attempt? = nil,
+        outcome: LogOutcome? = nil
+    ) {
         self.challenge = challenge
         self.attempt = attempt
-        _count = State(initialValue: attempt?.count ?? challenge.target())
+        let start = attempt?.count ?? challenge.target()
+        _count = State(initialValue: start)
         _date = State(initialValue: attempt?.date ?? Date())
         _outcome = State(initialValue: outcome)
     }
 
-    private var color: Color { Color(challengeColorName: challenge.colorName) }
+    private var color: Color { challenge.color }
 
-    /// Set when a new log would replace that day's attempt (one attempt per
-    /// day).
+    private var title: Text {
+        attempt == nil
+            ? Text("Log attempt")
+            : Text("Edit attempt")
+    }
+
+    /// Set when a new log would replace that day's attempt
+    /// (one attempt per day).
     private var replacementNote: String? {
-        attempt == nil ? challenge.replacementNote(on: date) : nil
+        guard attempt == nil else { return nil }
+        return challenge.replacementNote(on: date)
     }
 
     var body: some View {
         NavigationStack {
-            Group {
-                if let outcome {
-                    result(outcome)
-                } else {
-                    form
+            content
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    if outcome == nil { buttons }
                 }
-            }
-            .navigationTitle(
-                attempt == nil ? Text("Log attempt") : Text("Edit attempt")
-            )
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                if outcome == nil {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { dismiss() }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Save") { save() }
-                            .accessibilityIdentifier("logSaveButton")
-                    }
-                }
-            }
         }
         .sensoryFeedback(.success, trigger: outcome)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let outcome {
+            result(outcome)
+        } else {
+            form
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var buttons: some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            Button("Cancel") { dismiss() }
+        }
+        ToolbarItem(placement: .confirmationAction) {
+            Button("Save") { save() }
+                .accessibilityIdentifier("logSaveButton")
+        }
     }
 
     private var form: some View {
@@ -66,32 +88,13 @@ struct LogAttemptView: View {
             VStack(alignment: .leading, spacing: 24) {
                 Text("How many did you do?")
                     .font(.title2.bold())
-                NumberEntry(
-                    value: $count, range: 0...9999, identifier: "logCount"
-                )
+                NumberEntry(value: $count, id: "logCount")
                 if challenge.unit != .reps {
                     Text(challenge.unit.name)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
                 }
-
-                if attempt == nil {
-                    DatePicker(
-                        "Date",
-                        selection: $date,
-                        in: ...Date(),
-                        displayedComponents: .date
-                    )
-                } else {
-                    LabeledContent("Date") {
-                        Text(
-                            date,
-                            format: .dateTime.weekday(.wide).month().day()
-                        )
-                            .accessibilityIdentifier("attemptDate")
-                    }
-                }
-
+                dateRow
                 if let replacementNote {
                     Text(replacementNote)
                         .font(.footnote)
@@ -103,7 +106,28 @@ struct LogAttemptView: View {
         .scrollDismissesKeyboard(.interactively)
     }
 
-    private func result(_ outcome: LogOutcome) -> some View {
+    /// A new attempt can pick its day; an edited one keeps
+    /// its own.
+    @ViewBuilder
+    private var dateRow: some View {
+        if attempt == nil {
+            DatePicker(
+                "Date",
+                selection: $date,
+                in: ...Date(),
+                displayedComponents: .date
+            )
+        } else {
+            LabeledContent("Date") {
+                Text(date, format: Self.dayFormat)
+                    .accessibilityIdentifier("attemptDate")
+            }
+        }
+    }
+
+    private func result(
+        _ outcome: LogOutcome
+    ) -> some View {
         VStack(spacing: 20) {
             Spacer()
             Image(systemName: outcome.symbol)
@@ -117,22 +141,9 @@ struct LogAttemptView: View {
             Text(outcome.message)
                 .font(.title3)
                 .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .wrapsText()
                 .foregroundStyle(.secondary)
-            if outcome.isNewBest {
-                HStack(spacing: 6) {
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(color)
-                        .accessibilityHidden(true)
-                    Text("New personal best!")
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityIdentifier("newBestBadge")
-                }
-                .font(.headline)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(color.opacity(0.18), in: Capsule())
-            }
+            if outcome.isNewBest { newBest }
             Spacer()
             Button {
                 dismiss()
@@ -145,6 +156,21 @@ struct LogAttemptView: View {
         }
         .padding()
         .onAppear { bounce += 1 }
+    }
+
+    private var newBest: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "star.fill")
+                .foregroundStyle(color)
+                .accessibilityHidden(true)
+            Text("New personal best!")
+                .wrapsText()
+                .accessibilityIdentifier("newBestBadge")
+        }
+        .font(.headline)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(color.opacity(0.18), in: Capsule())
     }
 
     private func save() {

@@ -5,10 +5,18 @@ struct RootView: View {
         TabView {
             ChallengeListView()
                 .tabItem {
-                    Label("Challenges", systemImage: "list.bullet.rectangle")
+                    Label(
+                        "Challenges",
+                        systemImage: "list.bullet.rectangle"
+                    )
                 }
             CalendarPlaceholderView()
-                .tabItem { Label("Calendar", systemImage: "calendar") }
+                .tabItem {
+                    Label(
+                        "Calendar",
+                        systemImage: "calendar"
+                    )
+                }
         }
     }
 }

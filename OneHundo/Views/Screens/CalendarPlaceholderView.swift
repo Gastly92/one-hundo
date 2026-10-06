@@ -7,7 +7,9 @@ struct CalendarPlaceholderView: View {
             ContentUnavailableView(
                 "Nothing here yet",
                 systemImage: "calendar",
-                description: Text("Coming soon: your attempts, day by day.")
+                description: Text("""
+                    Coming soon: your attempts, day by day.
+                    """)
             )
             .navigationTitle("Calendar")
         }

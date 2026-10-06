@@ -6,64 +6,64 @@ import XCTest
 final class AppLaunchTests: XCTestCase {
     private struct StoreUnavailable: Error {}
 
-    private func inMemoryStore(_: Bool) throws -> ModelContainer {
-        try AppStore.makeContainer(inMemory: true)
+    private func memoryStore(
+        _: Bool
+    ) throws -> ModelContainer {
+        try AppStore.open(inMemory: true)
     }
 
-    func testNormalLaunchOpensStoreWithoutSampleData() throws {
+    /// A launch with an in-memory store.
+    private func start(_ args: [String]) -> AppLaunch {
+        AppLaunch(arguments: args, openStore: memoryStore)
+    }
+
+    /// How many challenges the launch's store holds.
+    private func challenges(
+        in launch: AppLaunch
+    ) throws -> Int {
+        let context = try launch.store.get().mainContext
+        return try context.fetchCount(
+            FetchDescriptor<Challenge>()
+        )
+    }
+
+    func testNormalLaunchHasNoSampleData() throws {
         var askedInMemory: Bool?
-        let launch = AppLaunch(arguments: ["OneHundo"]) { inMemory in
-            askedInMemory = inMemory
-            return try self.inMemoryStore(inMemory)
+        let launch = AppLaunch(arguments: ["OneHundo"]) {
+            askedInMemory = $0
+            return try self.memoryStore($0)
         }
         XCTAssertFalse(launch.isUITesting)
         XCTAssertEqual(askedInMemory, false)
-        let container = try launch.store.get()
-        XCTAssertEqual(
-            try container.mainContext.fetchCount(FetchDescriptor<Challenge>()),
-            0
-        )
+        XCTAssertEqual(try challenges(in: launch), 0)
     }
 
     func testUITestingUsesInMemoryStore() throws {
         var askedInMemory: Bool?
-        let launch = AppLaunch(arguments: ["-uiTesting"]) { inMemory in
-            askedInMemory = inMemory
-            return try self.inMemoryStore(inMemory)
+        let launch = AppLaunch(arguments: ["-uiTesting"]) {
+            askedInMemory = $0
+            return try self.memoryStore($0)
         }
         XCTAssertTrue(launch.isUITesting)
         XCTAssertEqual(askedInMemory, true)
-        let container = try launch.store.get()
-        XCTAssertEqual(
-            try container.mainContext.fetchCount(FetchDescriptor<Challenge>()),
-            0
-        )
+        XCTAssertEqual(try challenges(in: launch), 0)
     }
 
     func testSampleDataIsSeededOnlyForUITests() throws {
-        let seeded = AppLaunch(
-            arguments: ["-uiTesting", "-seedSampleData"],
-            makeContainer: inMemoryStore
+        let seeded = start(
+            ["-uiTesting", "-seedSampleData"]
         )
-        let seededContext = try seeded.store.get().mainContext
-        XCTAssertEqual(
-            try seededContext.fetchCount(FetchDescriptor<Challenge>()), 3
-        )
+        XCTAssertEqual(try challenges(in: seeded), 3)
 
-        // -seedSampleData alone is ignored, so it can never touch real data.
-        let real = AppLaunch(
-            arguments: ["-seedSampleData"], makeContainer: inMemoryStore
-        )
-        let realContext = try real.store.get().mainContext
-        XCTAssertEqual(
-            try realContext.fetchCount(FetchDescriptor<Challenge>()), 0
-        )
+        // -seedSampleData alone is ignored, so it can never
+        // touch real data.
+        let real = start(["-seedSampleData"])
+        XCTAssertEqual(try challenges(in: real), 0)
     }
 
     func testStoreFailureIsReportedNotFatal() {
-        let launch = AppLaunch(
-            arguments: ["-uiTesting", "-seedSampleData"]
-        ) { _ in
+        let args = ["-uiTesting", "-seedSampleData"]
+        let launch = AppLaunch(arguments: args) { _ in
             throw StoreUnavailable()
         }
         guard case .failure(let error) = launch.store else {
@@ -73,47 +73,36 @@ final class AppLaunchTests: XCTestCase {
     }
 
     func testShowScreenOpensOneScreenWithItsData() throws {
-        let detail = AppLaunch(
-            arguments: ["-uiTesting", "-showScreen", "challengeDetail"],
-            makeContainer: inMemoryStore
+        let detail = start(
+            ["-uiTesting", "-showScreen", "challengeDetail"]
         )
         XCTAssertEqual(detail.screen, .challengeDetail)
-        // Screens that show challenges get the sample data; the rest start
-        // empty.
-        let detailContext = try detail.store.get().mainContext
-        XCTAssertEqual(
-            try detailContext.fetchCount(FetchDescriptor<Challenge>()), 3
-        )
+        // Screens that show challenges get the sample data;
+        // the rest start empty.
+        XCTAssertEqual(try challenges(in: detail), 3)
 
-        let welcome = AppLaunch(
-            arguments: ["-uiTesting", "-showScreen", "welcome"],
-            makeContainer: inMemoryStore
+        let welcome = start(
+            ["-uiTesting", "-showScreen", "welcome"]
         )
         XCTAssertEqual(welcome.screen, .welcome)
-        let welcomeContext = try welcome.store.get().mainContext
-        XCTAssertEqual(
-            try welcomeContext.fetchCount(FetchDescriptor<Challenge>()), 0
-        )
+        XCTAssertEqual(try challenges(in: welcome), 0)
     }
 
     func testShowScreenNeedsUITestingAndAKnownScreen() {
         let cases: [[String]] = [
-            ["-showScreen", "welcome"],  // Never outside UI tests.
+            // Never outside UI tests.
+            ["-showScreen", "welcome"],
             ["-uiTesting", "-showScreen", "noSuchScreen"],
-            ["-uiTesting", "-showScreen"],  // No screen name after the flag.
+            // No screen name after the flag.
+            ["-uiTesting", "-showScreen"],
             ["-uiTesting"],
         ]
-        for arguments in cases {
-            XCTAssertNil(
-                AppLaunch(
-                    arguments: arguments, makeContainer: inMemoryStore
-                ).screen,
-                "\(arguments)"
-            )
+        for args in cases {
+            XCTAssertNil(start(args).screen, "\(args)")
         }
     }
 
     func testDefaultStoreOpens() throws {
-        XCTAssertNoThrow(try AppStore.makeContainer(inMemory: true))
+        XCTAssertNoThrow(try AppStore.open(inMemory: true))
     }
 }

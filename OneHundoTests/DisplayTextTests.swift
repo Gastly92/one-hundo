@@ -1,26 +1,32 @@
 import XCTest
 @testable import OneHundo
 
-/// Text built in code (not in views), which goes through the String Catalog.
+/// Text built in code (not in views), which goes through
+/// the String Catalog.
 @MainActor
 final class DisplayTextTests: ChallengeTestCase {
     func testBuiltInsShowTheirCatalogName() {
-        let challenge = makePushUps()
-        // A name stored in another language still shows in the user's language.
-        challenge.name = "Liegestütze"
-        XCTAssertEqual(challenge.displayName, "Push-ups")
+        let pushUps = makePushUps()
+        // A name stored in another language still shows in
+        // the user's language.
+        pushUps.name = "Liegestütze"
+        XCTAssertEqual(pushUps.displayName, "Push-ups")
     }
 
     func testCustomChallengesShowTheirOwnName() {
         let plank = Challenge(
-            name: "Plank", colorName: "teal", startingCount: 30
+            name: "Plank",
+            colorName: "teal",
+            startingCount: 30
         )
         XCTAssertEqual(plank.displayName, "Plank")
     }
 
     func testUnitNames() {
         XCTAssertEqual(
-            ChallengeUnit.allCases.map(\.name), ["reps", "seconds", "minutes"]
+            ChallengeUnit.allCases.map(
+                \.name
+            ), ["reps", "seconds", "minutes"]
         )
     }
 

@@ -5,172 +5,169 @@ import XCTest
 /// Targets, progress, card text, and stats.
 final class ChallengeTests: ChallengeTestCase {
     func testTargetWithNoAttemptsUsesStartingCount() {
-        let challenge = makePushUps()
-        XCTAssertEqual(challenge.target(on: day(1), calendar: calendar), 6)
-        XCTAssertEqual(challenge.currentCount, 5)
+        let pushUps = makePushUps()
+        XCTAssertEqual(pushUps.target(day: 1), 6)
+        XCTAssertEqual(pushUps.currentCount, 5)
     }
 
     func testTargetAfterNormalDay() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
-        XCTAssertEqual(challenge.target(on: day(3), calendar: calendar), 7)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        pushUps.log(6, day: 2)
+        XCTAssertEqual(pushUps.target(day: 3), 7)
     }
 
     func testTargetAfterShortDay() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        XCTAssertEqual(challenge.target(on: day(2), calendar: calendar), 6)
-        challenge.logAttempt(count: 4, on: day(2), calendar: calendar)
-        XCTAssertEqual(challenge.target(on: day(3), calendar: calendar), 5)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        XCTAssertEqual(pushUps.target(day: 2), 6)
+        pushUps.log(4, day: 2)
+        XCTAssertEqual(pushUps.target(day: 3), 5)
     }
 
     func testMissedDaysDoNotChangeTarget() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
-        XCTAssertEqual(challenge.target(on: day(3), calendar: calendar), 7)
-        XCTAssertEqual(challenge.target(on: day(10), calendar: calendar), 7)
+        let pushUps = makePushUps()
+        pushUps.log(6, day: 2)
+        XCTAssertEqual(pushUps.target(day: 3), 7)
+        XCTAssertEqual(pushUps.target(day: 10), 7)
     }
 
     func testLoggingTodayKeepsTodaysTarget() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2, hour: 8), calendar: calendar)
-        XCTAssertEqual(
-            challenge.target(on: day(2, hour: 20), calendar: calendar), 6
-        )
-        XCTAssertEqual(challenge.target(on: day(3), calendar: calendar), 7)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        pushUps.log(6, day: 2, hour: 8)
+        XCTAssertEqual(pushUps.target(day: 2, hour: 20), 6)
+        XCTAssertEqual(pushUps.target(day: 3), 7)
     }
 
     func testTargetIsCappedAtGoal() {
-        let challenge = makePushUps(start: 95, increase: 10)
-        XCTAssertEqual(challenge.target(on: day(1), calendar: calendar), 100)
+        let pushUps = makePushUps(start: 95, increase: 10)
+        XCTAssertEqual(pushUps.target(day: 1), 100)
     }
 
     func testLoggingSameDayReplacesAttempt() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 6, on: day(2, hour: 9), calendar: calendar)
-        challenge.logAttempt(count: 8, on: day(2, hour: 18), calendar: calendar)
-        XCTAssertEqual(challenge.attempts?.count, 1)
-        XCTAssertEqual(
-            challenge.attempt(on: day(2), calendar: calendar)?.count, 8
-        )
-        XCTAssertEqual(challenge.currentCount, 8)
+        let pushUps = makePushUps()
+        pushUps.log(6, day: 2, hour: 9)
+        pushUps.log(8, day: 2, hour: 18)
+        XCTAssertEqual(pushUps.attempts?.count, 1)
+        XCTAssertEqual(pushUps.attempt(day: 2)?.count, 8)
+        XCTAssertEqual(pushUps.currentCount, 8)
     }
 
     func testProgressAndDaysToGoal() {
-        let challenge = makePushUps()
-        XCTAssertEqual(challenge.daysToGoal, 95)
-        challenge.logAttempt(count: 20, on: day(2), calendar: calendar)
-        XCTAssertEqual(challenge.progress, 0.2, accuracy: 0.0001)
-        XCTAssertEqual(challenge.daysToGoal, 80)
-        XCTAssertFalse(challenge.isGoalReached)
-        challenge.logAttempt(count: 100, on: day(3), calendar: calendar)
-        XCTAssertTrue(challenge.isGoalReached)
+        let pushUps = makePushUps()
+        XCTAssertEqual(pushUps.daysToGoal, 95)
+        pushUps.log(20, day: 2)
+        XCTAssertEqual(
+            pushUps.progress, 0.2, accuracy: 0.0001
+        )
+        XCTAssertEqual(pushUps.daysToGoal, 80)
+        XCTAssertFalse(pushUps.isGoalReached)
+        pushUps.log(100, day: 3)
+        XCTAssertTrue(pushUps.isGoalReached)
     }
 
     func testAttemptsAreSavedAndSortedNewestFirst() throws {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        pushUps.log(6, day: 2)
         try context.save()
-        let saved = try context.fetch(FetchDescriptor<Attempt>())
-        XCTAssertEqual(saved.count, 2)
-        XCTAssertEqual(challenge.sortedAttempts.map(\.count), [6, 5])
+        let all = FetchDescriptor<Attempt>()
+        XCTAssertEqual(try context.fetch(all).count, 2)
+        let counts = pushUps.sortedAttempts.map(\.count)
+        XCTAssertEqual(counts, [6, 5])
     }
 
     func testCardTextTryAndDone() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
         XCTAssertEqual(
-            challenge.todayText(on: day(2), calendar: calendar), "Try 6 today"
+            pushUps.todayText(day: 2), "Try 6 today"
         )
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
-        XCTAssertEqual(
-            challenge.todayText(on: day(2), calendar: calendar), "Done: 6"
-        )
-        XCTAssertEqual(challenge.progressText, "6 / 100")
+        pushUps.log(6, day: 2)
+        XCTAssertEqual(pushUps.todayText(day: 2), "Done: 6")
+        XCTAssertEqual(pushUps.progressText, "6 / 100")
     }
 
     func testStartingTestCountsAsDoneOnStartDay() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        XCTAssertEqual(pushUps.todayText(day: 1), "Done: 5")
         XCTAssertEqual(
-            challenge.todayText(on: day(1), calendar: calendar), "Done: 5"
-        )
-        XCTAssertEqual(
-            challenge.todayText(on: day(2), calendar: calendar), "Try 6 today"
+            pushUps.todayText(day: 2), "Try 6 today"
         )
 
         // Logging again on the start day replaces the test.
-        challenge.logAttempt(count: 6, on: day(1, hour: 18), calendar: calendar)
-        XCTAssertEqual(
-            challenge.todayText(on: day(1), calendar: calendar), "Done: 6"
-        )
-        XCTAssertEqual(challenge.target(on: day(2), calendar: calendar), 7)
+        pushUps.log(6, day: 1, hour: 18)
+        XCTAssertEqual(pushUps.todayText(day: 1), "Done: 6")
+        XCTAssertEqual(pushUps.target(day: 2), 7)
     }
 
     func testCardTextUsesUnit() {
-        let challenge = makePushUps(start: 45)
-        challenge.unit = .seconds
+        let plank = makePushUps(start: 45)
+        plank.unit = .seconds
         XCTAssertEqual(
-            challenge.todayText(on: day(2), calendar: calendar),
-            "Try 46 seconds today"
+            plank.todayText(day: 2), "Try 46 seconds today"
         )
-        XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
+        XCTAssertEqual(
+            ChallengeUnit.minutes.format(1), "1 minute"
+        )
         XCTAssertEqual(ChallengeUnit.reps.format(12), "12")
     }
 
     func testBuiltInLookupAndUnit() {
-        let challenge = makePushUps()
-        XCTAssertEqual(challenge.builtIn?.name, "Push-ups")
-        XCTAssertFalse(challenge.isCustom)
-        XCTAssertEqual(challenge.unit, .reps)
-        challenge.unit = .seconds
-        XCTAssertEqual(challenge.unitRaw, "seconds")
+        let pushUps = makePushUps()
+        XCTAssertEqual(pushUps.builtIn?.name, "Push-ups")
+        XCTAssertFalse(pushUps.isCustom)
+        XCTAssertEqual(pushUps.unit, .reps)
+        pushUps.unit = .seconds
+        XCTAssertEqual(pushUps.unitRaw, "seconds")
         XCTAssertEqual(
-            BuiltInChallenge.all.map(\.id), ["pushups", "situps", "pullups"]
+            BuiltInChallenge.all.map(\.id),
+            ["pushups", "situps", "pullups"]
         )
     }
 
     func testPersonalBestIncludesStartingTest() {
-        let challenge = makePushUps()
-        XCTAssertEqual(challenge.personalBest, 5)
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 9, on: day(2), calendar: calendar)
-        challenge.logAttempt(count: 7, on: day(3), calendar: calendar)
-        XCTAssertEqual(challenge.personalBest, 9)
+        let pushUps = makePushUps()
+        XCTAssertEqual(pushUps.personalBest, 5)
+        pushUps.log(5, day: 1)
+        pushUps.log(9, day: 2)
+        pushUps.log(7, day: 3)
+        XCTAssertEqual(pushUps.personalBest, 9)
     }
 
     func testDaysLoggedCountsDistinctDays() {
-        let challenge = makePushUps()
-        XCTAssertEqual(challenge.daysLogged(calendar: calendar), 0)
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2, hour: 8), calendar: calendar)
-        challenge.logAttempt(count: 7, on: day(2, hour: 20), calendar: calendar)
-        challenge.logAttempt(count: 7, on: day(5), calendar: calendar)
-        XCTAssertEqual(challenge.daysLogged(calendar: calendar), 3)
+        let pushUps = makePushUps()
+        XCTAssertEqual(pushUps.daysLogged(in: utc), 0)
+        pushUps.log(5, day: 1)
+        pushUps.log(6, day: 2, hour: 8)
+        pushUps.log(7, day: 2, hour: 20)
+        pushUps.log(7, day: 5)
+        XCTAssertEqual(pushUps.daysLogged(in: utc), 3)
     }
 
     func testUnitFormatting() {
+        let seconds = ChallengeUnit.seconds
+        let minutes = ChallengeUnit.minutes
         XCTAssertEqual(ChallengeUnit.reps.format(1), "1")
-        XCTAssertEqual(ChallengeUnit.seconds.format(1), "1 second")
-        XCTAssertEqual(ChallengeUnit.seconds.format(45), "45 seconds")
-        XCTAssertEqual(ChallengeUnit.minutes.format(1), "1 minute")
-        XCTAssertEqual(ChallengeUnit.minutes.format(3), "3 minutes")
+        XCTAssertEqual(seconds.format(1), "1 second")
+        XCTAssertEqual(seconds.format(45), "45 seconds")
+        XCTAssertEqual(minutes.format(1), "1 minute")
+        XCTAssertEqual(minutes.format(3), "3 minutes")
     }
 
     func testMissingAttemptsListCountsAsNone() {
-        let challenge = makePushUps()
-        challenge.attempts = nil
-        XCTAssertTrue(challenge.allAttempts.isEmpty)
-        XCTAssertEqual(challenge.currentCount, 5)
-        XCTAssertEqual(challenge.daysLogged(calendar: calendar), 0)
+        let pushUps = makePushUps()
+        pushUps.attempts = nil
+        XCTAssertTrue(pushUps.allAttempts.isEmpty)
+        XCTAssertEqual(pushUps.currentCount, 5)
+        XCTAssertEqual(pushUps.daysLogged(in: utc), 0)
     }
 
     func testUnknownStoredUnitFallsBackToReps() {
-        let challenge = makePushUps()
-        challenge.unitRaw = "laps"
-        XCTAssertEqual(challenge.unit, .reps)
+        let pushUps = makePushUps()
+        pushUps.unitRaw = "laps"
+        XCTAssertEqual(pushUps.unit, .reps)
     }
 }

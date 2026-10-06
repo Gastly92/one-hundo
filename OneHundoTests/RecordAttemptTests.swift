@@ -1,147 +1,131 @@
 import XCTest
 @testable import OneHundo
 
-/// Logging an attempt: the outcome (target hit, new best, next target), its
-/// wording, and the Log attempt sheet's button title and replacement note.
+/// Logging an attempt: the outcome (target hit, new best,
+/// next target), its wording, and the Log attempt sheet's
+/// button title and replacement note.
 final class RecordAttemptTests: ChallengeTestCase {
     func testRecordAttemptHittingTargetIsNewBest() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        let outcome = challenge.recordAttempt(
-            count: 6, on: day(2), calendar: calendar
-        )
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        let outcome = pushUps.record(6, day: 2)
         XCTAssertEqual(outcome.target, 6)
         XCTAssertTrue(outcome.hitTarget)
         XCTAssertTrue(outcome.isNewBest)
         XCTAssertEqual(outcome.nextTarget, 7)
         XCTAssertEqual(outcome.title, "Nice work!")
-        XCTAssertEqual(outcome.message, "You did 6. Next time, try for 7.")
+        XCTAssertEqual(
+            outcome.message,
+            "You did 6. Next time, try for 7."
+        )
     }
 
     func testRecordAttemptFallingShort() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
-        let outcome = challenge.recordAttempt(
-            count: 4, on: day(3), calendar: calendar
-        )
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        pushUps.log(6, day: 2)
+        let outcome = pushUps.record(4, day: 3)
         XCTAssertEqual(outcome.target, 7)
         XCTAssertFalse(outcome.hitTarget)
         XCTAssertFalse(outcome.isNewBest)
         XCTAssertEqual(outcome.nextTarget, 5)
         XCTAssertEqual(outcome.title, "Good effort!")
-        XCTAssertEqual(
-            outcome.message,
-            "You did 4, and every one counts. Next time, try for 5."
-        )
+        XCTAssertEqual(outcome.message, """
+            You did 4, and every one counts. \
+            Next time, try for 5.
+            """)
     }
 
     func testMatchingBestIsNotNewBest() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 8, on: day(2), calendar: calendar)
-        XCTAssertFalse(record(challenge, count: 8, day: 3).isNewBest)
-        XCTAssertTrue(record(challenge, count: 9, day: 4).isNewBest)
+        let pushUps = makePushUps()
+        pushUps.log(8, day: 2)
+        XCTAssertFalse(pushUps.record(8, day: 3).isNewBest)
+        XCTAssertTrue(pushUps.record(9, day: 4).isNewBest)
     }
 
     func testReplacingSameDayComparesWithOtherDaysOnly() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
-        challenge.recordAttempt(
-            count: 7, on: day(2, hour: 9), calendar: calendar
-        )
-        // Re-logging day 2 with 6: still above the earlier best of 5, and
-        // replaces the 7.
-        let outcome = challenge.recordAttempt(
-            count: 6, on: day(2, hour: 18), calendar: calendar
-        )
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
+        pushUps.record(7, day: 2, hour: 9)
+        // Re-logging day 2 with 6: still above the earlier
+        // best of 5, and replaces the 7.
+        let outcome = pushUps.record(6, day: 2, hour: 18)
         XCTAssertTrue(outcome.isNewBest)
         XCTAssertEqual(outcome.target, 6)
-        XCTAssertEqual(challenge.attempts?.count, 2)
-        XCTAssertEqual(challenge.personalBest, 6)
+        XCTAssertEqual(pushUps.attempts?.count, 2)
+        XCTAssertEqual(pushUps.personalBest, 6)
     }
 
     func testBeatingStartingTestOnStartDayIsNewBest() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1, hour: 8), calendar: calendar)
-        let outcome = challenge.recordAttempt(
-            count: 6, on: day(1, hour: 18), calendar: calendar
-        )
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1, hour: 8)
+        let outcome = pushUps.record(6, day: 1, hour: 18)
         XCTAssertTrue(outcome.isNewBest)
-        XCTAssertEqual(challenge.attempts?.count, 1)
+        XCTAssertEqual(pushUps.attempts?.count, 1)
     }
 
     func testRecordAttemptReachingGoal() {
-        let challenge = makePushUps(start: 98, increase: 5)
-        let outcome = challenge.recordAttempt(
-            count: 100, on: day(2), calendar: calendar
-        )
+        let pushUps = makePushUps(start: 98, increase: 5)
+        let outcome = pushUps.record(100, day: 2)
         XCTAssertTrue(outcome.reachedGoal)
         XCTAssertEqual(outcome.title, "Goal reached!")
-        XCTAssertEqual(outcome.message, "You hit your goal of 100.")
+        XCTAssertEqual(
+            outcome.message, "You hit your goal of 100."
+        )
         XCTAssertEqual(outcome.nextTarget, 100)
     }
 
     func testOutcomeMessageUsesUnit() {
-        let challenge = makePushUps(start: 45)
-        challenge.unit = .seconds
-        let outcome = challenge.recordAttempt(
-            count: 46, on: day(2), calendar: calendar
-        )
-        XCTAssertEqual(
-            outcome.message,
-            "You did 46 seconds. Next time, try for 47 seconds."
-        )
+        let plank = makePushUps(start: 45)
+        plank.unit = .seconds
+        let outcome = plank.record(46, day: 2)
+        XCTAssertEqual(outcome.message, """
+            You did 46 seconds. \
+            Next time, try for 47 seconds.
+            """)
     }
 
     func testLogButtonTitle() {
-        let challenge = makePushUps()
-        challenge.logAttempt(count: 5, on: day(1), calendar: calendar)
+        let pushUps = makePushUps()
+        pushUps.log(5, day: 1)
         // The starting test counts as that day's attempt.
         XCTAssertEqual(
-            challenge.logButtonTitle(on: day(1), calendar: calendar),
-            "Edit today"
+            pushUps.logButtonTitle(day: 1), "Edit today"
         )
-        challenge.logAttempt(count: 6, on: day(2), calendar: calendar)
+        pushUps.log(6, day: 2)
         XCTAssertEqual(
-            challenge.logButtonTitle(on: day(2), calendar: calendar),
-            "Edit today"
+            pushUps.logButtonTitle(day: 2), "Edit today"
         )
         XCTAssertEqual(
-            challenge.logButtonTitle(on: day(3), calendar: calendar),
-            "Log attempt"
+            pushUps.logButtonTitle(day: 3), "Log attempt"
         )
     }
 
     func testReplacementNote() {
-        let challenge = makePushUps(start: 30)
-        challenge.unit = .seconds
-        XCTAssertNil(challenge.replacementNote(on: day(2), calendar: calendar))
-        challenge.logAttempt(count: 31, on: day(2), calendar: calendar)
-        XCTAssertEqual(
-            challenge.replacementNote(on: day(2, hour: 20), calendar: calendar),
-            "This replaces the 31 seconds you logged that day."
-        )
+        let plank = makePushUps(start: 30)
+        plank.unit = .seconds
+        XCTAssertNil(plank.replacementNote(day: 2))
+        plank.log(31, day: 2)
+        let note = plank.replacementNote(day: 2, hour: 20)
+        XCTAssertEqual(note, """
+            This replaces the 31 seconds you logged \
+            that day.
+            """)
     }
 
     func testOutcomeSymbols() {
-        let challenge = makePushUps(start: 98, increase: 1)
+        let pushUps = makePushUps(start: 98, increase: 1)
         XCTAssertEqual(
-            record(challenge, count: 90, day: 2).symbol,
+            pushUps.record(90, day: 2).symbol,
             "arrow.up.forward.circle.fill"
         )
         XCTAssertEqual(
-            record(challenge, count: 91, day: 3).symbol, "hands.clap.fill"
+            pushUps.record(91, day: 3).symbol,
+            "hands.clap.fill"
         )
         XCTAssertEqual(
-            record(challenge, count: 100, day: 4).symbol, "trophy.fill"
-        )
-    }
-
-    private func record(
-        _ challenge: Challenge, count: Int, day number: Int
-    ) -> LogOutcome {
-        challenge.recordAttempt(
-            count: count, on: day(number), calendar: calendar
+            pushUps.record(100, day: 4).symbol,
+            "trophy.fill"
         )
     }
 }

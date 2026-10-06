@@ -1,20 +1,47 @@
 import XCTest
 
-/// Runs Xcode's accessibility audit (contrast, Dynamic Type, labels, hit areas,
-/// clipped text) on each main screen. Each issue fails the test with the screen
-/// and element.
+/// Runs Xcode's accessibility audit (contrast, Dynamic
+/// Type, labels, hit areas, clipped text) on each main
+/// screen. Each issue fails the test with the screen and
+/// element.
 final class AccessibilityTests: XCTestCase {
     override func setUp() {
         continueAfterFailure = true
     }
 
-    private static let offscreenAtLargeSizes: Set<String> = [
+    /// Standard text styles in the last section of a list:
+    /// at large text sizes they move off screen, so the
+    /// audit can't confirm they scale.
+    private static let offscreen: Set<String> = [
         "History", "Custom challenge", "Coming soon",
-        "Tap an attempt to change it, or swipe left to delete.",
+        """
+        Tap an attempt to change it, or swipe left to \
+        delete.
+        """,
     ]
 
-    /// Audits the current screen, failing once per issue with enough detail to
-    /// find it.
+    /// Every screen in the app (`ScreenID`), each opened
+    /// directly with sample data.
+    @MainActor
+    func testEveryScreen() {
+        for screen in ScreenID.allCases {
+            let app = XCUIApplication.start(screen: screen)
+            let text = app.staticTexts.firstMatch
+            guard text.waitForExistence(timeout: 10) else {
+                XCTFail("[\(screen)] didn't show any text")
+                continue
+            }
+            do {
+                try audit(app, screen: screen.rawValue)
+            } catch {
+                XCTFail("[\(screen)] audit error: \(error)")
+            }
+            app.terminate()
+        }
+    }
+
+    /// Audits the current screen, failing once per issue
+    /// with enough detail to find it.
     @MainActor
     private func audit(
         _ app: XCUIApplication,
@@ -23,11 +50,15 @@ final class AccessibilityTests: XCTestCase {
         line: UInt = #line
     ) throws {
         do {
-            try runAudit(app, screen: screen, file: file, line: line)
-        } catch let error as NSError where error.code == -56 {
-            // "Audit failed to complete in time": retry once; a second timeout
-            // fails.
-            try runAudit(app, screen: screen, file: file, line: line)
+            try runAudit(
+                app, screen: screen, file: file, line: line
+            )
+        } catch let err as NSError where err.code == -56 {
+            // "Audit failed to complete in time": retry
+            // once; a second timeout fails.
+            try runAudit(
+                app, screen: screen, file: file, line: line
+            )
         }
     }
 
@@ -38,61 +69,63 @@ final class AccessibilityTests: XCTestCase {
         file: StaticString,
         line: UInt
     ) throws {
-        // The navigation bar (title, Close, Cancel, Save) is iOS's own: it
-        // doesn't scale with text size, and its glass can read as low contrast
+        // The navigation bar (title, Close, Cancel, Save)
+        // is iOS's own: it doesn't scale with text size,
+        // and its glass can read as low contrast
         // mid-animation.
-        let barFrames = app.navigationBars.descendants(matching: .any)
+        let bars = app.navigationBars
+            .descendants(matching: .any)
             .allElementsBoundByIndex.map(\.frame)
         try app.performAccessibilityAudit { issue in
-            let description = issue.compactDescription
-            // "Nearly passed" contrast passes at larger text sizes; iOS's own
-            // secondary text color gets it. Real contrast failures still fail.
-            if description.contains("nearly passed") { return true }
-            // Text the audit can't tie to any element comes from a system
-            // control (the time picker draws its own); anything in our views
-            // has an element.
-            if issue.element == nil,
-               description.contains("Potentially inaccessible text") {
+            if Self.isExpected(issue, bars: bars) {
                 return true
             }
-            if let found = issue.element, barFrames.contains(found.frame) {
-                return true
-            }
-            // Standard text styles in the last section of a list: at large text
-            // sizes they move off screen, so the audit can't confirm they
-            // scale.
-            if issue.auditType == .dynamicType, let found = issue.element,
-               Self.offscreenAtLargeSizes.contains(found.label) { return true }
-            var element = "no element"
-            if let found = issue.element, found.exists {
-                element = "\(found.elementType.rawValue) "
-                    + "label='\(found.label)' "
-                    + "id='\(found.identifier)' frame=\(found.frame)"
-            }
-            let summary = "[\(screen)] \(description): "
-                + issue.detailedDescription
-            XCTFail("\(summary) | \(element)", file: file, line: line)
+            let found = Self.describe(issue)
+            XCTFail(
+                "[\(screen)] \(found)",
+                file: file, line: line
+            )
             return true
         }
     }
 
-    /// Every screen in the app (`ScreenID`), each opened directly with sample
-    /// data.
+    /// Issues that come from iOS itself, not the app.
     @MainActor
-    func testEveryScreen() {
-        for screen in ScreenID.allCases {
-            let app = XCUIApplication.launchForTesting(screen: screen)
-            let firstText = app.staticTexts.firstMatch
-            guard firstText.waitForExistence(timeout: 10) else {
-                XCTFail("[\(screen)] didn't show any text")
-                continue
-            }
-            do {
-                try audit(app, screen: screen.rawValue)
-            } catch {
-                XCTFail("[\(screen)] audit didn't finish: \(error)")
-            }
-            app.terminate()
+    private static func isExpected(
+        _ issue: XCUIAccessibilityAuditIssue,
+        bars: [CGRect]
+    ) -> Bool {
+        let text = issue.compactDescription
+        // "Nearly passed" contrast passes at larger text
+        // sizes; iOS's own secondary text color gets it.
+        // Real contrast failures still fail.
+        if text.contains("nearly passed") { return true }
+        // Text the audit can't tie to any element comes
+        // from a system control (the time picker draws its
+        // own); anything in our views has an element.
+        guard let element = issue.element else {
+            let phrase = "Potentially inaccessible text"
+            return text.contains(phrase)
         }
+        if bars.contains(element.frame) { return true }
+        return issue.auditType == .dynamicType
+            && offscreen.contains(element.label)
+    }
+
+    /// The issue and its element, to find it on screen.
+    @MainActor
+    private static func describe(
+        _ issue: XCUIAccessibilityAuditIssue
+    ) -> String {
+        var element = "no element"
+        if let found = issue.element, found.exists {
+            let type = found.elementType.rawValue
+            element = "\(type) label='\(found.label)' "
+                + "id='\(found.identifier)' "
+                + "frame=\(found.frame)"
+        }
+        let text = issue.compactDescription
+        let detail = issue.detailedDescription
+        return "\(text): \(detail) | \(element)"
     }
 }
