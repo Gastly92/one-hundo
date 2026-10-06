@@ -20,7 +20,11 @@ echo "$changes"
 # put the images on the PR branch itself.
 saved=$(mktemp -d)
 cp -R "$dir" "$saved/"
-git checkout -- "$dir"
+# (Undo them here first; the folder may not
+# be in git yet.)
+if [ -n "$(git ls-files -- "$dir")" ]; then
+  git checkout -- "$dir"
+fi
 git clean -fdq -- "$dir"
 git fetch -q --depth=1 origin "$BRANCH"
 git checkout -q -B "$BRANCH" FETCH_HEAD
