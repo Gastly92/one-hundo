@@ -9,26 +9,27 @@ final class ChallengeScreenTests: XCTestCase {
     func testLogAttemptThenReplaceSameDay() {
         let app = XCUIApplication.launchForTesting(seeded: true)
 
-        // Pull-ups was started today with a test of 3: "Try 4 today".
-        let pullUps = app.staticTexts["Pull-ups"]
-        XCTAssertTrue(pullUps.waitForExistence(timeout: 10))
-        pullUps.tap()
+        // Push-ups started 3 days ago at 8, logged 10 yesterday: "Try 11 today".
+        let pushUps = app.staticTexts["Push-ups"]
+        XCTAssertTrue(pushUps.waitForExistence(timeout: 10))
+        pushUps.tap()
 
         let logButton = app.buttons["logAttemptButton"]
         XCTAssertTrue(logButton.waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["todayText"].label, "Try 4 today")
-        XCTAssertEqual(app.staticTexts["personalBestValue"].label, "3")
-        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "1")
+        XCTAssertEqual(app.staticTexts["todayText"].label, "Try 11 today")
+        XCTAssertEqual(app.staticTexts["personalBestValue"].label, "10")
+        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "2")
+        XCTAssertEqual(logButton.label, "Log attempt")
 
-        // Log 6: prefilled with today's target of 4, then + twice.
+        // Log 13: prefilled with today's target of 11, then + twice.
         logButton.tap()
         let field = app.textFields["logCount.field"]
         XCTAssertTrue(field.waitForExistence(timeout: 5))
-        XCTAssertEqual(field.value as? String, "4")
+        XCTAssertEqual(field.value as? String, "11")
         let increment = app.buttons["logCount.increment"]
         increment.tap()
         increment.tap()
-        XCTAssertEqual(field.value as? String, "6")
+        XCTAssertEqual(field.value as? String, "13")
         app.buttons["logSaveButton"].tap()
 
         XCTAssertTrue(app.staticTexts["logOutcomeTitle"].waitForExistence(timeout: 5))
@@ -36,28 +37,28 @@ final class ChallengeScreenTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["newBestBadge"].exists)
         app.buttons["logDoneButton"].tap()
 
-        XCTAssertTrue(app.staticTexts["Done: 6"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["personalBestValue"].label, "6")
-        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "1")
+        XCTAssertTrue(app.staticTexts["Done: 13"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["personalBestValue"].label, "13")
+        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "3")
         XCTAssertEqual(logButton.label, "Edit today")
 
         // Logging again the same day replaces today's count.
         logButton.tap()
         XCTAssertTrue(field.waitForExistence(timeout: 5))
-        XCTAssertEqual(field.value as? String, "6")
+        XCTAssertEqual(field.value as? String, "13")
         increment.tap()
         app.buttons["logSaveButton"].tap()
         let done = app.buttons["logDoneButton"]
         XCTAssertTrue(done.waitForExistence(timeout: 5))
         done.tap()
 
-        XCTAssertTrue(app.staticTexts["Done: 7"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "1")
+        XCTAssertTrue(app.staticTexts["Done: 14"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["daysLoggedValue"].label, "3")
 
         // Back on the list, the card shows today's count.
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.staticTexts["7 / 100"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Done: 7"].exists)
+        XCTAssertTrue(app.staticTexts["14 / 100"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Done: 14"].exists)
     }
 
     @MainActor

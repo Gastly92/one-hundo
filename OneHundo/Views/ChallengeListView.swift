@@ -53,7 +53,7 @@ struct ChallengeListView: View {
                 AddChallengeView()
             }
             .sheet(item: $loggingChallenge) { challenge in
-                LogAttemptView(challenge: challenge, attempt: challenge.loggedAttempt(on: Date()))
+                LogAttemptView(challenge: challenge, attempt: challenge.attempt(on: Date()))
             }
             .confirmationDialog(
                 "Delete \(deletingChallenge?.name ?? "challenge")?",

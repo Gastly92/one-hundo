@@ -40,9 +40,9 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 
 Today's target = the latest attempt *before today* (or the starting count if there
 is none) + daily increase, capped at the goal. Missed days don't change it, and
-logging today doesn't move today's target. On the start day, the starting test
-alone doesn't count as "done", so the card says "Try 6 today" after testing at 5.
-Logging again that day replaces the test. Reminder time is stored as minutes after
+logging today doesn't move today's target. The starting test is the start day's
+attempt, so the card says "Done: 5" that day and "Try 6 today" the next (changed in
+0.4.5). Logging again that day replaces the test. Reminder time is stored as minutes after
 midnight; color as a palette name; unit as a raw string.
 
 ## PRs
@@ -77,7 +77,8 @@ e.g. 0.4.1); see CLAUDE.md.
   reminder (toggle and time saved, not scheduled yet), Start.
 - Shared number entry component (− / + and number pad), reused later.
 - Custom challenge row shows as "Coming soon" until PR 5.
-- UI test: start Push-ups with 5, goal 100; the card shows "Try 6 today".
+- UI test: start Push-ups with 5, goal 100; the card shows "Done: 5" (0.4.5; was
+  "Try 6 today").
 
 **Milestone:** you can start real challenges. Worth a TestFlight build.
 
@@ -111,6 +112,8 @@ e.g. 0.4.1); see CLAUDE.md.
 - 0.4.4: no challenge icons. Apple has no push-up, sit-up, or pull-up symbol, so
   challenges are told apart by name and color. `Challenge.icon` is removed from the
   stored data, and the pre-1.0 schema versioning from 4.2 goes too (see Stored data).
+- 0.4.5: the starting test counts as the start day's attempt: the card says "Done: 5"
+  until the next day, instead of "Try 6 today" right after starting.
 
 #### 4.2 Safety tooling before bigger changes ✅
 - Stored data versioning (dropped in 0.4.4 until 1.0, see Stored data above).

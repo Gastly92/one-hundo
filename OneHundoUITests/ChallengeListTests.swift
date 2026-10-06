@@ -39,9 +39,9 @@ final class ChallengeListTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Done: 20"].exists)
         XCTAssertTrue(app.staticTexts["20 / 100"].exists)
 
-        // Started today with a test of 3: the test alone isn't "done".
+        // Started today with a test of 3: the test is today's attempt.
         XCTAssertTrue(app.staticTexts["Pull-ups"].exists)
-        XCTAssertTrue(app.staticTexts["Try 4 today"].exists)
+        XCTAssertTrue(app.staticTexts["Done: 3"].exists)
     }
 
     @MainActor
@@ -79,7 +79,7 @@ final class ChallengeListTests: XCTestCase {
             _ = deleteItem.waitForExistence(timeout: 3)
         }
         XCTAssertTrue(deleteItem.exists)
-        XCTAssertTrue(app.buttons["Log attempt"].exists)
+        XCTAssertTrue(app.buttons["Edit today"].exists)
         deleteItem.tap()
 
         // The confirmation's button has the same label as the menu item, which is gone by now.

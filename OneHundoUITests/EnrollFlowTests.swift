@@ -45,7 +45,8 @@ final class EnrollFlowTests: XCTestCase {
         start.tap()
 
         XCTAssertTrue(app.staticTexts["Push-ups"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["Try 6 today"].exists)
+        // The test is today's attempt; tomorrow's target is 6.
+        XCTAssertTrue(app.staticTexts["Done: 5"].exists)
         XCTAssertTrue(app.staticTexts["5 / 100"].exists)
 
         // Push-ups is now in progress, so it can't be started twice.

@@ -5,7 +5,7 @@ struct ChallengeCard: View {
     let challenge: Challenge
 
     private var color: Color { Color(challengeColorName: challenge.colorName) }
-    private var isDoneToday: Bool { challenge.loggedAttempt(on: Date()) != nil }
+    private var isDoneToday: Bool { challenge.attempt(on: Date()) != nil }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {

@@ -21,7 +21,7 @@ struct ChallengeDetailView: View {
 
     var body: some View {
         // Read once per render so the Today section and button agree.
-        let todayAttempt = challenge.loggedAttempt(on: Date())
+        let todayAttempt = challenge.attempt(on: Date())
 
         List {
             Section {

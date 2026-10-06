@@ -22,24 +22,15 @@ extension Challenge {
         allAttempts.sorted { $0.date > $1.date }
     }
 
-    /// The attempt logged on the same calendar day as `day`, if any.
+    /// The attempt logged on the same calendar day as `day`, if any. That day counts
+    /// as done, including the start day: the starting test is that day's attempt.
     func attempt(on day: Date, calendar: Calendar = .current) -> Attempt? {
         allAttempts.first { calendar.isDate($0.date, inSameDayAs: day) }
     }
 
-    /// The attempt that counts as "done" for `day`. On the day the challenge was
-    /// started, the starting test alone doesn't count, so the card still says
-    /// "Try 6 today" right after testing yourself at 5.
-    func loggedAttempt(on day: Date, calendar: Calendar = .current) -> Attempt? {
-        guard let logged = attempt(on: day, calendar: calendar) else { return nil }
-        let isStartingTest = calendar.isDate(day, inSameDayAs: createdDate)
-            && logged.count == startingCount
-        return isStartingTest ? nil : logged
-    }
-
     /// Card text for `day`: "Try 6 today", or "Done: 6" once logged.
     func todayText(on day: Date = Date(), calendar: Calendar = .current) -> String {
-        if let logged = loggedAttempt(on: day, calendar: calendar) {
+        if let logged = attempt(on: day, calendar: calendar) {
             return "Done: \(unit.format(logged.count))"
         }
         return "Try \(unit.format(target(on: day, calendar: calendar))) today"
@@ -47,7 +38,7 @@ extension Challenge {
 
     /// The Today button and card menu item: "Log attempt", or "Edit today" once logged.
     func logButtonTitle(on day: Date = Date(), calendar: Calendar = .current) -> String {
-        loggedAttempt(on: day, calendar: calendar) == nil ? "Log attempt" : "Edit today"
+        attempt(on: day, calendar: calendar) == nil ? "Log attempt" : "Edit today"
     }
 
     /// Shown when logging a day that already has an attempt, which a new log replaces.
