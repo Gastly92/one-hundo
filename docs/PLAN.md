@@ -116,8 +116,8 @@ e.g. 0.4.1); see CLAUDE.md.
 - No version bump (nothing user-visible).
 
 #### 4.3 Faster CI
-- Tests build once and run on two simulators in parallel (one result bundle, so the
-  coverage gate still counts unit and UI tests together).
+- Tried running tests on two simulators in parallel: the 3-core runner couldn't (the
+  second simulator timed out, the first slowed down 4x), so tests stay on one.
 - The Release device build moves to its own job alongside the tests; the unused
   simulator app build and downloadable app files are dropped. Every check still gates PRs.
 - The CI summary shows build and test times.

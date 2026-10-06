@@ -67,9 +67,8 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      # Build once, then run the tests on two simulators at once (Xcode's parallel
-      # testing gives each test class to a free simulator). One result bundle, so
-      # coverage still counts unit and UI tests together.
+      # Build for testing, then run the tests, timing each. One simulator: the 3-core
+      # runner can't run two (tried in #21: the second timed out, the first slowed 4x).
       - name: Run tests
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j \
@@ -92,7 +91,6 @@ jobs:
           fi
           xcodebuild test-without-building "${common[@]}" \
             -resultBundlePath build/test.xcresult \
-            -parallel-testing-enabled YES -parallel-testing-worker-count 2 \
             > build/test.log 2>&1 || status=$?
           tested=$SECONDS
           grep -E '(Test Case .*(passed|failed)|error:|ThreadSanitizer|\*\* TEST)' build/test.log \
@@ -102,7 +100,7 @@ jobs:
             echo "| Phase | Seconds |"
             echo "|---|---|"
             echo "| Build for testing | $((built - start)) |"
-            echo "| Run tests (2 simulators) | $((tested - built)) |"
+            echo "| Run tests | $((tested - built)) |"
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$status" -ne 0 ]; then
             tail -n 60 build/test.log
