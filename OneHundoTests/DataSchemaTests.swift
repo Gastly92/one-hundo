@@ -36,8 +36,7 @@ final class DataSchemaTests: XCTestCase {
                 configurations: ModelConfiguration(url: storeURL)
             )
             let challenge = Challenge(
-                kind: "pushups", name: "Push-ups", icon: "figure.strengthtraining.traditional",
-                colorName: "orange", startingCount: 5
+                kind: "pushups", name: "Push-ups", colorName: "orange", startingCount: 5
             )
             old.mainContext.insert(challenge)
             challenge.attempts?.append(Attempt(date: Date(), count: 7))

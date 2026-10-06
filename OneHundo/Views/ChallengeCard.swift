@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A challenge in the list grid: icon and name, today's target, and progress.
+/// A challenge in the list grid: name, today's target, and progress.
 struct ChallengeCard: View {
     let challenge: Challenge
 
@@ -9,15 +9,9 @@ struct ChallengeCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: challenge.icon)
-                    .font(.title3)
-                    .foregroundStyle(color)
-                    .accessibilityHidden(true)
-                Text(challenge.name)
-                    .font(.headline)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(challenge.name)
+                .font(.headline)
+                .fixedSize(horizontal: false, vertical: true)
 
             HStack(spacing: 4) {
                 if isDoneToday {

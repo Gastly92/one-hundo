@@ -31,11 +31,11 @@ Check off a PR here (and update `PRODUCT.md` if the design changed) as each one 
 ## Data model
 
 - `Challenge`: id, kind (built-in id or custom), name, unit (reps / seconds /
-  minutes), icon, color, starting count, goal, daily increase, reminder on/off
+  minutes), color, starting count, goal, daily increase, reminder on/off
   and time, created date, completed date (optional), attempts.
 - `Attempt`: date (one per challenge per day), count.
 - `BuiltInChallenge` (static data in code, not stored): id, name, description,
-  icon, form tips, image names.
+  form tips, image names.
 
 Today's target = the latest attempt *before today* (or the starting count if there
 is none) + daily increase, capped at the goal. Missed days don't change it, and
@@ -107,6 +107,9 @@ e.g. 0.4.1); see CLAUDE.md.
 - 0.4.3: both tabs use the standard iOS large title instead of a custom header,
   which still bounced a little when switching tabs. The + becomes an "Add challenge"
   tile at the end of the grid, so the title bar stays plain.
+- 0.4.4: no challenge icons. Apple has no push-up, sit-up, or pull-up symbol, so
+  challenges are told apart by name and color. `Challenge.icon` stays in the stored
+  data (unused) so no migration is needed; drop it in a later schema version.
 
 #### 4.2 Safety tooling before bigger changes ✅
 - Stored data versioning (`DataSchemaV1` and a migration plan), with a test that data
@@ -116,8 +119,8 @@ e.g. 0.4.1); see CLAUDE.md.
 - No version bump (nothing user-visible).
 
 ### 5. Custom challenges and challenge settings
-- Custom challenge form: name, unit, icon grid, color swatches, counts, reminder.
-- Settings screen for any challenge (goal, increase, reminder; name, unit, icon,
+- Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
+- Settings screen for any challenge (goal, increase, reminder; name, unit, and
   color for custom), and Delete challenge with confirmation.
 - Goal can be raised or lowered any time. Lowering it to at or below the current
   count is treated as reaching it (the celebration itself lands in PR 9).
