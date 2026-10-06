@@ -14,21 +14,28 @@ struct OneHundoApp: App {
 
   var body: some Scene {
     WindowGroup {
-      switch launch.store {
-      case .success(let container):
-        Group {
-          if let screen = launch.screen {
-            ScreenHost(screen: screen)
-          } else {
-            RootView()
-          }
+      content.preferredColorScheme(
+        launch.isDark ? .dark : nil
+      )
+    }
+  }
+
+  @ViewBuilder
+  private var content: some View {
+    switch launch.store {
+    case .success(let container):
+      Group {
+        if let screen = launch.screen {
+          ScreenHost(screen: screen)
+        } else {
+          RootView()
         }
-        .modelContainer(container)
-      case .failure(let error):
-        StoreErrorView(
-          details: error.localizedDescription
-        )
       }
+      .modelContainer(container)
+    case .failure(let error):
+      StoreErrorView(
+        details: error.localizedDescription
+      )
     }
   }
 }

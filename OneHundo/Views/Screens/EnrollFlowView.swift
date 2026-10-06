@@ -257,11 +257,9 @@ extension EnrollFlowView {
         range: 1...9999,
         id: "goal"
       )
-      HStack(spacing: 8) {
-        ForEach(quickGoals, id: \.self) {
-          goalChip($0)
-        }
-      }
+      GoalChips(
+        goals: quickGoals, goal: $goal
+      )
     }
   }
 
@@ -311,34 +309,6 @@ extension EnrollFlowView {
       color.opacity(0.12),
       in: .rect(cornerRadius: 14)
     )
-  }
-
-  /// A quick goal button; the selected one is
-  /// filled.
-  private func goalChip(
-    _ choice: Int
-  ) -> some View {
-    let picked = goal == choice
-    let ink = picked ? Color.white : .primary
-    let fill = picked
-      ? Color.accentColor
-      : Color(.tertiarySystemFill)
-    return Button {
-      goal = choice
-    } label: {
-      Text("\(choice)")
-        .font(.body.weight(.semibold))
-        .frame(
-          maxWidth: .infinity, minHeight: 44
-        )
-        .foregroundStyle(ink)
-        .background(fill, in: Capsule())
-    }
-    .buttonStyle(.plain)
-    .accessibilityAddTraits(
-      picked ? .isSelected : []
-    )
-    .testID("goalChoice.\(choice)")
   }
 
   private var isValid: Bool { goal > count }

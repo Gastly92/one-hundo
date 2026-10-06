@@ -115,6 +115,14 @@ final class AppLaunchTests: XCTestCase {
     }
   }
 
+  func testDarkModeOnlyInUITests() {
+    let flag = "-darkMode"
+    let tests = "-uiTesting"
+    XCTAssertTrue(start([tests, flag]).isDark)
+    XCTAssertFalse(start([flag]).isDark)
+    XCTAssertFalse(start([tests]).isDark)
+  }
+
   func testDefaultStoreOpens() throws {
     XCTAssertNoThrow(
       try AppStore.open(inMemory: true)

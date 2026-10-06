@@ -1,10 +1,15 @@
 import XCTest
 
+/// Which audit checks to run.
+private typealias Checks =
+  XCUIAccessibilityAuditType
+
 /// Runs Xcode's accessibility audit
 /// (contrast, Dynamic Type, labels, hit
-/// areas, clipped text) on each main screen.
-/// Each issue fails the test with the screen
-/// and element.
+/// areas, clipped text) on each main screen,
+/// in light mode, dark mode and the largest
+/// text size. Each issue fails the test with
+/// the screen and element.
 final class AccessibilityTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = true
@@ -23,21 +28,66 @@ final class AccessibilityTests: XCTestCase {
     """,
   ]
 
+  /// Every check, in light mode.
+  @MainActor
+  func testLight() {
+    auditScreens(look: "light")
+  }
+
+  /// Dark mode changes colors, so only
+  /// contrast is checked again. The app is
+  /// put in dark mode itself: switching the
+  /// simulator's setting right before launch
+  /// made launches time out.
+  @MainActor
+  func testDark() {
+    auditScreens(
+      look: "dark",
+      .contrast,
+      arguments: ["-darkMode"]
+    )
+  }
+
+  /// The largest text size: text must still
+  /// fit, and buttons stay big enough. (It
+  /// can't scale further, so Dynamic Type
+  /// isn't checked.)
+  @MainActor
+  func testLargestText() {
+    let size = [
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategory"
+        + "AccessibilityXXXL",
+    ]
+    auditScreens(
+      look: "largest",
+      .all.subtracting(.dynamicType),
+      arguments: size
+    )
+  }
+
   /// Every screen in the app (`ScreenID`),
   /// each opened directly with sample data.
   @MainActor
-  func testEveryScreen() {
+  private func auditScreens(
+    look: String,
+    _ types: Checks = .all,
+    arguments: [String] = []
+  ) {
     for screen in ScreenID.allCases {
-      let app = App.start(screen: screen)
+      let app = App.start(
+        screen: screen, arguments: arguments
+      )
+      let name = "\(screen) \(look)"
       let text = app.staticTexts.firstMatch
       guard text.appears(within: 10) else {
-        XCTFail("[\(screen)] showed no text")
+        XCTFail("[\(name)] showed no text")
         continue
       }
       do {
-        try audit(app, on: screen)
+        try audit(app, types, on: name)
       } catch {
-        XCTFail("[\(screen)] audit: \(error)")
+        XCTFail("[\(name)] audit: \(error)")
       }
       app.terminate()
     }
@@ -48,13 +98,15 @@ final class AccessibilityTests: XCTestCase {
   @MainActor
   private func audit(
     _ app: XCUIApplication,
-    on screen: ScreenID,
+    _ types: Checks,
+    on screen: String,
     file: StaticString = #filePath,
     line: UInt = #line
   ) throws {
     do {
       try runAudit(
-        app, screen, file: file, line: line
+        app, types, screen,
+        file: file, line: line
       )
     } catch {
       // "Audit failed to complete in time":
@@ -62,7 +114,8 @@ final class AccessibilityTests: XCTestCase {
       guard (error as NSError).code == -56
       else { throw error }
       try runAudit(
-        app, screen, file: file, line: line
+        app, types, screen,
+        file: file, line: line
       )
     }
   }
@@ -70,7 +123,8 @@ final class AccessibilityTests: XCTestCase {
   @MainActor
   private func runAudit(
     _ app: XCUIApplication,
-    _ screen: ScreenID,
+    _ types: Checks,
+    _ screen: String,
     file: StaticString,
     line: UInt
   ) throws {
@@ -81,7 +135,9 @@ final class AccessibilityTests: XCTestCase {
     let bars = app.navigationBars
       .descendants(matching: .any)
       .allElementsBoundByIndex.map(\.frame)
-    try app.performAccessibilityAudit {
+    try app.performAccessibilityAudit(
+      for: types
+    ) {
       if Self.isExpected($0, bars: bars) {
         return true
       }
