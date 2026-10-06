@@ -20,7 +20,7 @@ jobs:
     outputs:
       code: ${{ github.event_name != 'pull_request' || steps.filter.outputs.code == 'true' }}
     steps:
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         id: filter
         if: github.event_name == 'pull_request'
         with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/realm/swiftlint:latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Lint
         run: |
@@ -55,7 +55,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Show toolchain
         run: |
@@ -125,13 +125,13 @@ jobs:
           cd build/ipa && zip -qry "$GITHUB_WORKSPACE/build/OneHundo-unsigned.ipa" Payload
 
       - name: Upload simulator app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OneHundo-simulator
           path: build/OneHundo-simulator.zip
 
       - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OneHundo-unsigned-ipa
           path: build/OneHundo-unsigned.ipa
