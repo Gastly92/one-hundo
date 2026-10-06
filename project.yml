@@ -26,9 +26,8 @@ settings:
 # Test-only libraries.
 packages:
   # Pinned: a new version can change how
-  # snapshots render. A weekly workflow
-  # (updates.yml) opens an issue when a newer
-  # one is out.
+  # snapshots render. CI shows a notice when
+  # a newer one is out.
   SnapshotTesting:
     url: https://github.com/pointfreeco/swift-snapshot-testing
     exactVersion: 1.18.9
