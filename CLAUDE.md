@@ -34,6 +34,8 @@ Keep both updated as features land.
   launch the app with `XCUIApplication.launchForTesting(seeded:)`, which sets this up.
 - Periphery (CI step after tests) fails on unused code. Delete it rather than ignore it;
   for a real false positive, add a `// periphery:ignore` comment saying why.
+  Homebrew marks it deprecated (archived upstream, disabled 2027-08); if it stops
+  installing or supporting the current Xcode, remove the CI step.
 - Stored data is versioned (`OneHundo/Models/DataSchema.swift`). Before changing a
   `@Model` (adding, renaming, or retyping a stored property), follow the steps in that
   file: freeze the old models in `DataSchemaV1`, add the next version and a migration
