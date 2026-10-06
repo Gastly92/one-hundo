@@ -24,13 +24,12 @@ settings:
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
 # Test-only libraries.
+# Their versions live in
+# Packages/TestSupport/Package.swift, where
+# Dependabot can update them.
 packages:
-  # Pinned: a new version can change how
-  # snapshots render. CI shows a notice when
-  # a newer one is out.
-  SnapshotTesting:
-    url: https://github.com/pointfreeco/swift-snapshot-testing
-    exactVersion: 1.18.9
+  TestSupport:
+    path: Packages/TestSupport
 targets:
   OneHundo:
     type: application
@@ -68,7 +67,7 @@ targets:
       - OneHundoTests
     dependencies:
       - target: OneHundo
-      - package: SnapshotTesting
+      - package: TestSupport
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER:

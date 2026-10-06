@@ -151,12 +151,12 @@ features land.
   (`.claude/hooks/session-start.sh`) installs
   them, so run both before pushing workflow
   or script changes.
-- Swift packages (in `project.yml`) use
-  `exactVersion`. Dependabot can't see them,
-  so the session start hook (and a CI
-  notice) reports newer releases. Mention
-  one to the owner, then bump it and
-  re-record snapshots if they change.
+- Test-only Swift packages are declared in
+  `Packages/TestSupport/Package.swift`
+  (pinned with `exact:`), which tests
+  `import TestSupport` to get. Dependabot
+  opens weekly PRs for them; if snapshots
+  change, re-record them before merging.
 - Wrapped Swift lines go in one level (2
   spaces), never aligned by hand: SwiftLint's
   `indentation_width` rule checks it.
@@ -184,7 +184,8 @@ features land.
   `UserDefaults`/`@AppStorage`: reason
   `CA92.1`).
 - Dependabot opens weekly PRs for GitHub
-  Actions versions; merge them if CI is green.
+  Actions and test-only Swift package
+  versions; merge them if CI is green.
 - After pushing, check CI with the GitHub MCP
   tools (`actions_list`, `get_job_logs`) and
   fix failures before calling the work done.

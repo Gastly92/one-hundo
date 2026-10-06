@@ -43,6 +43,7 @@ jobs:
             - 'OneHundoTests/**'
             - 'OneHundoUITests/**'
             - 'project.yml'
+            - 'Packages/**'
             - '.swiftlint.yml'
             - '.github/scripts/**'
             - '.github/workflows/**'
@@ -93,11 +94,6 @@ jobs:
       run: |
         shellcheck .github/scripts/*.sh \
           .claude/hooks/*.sh
-
-    # A notice (not a failure) when a pinned
-    # Swift package has a newer release.
-    - name: Package updates
-      run: .github/scripts/check-updates.sh
 
     # Also runs ShellCheck on each `run:`
     # block.
