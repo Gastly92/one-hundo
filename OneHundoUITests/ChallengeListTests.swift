@@ -24,9 +24,7 @@ final class ChallengeListTests: XCTestCase {
         startButton.tap()
         XCTAssertTrue(app.navigationBars["Add challenge"].waitForExistence(timeout: 5))
         app.buttons["Close"].tap()
-
-        app.buttons["addChallengeButton"].tap()
-        XCTAssertTrue(app.navigationBars["Add challenge"].waitForExistence(timeout: 5))
+        XCTAssertTrue(startButton.waitForExistence(timeout: 5))
     }
 
     @MainActor
@@ -50,11 +48,14 @@ final class ChallengeListTests: XCTestCase {
     }
 
     @MainActor
-    func testAddButtonIsInTheNavigationBar() {
-        let app = launch()
-        let bar = app.navigationBars["Challenges"]
-        XCTAssertTrue(bar.waitForExistence(timeout: 10))
-        XCTAssertTrue(bar.buttons["addChallengeButton"].exists)
+    func testAddChallengeTileOpensAddChallenge() {
+        let app = launch(seeded: true)
+        let tile = app.buttons["addChallengeButton"]
+        XCTAssertTrue(tile.waitForExistence(timeout: 10))
+        // The title bar stays plain: no buttons.
+        XCTAssertEqual(app.navigationBars["Challenges"].buttons.count, 0)
+        tile.tap()
+        XCTAssertTrue(app.navigationBars["Add challenge"].waitForExistence(timeout: 5))
     }
 
     @MainActor

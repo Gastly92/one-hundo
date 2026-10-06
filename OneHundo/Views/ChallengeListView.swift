@@ -10,6 +10,7 @@ struct ChallengeListView: View {
     /// The challenge waiting for delete confirmation.
     @State private var deletingChallenge: Challenge?
     @Environment(\.modelContext) private var modelContext
+    @ScaledMetric(relativeTo: .headline) private var addTileHeight: CGFloat = 120
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -37,23 +38,14 @@ struct ChallengeListView: View {
                                     .onTapGesture { path.append(challenge) }
                                     .contextMenu { cardMenu(for: challenge) }
                             }
+                            addTile
                         }
                         .padding()
                     }
                 }
             }
-            // The system large title: iOS keeps it steady when switching tabs.
+            // The plain system large title: iOS keeps it steady when switching tabs.
             .navigationTitle("Challenges")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isAddingChallenge = true
-                    } label: {
-                        Label("Add challenge", systemImage: "plus")
-                    }
-                    .accessibilityIdentifier("addChallengeButton")
-                }
-            }
             .navigationDestination(for: Challenge.self) { challenge in
                 ChallengeDetailView(challenge: challenge)
             }
@@ -77,6 +69,32 @@ struct ChallengeListView: View {
                 Text("This deletes the challenge and all its attempts. You can't undo this.")
             }
         }
+    }
+
+    /// The last card in the grid opens Add challenge (the welcome screen has its own
+    /// button). It sits in the grid rather than the title bar, which keeps the title plain.
+    private var addTile: some View {
+        Button {
+            isAddingChallenge = true
+        } label: {
+            VStack(spacing: 8) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.title)
+                    .accessibilityHidden(true)
+                Text("Add challenge")
+                    .font(.headline)
+            }
+            .foregroundStyle(Color.accentColor)
+            .padding()
+            .frame(maxWidth: .infinity, minHeight: addTileHeight)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(.secondary, style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("addChallengeButton")
     }
 
     @ViewBuilder
