@@ -243,8 +243,8 @@ to TestFlight and use it daily.
   if one isn't in the list.
 - A SwiftLint rule flags untranslated
   sentences in `Models/` and `Support/`.
-- Step 5.1's snapshot tests can loop over the
-  same list.
+- Step 4.11's snapshot tests can loop over
+  the same list.
 - No version bump (nothing visible changes).
 
 #### 4.6 80-character lines ✅
@@ -288,24 +288,21 @@ to TestFlight and use it daily.
   `.github/scripts/run-tests.sh`.
 - No version bump (nothing visible changes).
 
-### 5. Custom challenges and settings
-- Custom challenge form: name, unit, color
-  swatches, counts, reminder (no icon).
-- Settings screen for any challenge (goal,
-  increase, reminder; name, unit, and color
-  for custom), and Delete challenge with
-  confirmation.
-- Goal can be raised or lowered any time.
-  Lowering it to at or below the current count
-  is treated as reaching it (the celebration
-  itself lands in PR 9).
-- UI test: create a "Plank" challenge in
-  seconds and see its card.
+#### 4.10 Workflow, script and lint checks ✅
+- A `Workflows & scripts` CI job (part of the
+  CI Gate) runs actionlint on the workflows
+  and ShellCheck on the scripts, pinned to
+  versions that also run in this container.
+- More SwiftLint rules, including
+  `indentation_width` (2 spaces; wrapped lines
+  go in one level, not aligned by hand).
+- No version bump (nothing visible changes).
 
-### 5.1 Screen snapshot tests
-Most screens exist by now, and steps 6–9
-change a lot of UI, so this is where snapshot
-tests start paying off.
+#### 4.11 Screen snapshot tests
+Most screens exist by now, and steps 5–9
+change a lot of UI (step 5 reworks shared
+pieces like the number entry), so snapshots
+go in first.
 - Add Point-Free's `swift-snapshot-testing` to
   the test targets only (SPM via
   `project.yml`).
@@ -327,6 +324,26 @@ tests start paying off.
 - No version bump (nothing user-visible).
 - Then add a coverage gate for views, set from
   what the snapshots reach.
+
+#### 4.12 Dark mode and large text audit
+- Run the accessibility audit on every screen
+  in dark mode and at the largest text size
+  too (about 2–3 more minutes of CI).
+- No version bump (nothing visible changes).
+
+### 5. Custom challenges and settings
+- Custom challenge form: name, unit, color
+  swatches, counts, reminder (no icon).
+- Settings screen for any challenge (goal,
+  increase, reminder; name, unit, and color
+  for custom), and Delete challenge with
+  confirmation.
+- Goal can be raised or lowered any time.
+  Lowering it to at or below the current count
+  is treated as reaching it (the celebration
+  itself lands in PR 9).
+- UI test: create a "Plank" challenge in
+  seconds and see its card.
 
 ### 6. Daily reminders
 - Ask notification permission when a reminder

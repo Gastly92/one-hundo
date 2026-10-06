@@ -12,13 +12,29 @@ disabled_rules:
   - trailing_comma
 
 opt_in_rules:
+  - closure_spacing
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
   - contains_over_first_not_nil
   - empty_count
+  - empty_string
   - first_where
+  - indentation_width
   - last_where
+  - modifier_order
+  - prefer_zero_over_explicit_init
   - redundant_nil_coalescing
   - sorted_first_last
   - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - yoda_condition
+
+# 2-space indents; a wrapped line goes in one
+# level (2), not aligned by hand.
+indentation_width:
+  indentation_width: 2
 
 identifier_name:
   excluded:

@@ -131,17 +131,16 @@ final class AccessibilityTests: XCTestCase {
   private static func describe(
     _ issue: XCUIAccessibilityAuditIssue
   ) -> String {
-    var element = "no element"
-    if let found = issue.element,
-       found.exists {
-      let type = found.elementType.rawValue
-      element = "\(type) "
-        + "label='\(found.label)' "
-        + "id='\(found.identifier)' "
-        + "frame=\(found.frame)"
-    }
     let text = issue.compactDescription
     let detail = issue.detailedDescription
-    return "\(text): \(detail) | \(element)"
+    let head = "\(text): \(detail)"
+    guard let found = issue.element,
+      found.exists
+    else { return "\(head) | no element" }
+    let type = found.elementType.rawValue
+    return "\(head) | \(type) "
+      + "label='\(found.label)' "
+      + "id='\(found.identifier)' "
+      + "frame=\(found.frame)"
   }
 }
