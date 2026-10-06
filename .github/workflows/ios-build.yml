@@ -59,6 +59,17 @@ jobs:
     - name: Check line length
       run: .github/scripts/check-lines.py
 
+  # Every String Catalog key is still used
+  # by some Swift string.
+  strings:
+    name: String catalog
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Check for unused keys
+      run: .github/scripts/check-strings.py
+
   # Static checks for the CI workflows
   # (actionlint) and shell scripts
   # (ShellCheck), so a broken TestFlight
@@ -75,12 +86,13 @@ jobs:
         venv="$RUNNER_TEMP/venv"
         python3 -m venv "$venv"
         "$venv/bin/pip" install -q \
-          shellcheck-py==0.11.0.1 \
-          actionlint-py==1.7.12.25
+          -r .github/scripts/checkers.txt
         echo "$venv/bin" >> "$GITHUB_PATH"
 
     - name: ShellCheck
-      run: shellcheck .github/scripts/*.sh
+      run: |
+        shellcheck .github/scripts/*.sh \
+          .claude/hooks/*.sh
 
     # Also runs ShellCheck on each `run:`
     # block.
@@ -233,6 +245,7 @@ jobs:
     needs:
     - changes
     - lines
+    - strings
     - scripts
     - lint
     - screens
@@ -245,18 +258,21 @@ jobs:
       env:
         CHANGES: ${{ needs.changes.result }}
         LINES: ${{ needs.lines.result }}
+        STRINGS: ${{ needs.strings.result }}
         SCRIPTS: ${{ needs.scripts.result }}
         LINT: ${{ needs.lint.result }}
         SCREENS: ${{ needs.screens.result }}
         BUILD: ${{ needs.build.result }}
         RELEASE: ${{ needs.release.result }}
       run: |
-        for job in CHANGES LINES SCRIPTS \
-          LINT SCREENS BUILD RELEASE; do
+        for job in CHANGES LINES STRINGS \
+          SCRIPTS LINT SCREENS BUILD \
+          RELEASE; do
           echo "$job: ${!job}"
         done
         [ "$CHANGES" = success ] || exit 1
         [ "$LINES" = success ] || exit 1
+        [ "$STRINGS" = success ] || exit 1
         [ "$SCRIPTS" = success ] || exit 1
         for result in "$LINT" "$SCREENS" \
           "$BUILD" "$RELEASE"; do

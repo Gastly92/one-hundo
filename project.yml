@@ -25,9 +25,13 @@ settings:
     SWIFT_EMIT_LOC_STRINGS: YES
 # Test-only libraries.
 packages:
+  # Pinned: a new version can change how
+  # snapshots render. A weekly workflow
+  # (updates.yml) opens an issue when a newer
+  # one is out.
   SnapshotTesting:
     url: https://github.com/pointfreeco/swift-snapshot-testing
-    minorVersion: 1.18.0
+    exactVersion: 1.18.9
 targets:
   OneHundo:
     type: application

@@ -73,6 +73,10 @@ features land.
     "2 days") get plural forms in
     `OneHundo/Localizable.xcstrings`; edit its
     JSON by hand (no Xcode here).
+  - CI's `String catalog` job
+    (`.github/scripts/check-strings.py`)
+    fails on catalog keys no Swift string
+    uses any more; delete them with the code.
   - `LocalizationTests` runs every `ScreenID`
     in a pseudo-language that brackets
     translatable text, and fails on
@@ -140,11 +144,18 @@ features land.
   Re-record after Xcode or iOS updates.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
-  ShellCheck on `.github/scripts/`. Both
-  install here with
-  `pip install shellcheck-py actionlint-py`,
-  so run them before pushing workflow or
-  script changes.
+  ShellCheck on `.github/scripts/` and
+  `.claude/hooks/`. Versions are pinned in
+  `.github/scripts/checkers.txt`; the cloud
+  session start hook
+  (`.claude/hooks/session-start.sh`) installs
+  them, so run both before pushing workflow
+  or script changes.
+- Swift packages (in `project.yml`) use
+  `exactVersion`. Dependabot can't see them,
+  so `updates.yml` opens an issue weekly
+  when one has a newer release. Bump it,
+  then re-record snapshots if they change.
 - Wrapped Swift lines go in one level (2
   spaces), never aligned by hand: SwiftLint's
   `indentation_width` rule checks it.
@@ -199,9 +210,10 @@ features land.
   `actions_run_trigger` (`run_workflow`,
   `workflow_id: testflight.yml`, `ref: main`)
   when the owner asks to ship or test on their
-  phone. Verify the log ends with "Upload
+  phone. Verify the log shows "Upload
   succeeded". The build shows in TestFlight
-  about 5–15 min later.
+  about 5–15 min later. Each upload tags its
+  commit, e.g. `v0.4.6-build12`.
 - Version scheme (`MARKETING_VERSION` in
   `project.yml`; Apple allows only three
   numbers):
