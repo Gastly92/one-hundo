@@ -104,6 +104,9 @@ e.g. 0.4.1); see CLAUDE.md.
   from PR 5). History rows are tap-to-edit with a hint.
 - 0.4.2: both tabs share one title header, so the title doesn't jump when
   switching tabs.
+- 0.4.3: both tabs use the standard iOS large title instead of a custom header,
+  which still bounced a little when switching tabs. The + becomes an "Add challenge"
+  tile at the end of the grid, so the title bar stays plain.
 
 #### 4.2 Safety tooling before bigger changes ✅
 - Stored data versioning (`DataSchemaV1` and a migration plan), with a test that data

@@ -10,6 +10,7 @@ struct ChallengeListView: View {
     /// The challenge waiting for delete confirmation.
     @State private var deletingChallenge: Challenge?
     @Environment(\.modelContext) private var modelContext
+    @ScaledMetric(relativeTo: .headline) private var addTileHeight: CGFloat = 120
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -23,8 +24,7 @@ struct ChallengeListView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            VStack(spacing: 0) {
-                header
+            Group {
                 if activeChallenges.isEmpty {
                     WelcomeView { isAddingChallenge = true }
                 } else {
@@ -38,15 +38,14 @@ struct ChallengeListView: View {
                                     .onTapGesture { path.append(challenge) }
                                     .contextMenu { cardMenu(for: challenge) }
                             }
+                            addTile
                         }
                         .padding()
                     }
                 }
             }
+            // The plain system large title: iOS keeps it steady when switching tabs.
             .navigationTitle("Challenges")
-            // A custom header instead of the system bar, so the + sits on the
-            // same line as the big title.
-            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Challenge.self) { challenge in
                 ChallengeDetailView(challenge: challenge)
             }
@@ -72,20 +71,30 @@ struct ChallengeListView: View {
         }
     }
 
-    private var header: some View {
-        TabHeader(title: "Challenges", identifier: "challengesTitle") {
-            Button {
-                isAddingChallenge = true
-            } label: {
-                Image(systemName: "plus")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 36, height: 36)
+    /// The last card in the grid opens Add challenge (the welcome screen has its own
+    /// button). It sits in the grid rather than the title bar, which keeps the title plain.
+    private var addTile: some View {
+        Button {
+            isAddingChallenge = true
+        } label: {
+            VStack(spacing: 8) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.title)
+                    .accessibilityHidden(true)
+                Text("Add challenge")
+                    .font(.headline)
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Add challenge")
-            .accessibilityIdentifier("addChallengeButton")
+            .foregroundStyle(Color.accentColor)
+            .padding()
+            .frame(maxWidth: .infinity, minHeight: addTileHeight)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(.secondary, style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 16))
         }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("addChallengeButton")
     }
 
     @ViewBuilder

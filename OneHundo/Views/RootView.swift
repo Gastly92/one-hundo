@@ -15,18 +15,12 @@ struct RootView: View {
 struct CalendarPlaceholderView: View {
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                TabHeader(title: "Calendar", identifier: "calendarTitle")
-                ContentUnavailableView(
-                    "Nothing here yet",
-                    systemImage: "calendar",
-                    description: Text("Coming soon: your attempts, day by day.")
-                )
-                .frame(maxHeight: .infinity)
-            }
+            ContentUnavailableView(
+                "Nothing here yet",
+                systemImage: "calendar",
+                description: Text("Coming soon: your attempts, day by day.")
+            )
             .navigationTitle("Calendar")
-            // Same custom header as the Challenges tab, so titles line up.
-            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
