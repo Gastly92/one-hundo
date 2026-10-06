@@ -28,10 +28,14 @@ class ChallengeTestCase: XCTestCase {
 
     /// Noon on the given day of January 2026, UTC.
     func day(_ day: Int, hour: Int = 12) -> Date {
-        calendar.date(from: DateComponents(year: 2026, month: 1, day: day, hour: hour))!
+        calendar.date(
+            from: DateComponents(year: 2026, month: 1, day: day, hour: hour)
+        )!
     }
 
-    func makePushUps(start: Int = 5, goal: Int = 100, increase: Int = 1) -> Challenge {
+    func makePushUps(
+        start: Int = 5, goal: Int = 100, increase: Int = 1
+    ) -> Challenge {
         let challenge = Challenge(
             kind: BuiltInChallenge.pushUps.id,
             name: "Push-ups",

@@ -1,7 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// Starting a built-in challenge: intro, test yourself, goal and pace, reminder, Start.
+/// Starting a built-in challenge: intro, test yourself, goal and pace,
+/// reminder, Start.
 struct EnrollFlowView: View {
     let builtIn: BuiltInChallenge
     /// Called after the challenge is saved, to close the Add challenge sheet.
@@ -16,7 +17,11 @@ struct EnrollFlowView: View {
     @State private var step: Step
 
     /// `startAt` lets UI tests open a later step directly (see `ScreenHost`).
-    init(builtIn: BuiltInChallenge, startAt step: Step = .intro, onStarted: @escaping () -> Void) {
+    init(
+        builtIn: BuiltInChallenge,
+        startAt step: Step = .intro,
+        onStarted: @escaping () -> Void
+    ) {
         self.builtIn = builtIn
         self.onStarted = onStarted
         _step = State(initialValue: step)
@@ -30,7 +35,9 @@ struct EnrollFlowView: View {
     private static let goalChoices = [50, 100, 150, 200]
 
     private static var defaultReminderTime: Date {
-        Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: Date()) ?? Date()
+        Calendar.current.date(
+            bySettingHour: 18, minute: 0, second: 0, of: Date()
+        ) ?? Date()
     }
 
     private var color: Color { Color(challengeColorName: builtIn.colorName) }
@@ -44,7 +51,8 @@ struct EnrollFlowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .scrollDismissesKeyboard(.interactively)
-        // Solid backgrounds: the sheet's translucent default lowers text contrast.
+        // Solid backgrounds: the sheet's translucent default lowers text
+        // contrast.
         .background(Color(.systemBackground))
         .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationTitle(builtIn.name)
@@ -71,7 +79,10 @@ struct EnrollFlowView: View {
                 Label(tip, systemImage: "checkmark.circle")
                     .foregroundStyle(.primary)
             }
-            Text("Warm up, then test yourself: do as many as you can in one go, with good form.")
+            Text("""
+                Warm up, then test yourself: do as many as you can in one go, \
+                with good form.
+                """)
                 .foregroundStyle(.secondary)
         }
     }
@@ -80,7 +91,10 @@ struct EnrollFlowView: View {
         VStack(alignment: .leading, spacing: 24) {
             Text(builtIn.testQuestion)
                 .font(.title2.bold())
-            NumberEntry(value: $startingCount, range: 0...999, identifier: "startingCount")
+            NumberEntry(
+                value: $startingCount, range: 0...999,
+                identifier: "startingCount"
+            )
             Text("This is your starting point. Be honest; small steps add up.")
                 .foregroundStyle(.secondary)
         }
@@ -91,7 +105,10 @@ struct EnrollFlowView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Set your plan")
                     .font(.title2.bold())
-                Text("You can do \(startingCount) today. How many do you want to reach?")
+                Text("""
+                    You can do \(startingCount) today. \
+                    How many do you want to reach?
+                    """)
                     .foregroundStyle(.secondary)
             }
 
@@ -100,7 +117,7 @@ struct EnrollFlowView: View {
                     .font(.headline)
                 NumberEntry(value: $goal, range: 1...9999, identifier: "goal")
                 HStack(spacing: 8) {
-                    ForEach(Self.goalChoices.filter { $0 > startingCount }, id: \.self) { choice in
+                    ForEach(quickGoals, id: \.self) { choice in
                         goalChip(choice)
                     }
                 }
@@ -125,7 +142,8 @@ struct EnrollFlowView: View {
     /// "5 today → 6 tomorrow → 100 goal", plus how long it should take.
     private var planPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // One sentence, so it wraps instead of clipping at large text sizes.
+            // One sentence, so it wraps instead of clipping at large text
+            // sizes.
             let today = Text("\(startingCount)").bold()
             let tomorrow = Text("\(tomorrowTarget)").bold()
             let target = Text("\(goal)").bold()
@@ -137,7 +155,9 @@ struct EnrollFlowView: View {
 
             Text(paceText)
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(goal > startingCount ? Color.primary : Color.red)
+                .foregroundStyle(
+                    goal > startingCount ? Color.primary : Color.red
+                )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -165,11 +185,20 @@ struct EnrollFlowView: View {
     }
 
     private var tomorrowTarget: Int {
-        Progression.target(baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal)
+        Progression.target(
+            baseline: startingCount, dailyIncrease: dailyIncrease, goal: goal
+        )
+    }
+
+    /// The quick goal buttons above today's count.
+    private var quickGoals: [Int] {
+        Self.goalChoices.filter { $0 > startingCount }
     }
 
     private var paceText: String {
-        Progression.paceText(from: startingCount, goal: goal, dailyIncrease: dailyIncrease)
+        Progression.paceText(
+            from: startingCount, goal: goal, dailyIncrease: dailyIncrease
+        )
     }
 
     private var reminder: some View {
@@ -178,17 +207,23 @@ struct EnrollFlowView: View {
                 .font(.title2.bold())
             Toggle("Remind me each day", isOn: $reminderEnabled)
             if reminderEnabled {
-                DatePicker("Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                DatePicker(
+                    "Time", selection: $reminderTime,
+                    displayedComponents: .hourAndMinute
+                )
             }
-            Text("Your reminder time is saved now; notifications arrive in a later update.")
+            Text("""
+                Your reminder time is saved now; notifications arrive in a \
+                later update.
+                """)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
     }
 
     private var bottomBar: some View {
-        // The step count lives here, on a solid background: at the top of the scroll
-        // view, iOS fades content under the navigation bar.
+        // The step count lives here, on a solid background: at the top of the
+        // scroll view, iOS fades content under the navigation bar.
         VStack(spacing: 10) {
             Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
                 .font(.subheadline.weight(.medium))
@@ -252,7 +287,9 @@ struct EnrollFlowView: View {
     }
 
     private func start() {
-        let time = Calendar.current.dateComponents([.hour, .minute], from: reminderTime)
+        let time = Calendar.current.dateComponents(
+            [.hour, .minute], from: reminderTime
+        )
         let challenge = Challenge(
             kind: builtIn.id,
             name: builtIn.name,

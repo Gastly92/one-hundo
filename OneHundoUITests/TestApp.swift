@@ -1,24 +1,30 @@
 import XCTest
 
 extension XCUIApplication {
-    /// Launches the app for a UI test with a fresh in-memory store, optionally filled
-    /// with sample challenges. If Thread Sanitizer finds a data race, the app stops,
-    /// so the test fails.
+    /// Launches the app for a UI test with a fresh in-memory store, optionally
+    /// filled with sample challenges. If Thread Sanitizer finds a data race,
+    /// the app stops, so the test fails.
     @MainActor
     static func launchForTesting(
         seeded: Bool = false,
         arguments: [String] = []
     ) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"] + (seeded ? ["-seedSampleData"] : []) + arguments
+        let seed = seeded ? ["-seedSampleData"] : []
+        app.launchArguments = ["-uiTesting"] + seed + arguments
         app.launchEnvironment["TSAN_OPTIONS"] = "halt_on_error=1"
         app.launch()
         return app
     }
 
-    /// Launches straight into one screen (see `ScreenID` and the app's `ScreenHost`).
+    /// Launches straight into one screen (see `ScreenID` and the app's
+    /// `ScreenHost`).
     @MainActor
-    static func launchForTesting(screen: ScreenID, arguments: [String] = []) -> XCUIApplication {
-        launchForTesting(arguments: ["-showScreen", screen.rawValue] + arguments)
+    static func launchForTesting(
+        screen: ScreenID, arguments: [String] = []
+    ) -> XCUIApplication {
+        launchForTesting(
+            arguments: ["-showScreen", screen.rawValue] + arguments
+        )
     }
 }

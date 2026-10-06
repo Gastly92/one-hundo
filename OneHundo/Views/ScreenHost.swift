@@ -1,9 +1,10 @@
 import SwiftData
 import SwiftUI
 
-/// Shows one screen on its own for UI tests (`-uiTesting -showScreen <id>`), with the
-/// sample challenges where it needs them (`AppLaunch.seededScreens`). Every view in
-/// `Views/Screens/` must appear here; CI (`check-screens.sh`) fails otherwise.
+/// Shows one screen on its own for UI tests (`-uiTesting -showScreen <id>`),
+/// with the sample challenges where it needs them (`AppLaunch.seededScreens`).
+/// Every view in `Views/Screens/` must appear here; CI (`check-screens.sh`)
+/// fails otherwise.
 struct ScreenHost: View {
     let screen: ScreenID
 
@@ -15,7 +16,8 @@ struct ScreenHost: View {
     }
 
     private static let sampleOutcome = LogOutcome(
-        count: 11, target: 11, goal: 100, nextTarget: 12, isNewBest: true, unit: .reps
+        count: 11, target: 11, goal: 100, nextTarget: 12, isNewBest: true,
+        unit: .reps
     )
 
     @ViewBuilder
@@ -52,14 +54,21 @@ struct ScreenHost: View {
             }
         case .editAttempt:
             if let pushUps {
-                LogAttemptView(challenge: pushUps, attempt: pushUps.sortedAttempts.first)
+                LogAttemptView(
+                    challenge: pushUps, attempt: pushUps.sortedAttempts.first
+                )
             }
         case .logResult:
             if let pushUps {
-                LogAttemptView(challenge: pushUps, attempt: nil, outcome: Self.sampleOutcome)
+                LogAttemptView(
+                    challenge: pushUps, attempt: nil,
+                    outcome: Self.sampleOutcome
+                )
             }
         case .storeError:
-            StoreErrorView(details: "The file couldn't be saved because the disk is full.")
+            StoreErrorView(
+                details: "The file couldn't be saved because the disk is full."
+            )
         }
     }
 

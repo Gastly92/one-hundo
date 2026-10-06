@@ -3,12 +3,14 @@ import SwiftData
 
 /// A challenge the user has started, e.g. Push-ups from 5 to 100.
 ///
-/// Follows CloudKit's rules so iCloud sync can be added later without a migration:
-/// every property has a default, relationships are optional, and nothing is unique.
+/// Follows CloudKit's rules so iCloud sync can be added later without a
+/// migration: every property has a default, relationships are optional, and
+/// nothing is unique.
 @Model
 final class Challenge {
     var id: UUID = UUID()
-    /// A built-in challenge id (see `BuiltInChallenge`), or `Challenge.customKind`.
+    /// A built-in challenge id (see `BuiltInChallenge`), or
+    /// `Challenge.customKind`.
     var kind: String = "custom"
     var name: String = ""
     /// Raw value of `ChallengeUnit`; use `unit` instead.
@@ -52,7 +54,8 @@ final class Challenge {
 }
 
 /// One logged result. There is at most one attempt per challenge per day
-/// (enforced by `Challenge.logAttempt`, since CloudKit doesn't allow unique constraints).
+/// (enforced by `Challenge.logAttempt`, since CloudKit doesn't allow unique
+/// constraints).
 @Model
 final class Attempt {
     var date: Date = Date()
@@ -68,8 +71,9 @@ final class Attempt {
 enum ChallengeUnit: String, CaseIterable, Codable {
     case reps, seconds, minutes
 
-    /// A count with its unit for labels: "6" for reps, "46 seconds", "1 minute".
-    /// The String Catalog holds the plural forms ("1 second" / "2 seconds").
+    /// A count with its unit for labels: "6" for reps, "46 seconds",
+    /// "1 minute". The String Catalog holds the plural forms
+    /// ("1 second" / "2 seconds").
     func format(_ count: Int) -> String {
         switch self {
         case .reps: return count.formatted()

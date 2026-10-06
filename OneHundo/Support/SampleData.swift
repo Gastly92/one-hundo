@@ -26,7 +26,8 @@ enum SampleData {
         sitUps.logAttempt(count: 15, on: daysAgo(2), calendar: calendar)
         sitUps.logAttempt(count: 20, on: now, calendar: calendar)
 
-        // Started today with a test of 3: "Done: 3" (tomorrow "Try 4"), "3 / 100".
+        // Started today with a test of 3: "Done: 3" (tomorrow "Try 4"),
+        // "3 / 100".
         let pullUps = make(.pullUps, start: 3, created: now)
         context.insert(pullUps)
         pullUps.logAttempt(count: 3, on: now, calendar: calendar)
@@ -34,7 +35,9 @@ enum SampleData {
         try? context.save()
     }
 
-    private static func make(_ builtIn: BuiltInChallenge, start: Int, created: Date) -> Challenge {
+    private static func make(
+        _ builtIn: BuiltInChallenge, start: Int, created: Date
+    ) -> Challenge {
         Challenge(
             kind: builtIn.id,
             name: builtIn.name,
