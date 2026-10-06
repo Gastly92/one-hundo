@@ -24,6 +24,16 @@ Keep both updated as features land.
 - `AccessibilityTests` runs Xcode's accessibility audit on each main screen. Add new screens to it.
   Use system colors and text styles (or `@ScaledMetric` for big custom sizes) so text scales
   and both light and dark mode work.
+- All user-facing text must be translatable (English only for now):
+  - In views, pass literals to `Text`, `Label`, `Button`, etc. Helper parameters that
+    reach `Text` are `LocalizedStringKey`, not `String`. Never join text with `+`
+    (one literal, or a `"""` literal with `\` line breaks).
+  - Text built in `Models/` or `Support/` uses `String(localized:)`, as whole
+    sentences (no gluing words together).
+  - Words that change with a number ("1 day" / "2 days") get plural forms in
+    `OneHundo/Localizable.xcstrings`; edit its JSON by hand (no Xcode here).
+  - `LocalizationTests` runs screens in a pseudo-language that brackets translatable
+    text and fails on unbracketed text. Add new screens to it.
 - SwiftLint runs in CI with `--strict` (warnings fail); lines max 100 chars (diffs are read on
   a phone). Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.

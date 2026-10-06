@@ -48,7 +48,11 @@ struct NumberEntry: View {
         }
     }
 
-    private func stepButton(systemImage: String, label: String, delta: Int) -> some View {
+    private func stepButton(
+        systemImage: String,
+        label: LocalizedStringKey,
+        delta: Int
+    ) -> some View {
         Button {
             value = clamp(value + delta)
         } label: {

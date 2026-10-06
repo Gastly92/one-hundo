@@ -39,7 +39,7 @@ struct LogAttemptView: View {
                     form
                 }
             }
-            .navigationTitle(attempt == nil ? "Log attempt" : "Edit attempt")
+            .navigationTitle(attempt == nil ? Text("Log attempt") : Text("Edit attempt"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if outcome == nil {
@@ -63,7 +63,7 @@ struct LogAttemptView: View {
                     .font(.title2.bold())
                 NumberEntry(value: $count, range: 0...9999, identifier: "logCount")
                 if challenge.unit != .reps {
-                    Text(challenge.unit.rawValue)
+                    Text(challenge.unit.name)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
                 }
@@ -78,6 +78,7 @@ struct LogAttemptView: View {
                 } else {
                     LabeledContent("Date") {
                         Text(date, format: .dateTime.weekday(.wide).month().day())
+                            .accessibilityIdentifier("attemptDate")
                     }
                 }
 

@@ -12,6 +12,10 @@ extension Challenge {
 
     var builtIn: BuiltInChallenge? { BuiltInChallenge.with(id: kind) }
 
+    /// The name to show: a built-in's name in the user's language (the stored name is
+    /// in whatever language it was started in), or a custom challenge's own name.
+    var displayName: String { builtIn?.name ?? name }
+
     /// All attempts, in no particular order, treating a nil relationship as none.
     /// (Written without `?? []`: SwiftData returns [] for nil, so that fallback
     /// could never run in tests and would fail the coverage gate.)
@@ -31,20 +35,24 @@ extension Challenge {
     /// Card text for `day`: "Try 6 today", or "Done: 6" once logged.
     func todayText(on day: Date = Date(), calendar: Calendar = .current) -> String {
         if let logged = attempt(on: day, calendar: calendar) {
-            return "Done: \(unit.format(logged.count))"
+            return String(localized: "Done: \(unit.format(logged.count))")
         }
-        return "Try \(unit.format(target(on: day, calendar: calendar))) today"
+        let targetText = unit.format(target(on: day, calendar: calendar))
+        return String(localized: "Try \(targetText) today")
     }
 
     /// The Today button and card menu item: "Log attempt", or "Edit today" once logged.
     func logButtonTitle(on day: Date = Date(), calendar: Calendar = .current) -> String {
-        attempt(on: day, calendar: calendar) == nil ? "Log attempt" : "Edit today"
+        attempt(on: day, calendar: calendar) == nil
+            ? String(localized: "Log attempt")
+            : String(localized: "Edit today")
     }
 
     /// Shown when logging a day that already has an attempt, which a new log replaces.
     func replacementNote(on day: Date, calendar: Calendar = .current) -> String? {
         guard let existing = attempt(on: day, calendar: calendar) else { return nil }
-        return "This replaces the \(unit.format(existing.count)) you logged that day."
+        let count = unit.format(existing.count)
+        return String(localized: "This replaces the \(count) you logged that day.")
     }
 
     /// Progress label, e.g. "6 / 100".
@@ -162,9 +170,13 @@ enum Progression {
 
     /// The enroll preview line, e.g. "At this pace you'd hit 100 in about 95 days."
     static func paceText(from count: Int, goal: Int, dailyIncrease: Int) -> String {
-        guard goal > count else { return "Your goal needs to be above \(count)." }
+        guard goal > count else {
+            return String(localized: "Your goal needs to be above \(count).")
+        }
         let days = daysToGoal(from: count, goal: goal, dailyIncrease: dailyIncrease)
-        return "At this pace you'd hit \(goal) in about \(days) \(days == 1 ? "day" : "days")."
+        // "1 day" / "95 days": the String Catalog has the plural forms.
+        let duration = String(localized: "\(days) days")
+        return String(localized: "At this pace you'd hit \(goal) in about \(duration).")
     }
 
     /// `current / goal`, clamped to 0...1.
@@ -190,15 +202,16 @@ struct LogOutcome: Equatable {
     var reachedGoal: Bool { count >= goal }
 
     var title: String {
-        if reachedGoal { return "Goal reached!" }
-        return hitTarget ? "Nice work!" : "Good effort!"
+        if reachedGoal { return String(localized: "Goal reached!") }
+        return hitTarget ? String(localized: "Nice work!") : String(localized: "Good effort!")
     }
 
     var message: String {
-        if reachedGoal { return "You hit your goal of \(unit.format(goal))." }
-        let next = "Next time, try for \(unit.format(nextTarget))."
-        if hitTarget { return "You did \(unit.format(count)). \(next)" }
-        return "You did \(unit.format(count)), and every one counts. \(next)"
+        let goalText = unit.format(goal), countText = unit.format(count)
+        if reachedGoal { return String(localized: "You hit your goal of \(goalText).") }
+        let next = String(localized: "Next time, try for \(unit.format(nextTarget)).")
+        if hitTarget { return String(localized: "You did \(countText). \(next)") }
+        return String(localized: "You did \(countText), and every one counts. \(next)")
     }
 
     /// SF Symbol for the result screen.

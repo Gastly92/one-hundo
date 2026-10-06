@@ -74,7 +74,7 @@ struct ChallengeDetailView: View {
                 sectionHeader("History")
             }
         }
-        .navigationTitle(challenge.name)
+        .navigationTitle(challenge.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         // A detail screen: no tab bar, which would also fade the bottom rows.
@@ -85,7 +85,7 @@ struct ChallengeDetailView: View {
     }
 
     /// Section titles in a standard text style, so they scale and read clearly.
-    private func sectionHeader(_ title: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringKey) -> some View {
         Text(title)
             .font(.headline)
             .foregroundStyle(.primary)
@@ -129,7 +129,7 @@ struct ChallengeDetailView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func stat(_ title: String, value: String, id: String) -> some View {
+    private func stat(_ title: LocalizedStringKey, value: String, id: String) -> some View {
         VStack(spacing: 2) {
             Text(value)
                 .font(.title3.bold())
@@ -151,6 +151,7 @@ struct ChallengeDetailView: View {
                     attempt.date,
                     format: .dateTime.weekday(.abbreviated).month(.abbreviated).day()
                 )
+                .accessibilityIdentifier("attemptDate")
                 Spacer()
                 Text(challenge.unit.format(attempt.count))
                     .bold()

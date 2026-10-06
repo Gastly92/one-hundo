@@ -34,8 +34,10 @@ struct WelcomeView: View {
                         number: 3,
                         icon: "trophy",
                         title: "Reach 100",
-                        detail: "Small steps add up. Missed a day? "
-                            + "No problem, pick up where you left off."
+                        detail: """
+                            Small steps add up. Missed a day? \
+                            No problem, pick up where you left off.
+                            """
                     )
                 }
 
@@ -52,7 +54,12 @@ struct WelcomeView: View {
         }
     }
 
-    private func step(number: Int, icon: String, title: String, detail: String) -> some View {
+    private func step(
+        number: Int,
+        icon: String,
+        title: LocalizedStringKey,
+        detail: LocalizedStringKey
+    ) -> some View {
         HStack(alignment: .top, spacing: 16) {
             Image(systemName: icon)
                 .font(.title2)
@@ -61,7 +68,7 @@ struct WelcomeView: View {
                 .background(Color.accentColor.opacity(0.15), in: Circle())
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(number). \(title)")
+                Text("\(number). \(Text(title))")
                     .font(.headline)
                 Text(detail)
                     .foregroundStyle(.secondary)

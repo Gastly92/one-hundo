@@ -71,7 +71,7 @@ struct EnrollFlowView: View {
 
     private var testYourself: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text("How many \(builtIn.name.lowercased()) can you do in one go?")
+            Text(builtIn.testQuestion)
                 .font(.title2.bold())
             NumberEntry(value: $startingCount, range: 0...999, identifier: "startingCount")
             Text("This is your starting point. Be honest; small steps add up.")
