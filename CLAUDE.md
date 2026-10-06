@@ -40,17 +40,21 @@ Keep both updated as features land.
     `OneHundo/Localizable.xcstrings`; edit its JSON by hand (no Xcode here).
   - `LocalizationTests` runs every `ScreenID` in a pseudo-language that brackets
     translatable text, and fails on unbracketed text.
-- SwiftLint runs in CI with `--strict` (warnings fail); lines max 80 chars (diffs are read on
-  a phone, where shorter lines wrap less). Long text literals use a `"""` literal with `\` line breaks rather
-  than `+`. Config: `.swiftlint.yml`. It can't be
+- SwiftLint runs in CI with `--strict` (warnings fail). Config: `.swiftlint.yml`. It can't be
   downloaded in this container, so read the `SwiftLint` job log on failure.
+- Lines max 60 chars (diffs are read on a phone, where shorter lines wrap less). To fit:
+  - Prefer short, clear names; a long line often means a name could be shorter.
+  - Pull deeply nested view code into a small helper view or property, but only where
+    nesting is what pushes lines over (not just because).
+  - Long text uses a `"""` literal with `\` line breaks (one key, still one sentence).
+  - Otherwise wrap: one argument per line is fine.
 - Compiler warnings are errors, and the app target uses strict concurrency checking.
 - Coverage gate (`.github/scripts/coverage.sh`): every line in `OneHundo/Models/` and
   `OneHundo/Support/` must run in tests (unit and UI tests count). Keep decisions out
   of views: put them in those folders and unit test them. Pass in outside pieces
   (store, clock, notifications) so tests can fake them. Views are reported, not gated.
 - Tests run with Thread Sanitizer: a data race stops the app and fails the test. UI tests
-  launch the app with `XCUIApplication.launchForTesting(seeded:)`, which sets this up.
+  launch the app with `XCUIApplication.start(seeded:)`, which sets this up.
 - Periphery (CI step after tests) fails on unused code. Delete it rather than ignore it;
   for a real false positive, add a `// periphery:ignore` comment saying why.
   Homebrew marks it deprecated (archived upstream, disabled 2027-08); if it stops

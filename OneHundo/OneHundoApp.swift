@@ -6,7 +6,8 @@ struct OneHundoApp: App {
     private let launch: AppLaunch
 
     init() {
-        launch = AppLaunch(arguments: ProcessInfo.processInfo.arguments)
+        let args = ProcessInfo.processInfo.arguments
+        launch = AppLaunch(arguments: args)
     }
 
     var body: some Scene {
@@ -22,7 +23,9 @@ struct OneHundoApp: App {
                 }
                 .modelContainer(container)
             case .failure(let error):
-                StoreErrorView(details: error.localizedDescription)
+                StoreErrorView(
+                    details: error.localizedDescription
+                )
             }
         }
     }

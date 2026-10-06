@@ -2,99 +2,120 @@ import SwiftData
 import SwiftUI
 
 struct ChallengeListView: View {
-    @Query(sort: \Challenge.createdDate) private var challenges: [Challenge]
-    @State private var isAddingChallenge = false
+    @Query(sort: \Challenge.createdDate)
+    private var challenges: [Challenge]
+    @State private var isAdding = false
     @State private var path: [Challenge] = []
-    /// The challenge whose Log attempt sheet is open (from a card's long-press
-    /// menu).
-    @State private var loggingChallenge: Challenge?
+    /// The challenge whose Log attempt sheet is open (from
+    /// a card's long-press menu).
+    @State private var logging: Challenge?
     /// The challenge waiting for delete confirmation.
-    @State private var deletingChallenge: Challenge?
+    @State private var deleting: Challenge?
     @Environment(\.modelContext) private var modelContext
     @ScaledMetric(relativeTo: .headline)
-    private var addTileHeight: CGFloat = 120
+    private var tileHeight: CGFloat = 120
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12),
     ]
 
-    /// Completed challenges get their own section later (plan step 9).
-    private var activeChallenges: [Challenge] {
+    private static let tile = RoundedRectangle(
+        cornerRadius: 16
+    )
+
+    private static let dashes = StrokeStyle(
+        lineWidth: 1.5, dash: [6, 4]
+    )
+
+    /// Completed challenges get their own section later
+    /// (plan step 9).
+    private var active: [Challenge] {
         challenges.filter { $0.completedDate == nil }
     }
 
     var body: some View {
         NavigationStack(path: $path) {
-            Group {
-                if activeChallenges.isEmpty {
-                    WelcomeView { isAddingChallenge = true }
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: 12) {
-                            ForEach(activeChallenges) { challenge in
-                                // A tap gesture rather than a NavigationLink,
-                                // so the card's texts stay separate
-                                // accessibility elements for UI tests.
-                                ChallengeCard(challenge: challenge)
-                                    .contentShape(
-                                        RoundedRectangle(cornerRadius: 16)
-                                    )
-                                    .onTapGesture { path.append(challenge) }
-                                    .contextMenu { cardMenu(for: challenge) }
-                            }
-                            addTile
-                        }
-                        .padding()
-                    }
-                }
-            }
-            // The plain system large title: iOS keeps it steady when switching
-            // tabs.
+            screen
+        }
+    }
+
+    /// The grid (or the welcome screen) with its title,
+    /// navigation, sheets, and delete confirmation.
+    private var screen: some View {
+        content
+            // The plain system large title: iOS keeps it
+            // steady when switching tabs.
             .navigationTitle("Challenges")
-            .navigationDestination(for: Challenge.self) { challenge in
-                ChallengeDetailView(challenge: challenge)
+            .navigationDestination(for: Challenge.self) {
+                ChallengeDetailView(challenge: $0)
             }
-            .sheet(isPresented: $isAddingChallenge) {
+            .sheet(isPresented: $isAdding) {
                 AddChallengeView()
             }
-            .sheet(item: $loggingChallenge) { challenge in
-                LogAttemptView(
-                    challenge: challenge,
-                    attempt: challenge.attempt(on: Date())
-                )
+            .sheet(item: $logging) { challenge in
+                let today = challenge.attempt(on: Date())
+                LogAttemptView(challenge, editing: today)
             }
             .confirmationDialog(
                 "Delete \(deletingName)?",
-                isPresented: Binding(
-                    get: { deletingChallenge != nil },
-                    set: { if !$0 { deletingChallenge = nil } }
-                ),
+                isPresented: isDeleting,
                 titleVisibility: .visible,
-                presenting: deletingChallenge
+                presenting: deleting
             ) { challenge in
-                Button("Delete challenge", role: .destructive) {
-                    delete(challenge)
-                }
+                confirmButton(challenge)
             } message: { _ in
                 Text("""
-                    This deletes the challenge and all its attempts. \
-                    You can't undo this.
+                    This deletes the challenge and all its \
+                    attempts. You can't undo this.
                     """)
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if active.isEmpty {
+            WelcomeView { isAdding = true }
+        } else {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 12) {
+                    ForEach(active) { card($0) }
+                    addTile
+                }
+                .padding()
             }
         }
     }
 
-    private var deletingName: String {
-        deletingChallenge?.displayName ?? String(localized: "challenge")
+    /// A tap gesture rather than a NavigationLink, so the
+    /// card's texts stay separate accessibility elements
+    /// for UI tests.
+    private func card(_ challenge: Challenge) -> some View {
+        ChallengeCard(challenge: challenge)
+            .contentShape(Self.tile)
+            .onTapGesture { path.append(challenge) }
+            .contextMenu { cardMenu(for: challenge) }
     }
 
-    /// The last card in the grid opens Add challenge (the welcome screen has
-    /// its own button). It sits in the grid rather than the title bar, which
-    /// keeps the title plain.
+    private var isDeleting: Binding<Bool> {
+        Binding(
+            get: { deleting != nil },
+            set: { if !$0 { deleting = nil } }
+        )
+    }
+
+    private var deletingName: String {
+        let name = deleting?.displayName
+        return name ?? String(localized: "challenge")
+    }
+
+    /// The last card in the grid opens Add challenge (the
+    /// welcome screen has its own button). It sits in the
+    /// grid rather than the title bar, which keeps the
+    /// title plain.
     private var addTile: some View {
         Button {
-            isAddingChallenge = true
+            isAdding = true
         } label: {
             VStack(spacing: 8) {
                 Image(systemName: "plus.circle.fill")
@@ -105,24 +126,26 @@ struct ChallengeListView: View {
             }
             .foregroundStyle(Color.accentColor)
             .padding()
-            .frame(maxWidth: .infinity, minHeight: addTileHeight)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .strokeBorder(
-                        .secondary,
-                        style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
-                    )
+            .frame(
+                maxWidth: .infinity, minHeight: tileHeight
             )
-            .contentShape(RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                Self.tile.strokeBorder(
+                    .secondary, style: Self.dashes
+                )
+            )
+            .contentShape(Self.tile)
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("addChallengeButton")
     }
 
     @ViewBuilder
-    private func cardMenu(for challenge: Challenge) -> some View {
+    private func cardMenu(
+        for challenge: Challenge
+    ) -> some View {
         Button {
-            loggingChallenge = challenge
+            logging = challenge
         } label: {
             Label(
                 challenge.logButtonTitle(),
@@ -130,9 +153,17 @@ struct ChallengeListView: View {
             )
         }
         Button(role: .destructive) {
-            deletingChallenge = challenge
+            deleting = challenge
         } label: {
             Label("Delete challenge", systemImage: "trash")
+        }
+    }
+
+    private func confirmButton(
+        _ challenge: Challenge
+    ) -> some View {
+        Button("Delete challenge", role: .destructive) {
+            delete(challenge)
         }
     }
 
@@ -140,6 +171,6 @@ struct ChallengeListView: View {
         path.removeAll { $0 == challenge }
         modelContext.delete(challenge)
         try? modelContext.save()
-        deletingChallenge = nil
+        deleting = nil
     }
 }

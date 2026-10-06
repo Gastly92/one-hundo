@@ -155,6 +155,14 @@ e.g. 0.4.1); see CLAUDE.md.
   Swift code and comments are rewrapped; no text changes.
 - No version bump (nothing visible changes).
 
+#### 4.7 60-character lines ✅
+- SwiftLint's line limit drops to 60. Code fits by shorter names (e.g.
+  `attempt(on:in:)` instead of `calendar:`, `Progression` takes `step:`), small
+  helpers where nesting was deep (screen sections, `DoneMark`, `wrapsText()`), and
+  `"""` literals for long text. Tests use short helpers (`pushUps.log(5, day: 1)`,
+  `element.appears()`).
+- No version bump (nothing visible changes).
+
 ### 5. Custom challenges and challenge settings
 - Custom challenge form: name, unit, color swatches, counts, reminder (no icon).
 - Settings screen for any challenge (goal, increase, reminder; name, unit, and

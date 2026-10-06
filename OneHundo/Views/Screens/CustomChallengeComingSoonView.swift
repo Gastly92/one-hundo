@@ -6,7 +6,9 @@ struct CustomChallengeComingSoonView: View {
         ContentUnavailableView(
             "Custom challenges",
             systemImage: "square.and.pencil",
-            description: Text("Coming soon: track anything, like planks.")
+            description: Text("""
+                Coming soon: track anything, like planks.
+                """)
         )
     }
 }

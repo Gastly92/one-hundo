@@ -1,11 +1,12 @@
 import Foundation
 import SwiftData
 
-/// A challenge the user has started, e.g. Push-ups from 5 to 100.
+/// A challenge the user has started, e.g. Push-ups from 5
+/// to 100.
 ///
-/// Follows CloudKit's rules so iCloud sync can be added later without a
-/// migration: every property has a default, relationships are optional, and
-/// nothing is unique.
+/// Follows CloudKit's rules so iCloud sync can be added
+/// later without a migration: every property has a default,
+/// relationships are optional, and nothing is unique.
 @Model
 final class Challenge {
     var id: UUID = UUID()
@@ -21,11 +22,15 @@ final class Challenge {
     var goal: Int = 100
     var dailyIncrease: Int = 1
     var reminderEnabled: Bool = true
-    /// Reminder time as minutes after midnight (18:00 by default).
+    /// Reminder time as minutes after midnight (18:00 by
+    /// default).
     var reminderMinutes: Int = 1080
     var createdDate: Date = Date()
     var completedDate: Date?
-    @Relationship(deleteRule: .cascade, inverse: \Attempt.challenge)
+    @Relationship(
+        deleteRule: .cascade,
+        inverse: \Attempt.challenge
+    )
     var attempts: [Attempt]? = []
 
     init(
@@ -53,9 +58,9 @@ final class Challenge {
     }
 }
 
-/// One logged result. There is at most one attempt per challenge per day
-/// (enforced by `Challenge.logAttempt`, since CloudKit doesn't allow unique
-/// constraints).
+/// One logged result. There is at most one attempt per
+/// challenge per day (enforced by `Challenge.logAttempt`,
+/// since CloudKit doesn't allow unique constraints).
 @Model
 final class Attempt {
     var date: Date = Date()
@@ -71,18 +76,21 @@ final class Attempt {
 enum ChallengeUnit: String, CaseIterable, Codable {
     case reps, seconds, minutes
 
-    /// A count with its unit for labels: "6" for reps, "46 seconds",
-    /// "1 minute". The String Catalog holds the plural forms
-    /// ("1 second" / "2 seconds").
+    /// A count with its unit for labels: "6" for reps,
+    /// "46 seconds", "1 minute". The String Catalog holds
+    /// the plural forms ("1 second" / "2 seconds").
     func format(_ count: Int) -> String {
         switch self {
         case .reps: return count.formatted()
-        case .seconds: return String(localized: "\(count) seconds")
-        case .minutes: return String(localized: "\(count) minutes")
+        case .seconds:
+            return String(localized: "\(count) seconds")
+        case .minutes:
+            return String(localized: "\(count) minutes")
         }
     }
 
-    /// The unit's name, shown under the number when logging, e.g. "seconds".
+    /// The unit's name, shown under the number when
+    /// logging, e.g. "seconds".
     var name: String {
         switch self {
         case .reps: return String(localized: "reps")
