@@ -35,13 +35,17 @@ final class AccessibilityTests: XCTestCase {
   }
 
   /// Dark mode changes colors, so only
-  /// contrast is checked again.
+  /// contrast is checked again. The app is
+  /// put in dark mode itself: switching the
+  /// simulator's setting right before launch
+  /// made launches time out.
   @MainActor
   func testDark() {
-    let device = XCUIDevice.shared
-    device.appearance = .dark
-    defer { device.appearance = .light }
-    auditScreens(look: "dark", .contrast)
+    auditScreens(
+      look: "dark",
+      .contrast,
+      arguments: ["-darkMode"]
+    )
   }
 
   /// The largest text size: text must still

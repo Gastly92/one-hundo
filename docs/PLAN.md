@@ -329,7 +329,10 @@ go in first.
 - Run the accessibility audit on every screen
   in dark mode (contrast only) and at the
   largest text size (all checks but Dynamic
-  Type, which can't grow further).
+  Type, which can't grow further). Dark mode
+  comes from a `-darkMode` launch flag, not
+  the simulator setting (switching that made
+  launches time out).
 - Fix: at accessibility text sizes, a
   challenge card's checkmark sits above
   "Done: 20" instead of squeezing it into
