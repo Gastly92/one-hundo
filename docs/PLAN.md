@@ -334,6 +334,9 @@ go in first.
   challenge card's checkmark sits above
   "Done: 20" instead of squeezing it into
   breaking mid-word (seen in the snapshots).
+- Fix: at accessibility text sizes the quick
+  goal buttons (50/100/150/200) go in two
+  rows, so "100" fits inside its button.
 - Version 0.4.6 (the card fix shows).
 
 ### 5. Custom challenges and settings

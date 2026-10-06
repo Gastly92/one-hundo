@@ -11,6 +11,8 @@ struct EnrollFlowView: View {
 
   @Environment(\.modelContext)
   private var modelContext
+  @Environment(\.dynamicTypeSize)
+  private var textSize
 
   enum Step: Int, CaseIterable {
     case intro, test, goal, reminder
@@ -257,7 +259,9 @@ extension EnrollFlowView {
         range: 1...9999,
         id: "goal"
       )
-      HStack(spacing: 8) {
+      LazyVGrid(
+        columns: chipColumns, spacing: 8
+      ) {
         ForEach(quickGoals, id: \.self) {
           goalChip($0)
         }
@@ -310,6 +314,18 @@ extension EnrollFlowView {
     .background(
       color.opacity(0.12),
       in: .rect(cornerRadius: 14)
+    )
+  }
+
+  /// Quick goals in one row, or two rows at
+  /// the largest text sizes so "100" fits in
+  /// its button.
+  private var chipColumns: [GridItem] {
+    let count = textSize.isAccessibilitySize
+      ? 2 : 4
+    let column = GridItem(spacing: 8)
+    return Array(
+      repeating: column, count: count
     )
   }
 
