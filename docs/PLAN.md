@@ -121,6 +121,15 @@ e.g. 0.4.1); see CLAUDE.md.
 - Thread Sanitizer on every test run, and Periphery for unused code, both in CI.
 - No version bump (nothing user-visible).
 
+#### 4.3 CI diagnostics and tidy-up ✅
+- A failed UI test prints its step-by-step log (taps, waits, what it found), and the CI
+  summary shows build and test times.
+- The Release device build runs in its own job alongside the tests; the unused simulator
+  app build and downloadable app files are dropped. Every check still gates PRs.
+- Not a speed-up: runs still take about 13 minutes, almost all building and running the
+  tests on one simulator. Two simulators in parallel overloaded the 3-core runner (the
+  second timed out, the first slowed down 4x).
+
 #### 4.4 Localization prep ✅
 - All text is translatable, still English only: a String Catalog
   (`Localizable.xcstrings`) with plural forms ("1 day" / "95 days", seconds, minutes),
