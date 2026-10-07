@@ -98,10 +98,6 @@ identifier_name:
 line_length:
   warning: 46
   ignores_urls: true
-  # `// swiftlint:disable:next <rule>` can't
-  # be wrapped.
-  excluded_lines_patterns:
-    - '^\s*// swiftlint:'
 
 # Attributes that take a line of their own,
 # so the declaration after them stays short.

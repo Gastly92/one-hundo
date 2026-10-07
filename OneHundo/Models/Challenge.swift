@@ -1,11 +1,6 @@
 import Foundation
 import SwiftData
 
-// SwiftData's @Model reads each stored
-// property's type from its annotation, so
-// they stay written out.
-// swiftlint:disable redundant_type_annotation
-
 /// A challenge the user has started, e.g.
 /// Push-ups from 5 to 100.
 ///
@@ -16,7 +11,7 @@ import SwiftData
 /// unique.
 @Model
 final class Challenge {
-  var id: UUID = UUID()
+  var id: UUID = .init()
   /// A built-in challenge id (see `BuiltIn`),
   /// or `Challenge.customKind`.
   var kind: String = "custom"
@@ -33,7 +28,7 @@ final class Challenge {
   /// Reminder time as minutes after midnight
   /// (18:00 by default).
   var reminderMinutes: Int = 1080
-  var createdDate: Date = Date()
+  var createdDate: Date = .now
   var completedDate: Date?
   @Relationship(
     deleteRule: .cascade,
@@ -51,7 +46,7 @@ final class Challenge {
     dailyIncrease: Int = 1,
     reminderEnabled: Bool = true,
     reminderMinutes: Int = 1080,
-    createdDate: Date = Date()
+    createdDate: Date = .now
   ) {
     self.kind = kind
     self.name = name
@@ -72,7 +67,7 @@ final class Challenge {
 /// doesn't allow unique constraints).
 @Model
 final class Attempt {
-  var date: Date = Date()
+  var date: Date = .now
   var count: Int = 0
   var challenge: Challenge?
 
@@ -81,7 +76,6 @@ final class Attempt {
     self.count = count
   }
 }
-// swiftlint:enable redundant_type_annotation
 
 enum CountUnit: String, CaseIterable {
   case reps, seconds, minutes
