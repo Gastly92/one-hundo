@@ -17,3 +17,9 @@ fi
   -r "$root/.github/scripts/checkers.txt"
 echo "export PATH=\"$venv/bin:\$PATH\"" \
   >> "$CLAUDE_ENV_FILE"
+
+# SwiftLint runs in Docker: start it and
+# fetch the image in the background so the
+# first lint is quick.
+lint="$root/.github/scripts/swiftlint.sh"
+(nohup "$lint" --prepare >/dev/null 2>&1 &)

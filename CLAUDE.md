@@ -93,9 +93,10 @@ features land.
   in code: fix the cause (a flagged line
   usually has a cleaner form), or turn the
   rule off in `.swiftlint.yml` with a
-  reason. SwiftLint can't be downloaded in
-  this container, so read the `SwiftLint`
-  job log (it prints file:line) on failure.
+  reason. Run `.github/scripts/swiftlint.sh`
+  before pushing Swift changes: it lints in
+  Docker with the same pinned image as CI
+  (the session start hook prepares it).
 - Lines max 45 chars, so a diff line fits a
   phone in portrait without wrapping. This
   covers docs, YAML and scripts too: CI's
