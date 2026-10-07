@@ -101,11 +101,18 @@ final class AccessibilityTests: XCTestCase {
     _ types: Checks,
     on name: String
   ) throws {
+    var bottom: CGFloat?
     for _ in 0..<Self.maxPages {
-      try audit(app, types, on: name)
-      if !scrollDown(app) {
+      try audit(
+        app, types, on: name, bottom: bottom
+      )
+      let before = Self.settled(app)
+      drag(app)
+      let after = Self.settled(app)
+      if after.texts == before.texts {
         return
       }
+      bottom = Self.fixedTop(before, after)
     }
     XCTFail("[\(name)] kept scrolling")
   }
@@ -113,12 +120,9 @@ final class AccessibilityTests: XCTestCase {
   /// Drags up half a screen, quickly and in
   /// the page margin, so no card or row
   /// gets pressed (a slow drag opened a
-  /// card's menu). False if no text moved.
+  /// card's menu).
   @MainActor
-  private func scrollDown(
-    _ app: XCUIApplication
-  ) -> Bool {
-    let before = Self.settledFrames(in: app)
+  private func drag(_ app: XCUIApplication) {
     let window = app.windows.firstMatch
     let start = window.coordinate(
       withNormalizedOffset: CGVector(
@@ -136,20 +140,18 @@ final class AccessibilityTests: XCTestCase {
       withVelocity: .fast,
       thenHoldForDuration: 0.2
     )
-    return Self.settledFrames(in: app)
-      != before
   }
 
-  /// Text frames once the screen stops
-  /// moving (a drag can leave it bouncing).
+  /// The screen once it stops moving (a
+  /// drag can leave it bouncing).
   @MainActor
-  private static func settledFrames(
-    in app: XCUIApplication
-  ) -> [CGRect] {
-    var last = textFrames(in: app)
+  private static func settled(
+    _ app: XCUIApplication
+  ) -> Screen {
+    var last = Screen(app)
     for _ in 0..<10 {
       Thread.sleep(forTimeInterval: 0.3)
-      let next = textFrames(in: app)
+      let next = Screen(app)
       if next == last {
         return next
       }
@@ -158,44 +160,40 @@ final class AccessibilityTests: XCTestCase {
     return last
   }
 
-  /// Where each text is, read from one
-  /// snapshot of the screen (asking each
-  /// element separately is far slower).
+  /// The top of whatever stays put at the
+  /// bottom while the page scrolls (e.g. a
+  /// Next button): text under it is hidden.
+  /// The screen's bottom if nothing does.
   @MainActor
-  private static func textFrames(
-    in app: XCUIApplication
-  ) -> [CGRect] {
-    let root = try? app.snapshot()
-    return root.map(frames) ?? []
-  }
-
-  @MainActor
-  private static func frames(
-    _ node: any XCUIElementSnapshot
-  ) -> [CGRect] {
-    let own = node.elementType == .staticText
-      ? [node.frame] : []
-    return own + node.children.flatMap {
-      frames($0)
-    }
+  private static func fixedTop(
+    _ before: Screen, _ after: Screen
+  ) -> CGFloat {
+    let fixed = before.items
+      .intersection(after.items)
+      .filter { $0.top > after.middle }
+    let top = fixed.map(\.top).min()
+    return CGFloat(top ?? after.end)
   }
 
   /// Audits the current screen, failing once
   /// per issue with enough detail to find
-  /// it.
+  /// it. `bottom` is set on scrolled pages.
   @MainActor
   private func audit(
     _ app: XCUIApplication,
     _ types: Checks,
     on screen: String,
+    bottom: CGFloat?,
     file: StaticString = #filePath,
     line: UInt = #line
   ) throws {
+    let page = Page(app, bottom: bottom)
     do {
       try runAudit(
         app,
         types,
         screen,
+        page,
         file: file,
         line: line
       )
@@ -208,6 +206,7 @@ final class AccessibilityTests: XCTestCase {
         app,
         types,
         screen,
+        page,
         file: file,
         line: line
       )
@@ -219,24 +218,14 @@ final class AccessibilityTests: XCTestCase {
     _ app: XCUIApplication,
     _ types: Checks,
     _ screen: String,
+    _ page: Page,
     file: StaticString,
     line: UInt
   ) throws {
-    // The navigation bar (title, Close,
-    // Cancel, Save) is iOS's own: it doesn't
-    // scale with text size, and its glass
-    // can read as low contrast
-    // mid-animation.
-    let bars = app.navigationBars
-      .descendants(matching: .any)
-      .allElementsBoundByIndex.map(\.frame)
-    let visible = Self.visibleArea(of: app)
     try app.performAccessibilityAudit(
       for: types
     ) {
-      if Self.isExpected(
-        $0, bars: bars, visible: visible
-      ) {
+      if page.isExpected($0) {
         return true
       }
       let found = Self.describe($0)
@@ -247,63 +236,6 @@ final class AccessibilityTests: XCTestCase {
       )
       return true
     }
-  }
-
-  /// Issues that come from iOS itself, not
-  /// the app.
-  @MainActor
-  private static func isExpected(
-    _ issue: XCUIAccessibilityAuditIssue,
-    bars: [CGRect],
-    visible: CGRect
-  ) -> Bool {
-    let text = issue.compactDescription
-    // "Nearly passed" contrast passes at
-    // larger text sizes; iOS's own secondary
-    // text color gets it. Real contrast
-    // failures still fail.
-    if text.contains("nearly passed") {
-      return true
-    }
-    // Text the audit can't tie to any
-    // element comes from a system control
-    // (the time picker draws its own);
-    // anything in our views has an element.
-    guard let element = issue.element else {
-      return text.contains(
-        "Potentially inaccessible text"
-      )
-    }
-    if bars.contains(element.frame) {
-      return true
-    }
-    // Text cut off at the screen's edge or
-    // under the navigation bar: the audit
-    // measures it against what's past the
-    // edge. It's audited in full on another
-    // page.
-    return !visible.contains(element.frame)
-  }
-
-  /// The window below the navigation bar:
-  /// text scrolled under the bar's glass
-  /// is partly hidden.
-  @MainActor
-  private static func visibleArea(
-    of app: XCUIApplication
-  ) -> CGRect {
-    let window = app.windows.firstMatch.frame
-    let bar = app.navigationBars.firstMatch
-    guard bar.exists else {
-      return window
-    }
-    let top = bar.frame.maxY
-    return CGRect(
-      x: window.minX,
-      y: top,
-      width: window.width,
-      height: window.maxY - top
-    )
   }
 
   /// The issue and its element, to find it
@@ -323,5 +255,130 @@ final class AccessibilityTests: XCTestCase {
       + "label='\(found.label)' "
       + "id='\(found.identifier)' "
       + "frame=\(found.frame)"
+  }
+}
+
+/// The elements on screen, from one
+/// snapshot (asking each element separately
+/// is far slower). Frames are rounded to
+/// whole points: snapshots differ by tiny
+/// fractions.
+private struct Screen: Equatable {
+  struct Item: Hashable {
+    let name: String
+    let isText: Bool
+    let top: Int
+  }
+
+  let items: Set<Item>
+  let middle: Int
+  let end: Int
+
+  var texts: Set<Item> {
+    items.filter(\.isText)
+  }
+
+  @MainActor
+  init(_ app: XCUIApplication) {
+    let root = try? app.snapshot()
+    items = Set(root.map(Self.collect) ?? [])
+    middle = Int(app.frame.midY)
+    end = Int(app.frame.maxY)
+  }
+
+  @MainActor
+  private static func collect(
+    _ node: any XCUIElementSnapshot
+  ) -> [Item] {
+    let box = node.frame
+    let type = node.elementType
+    let name = [
+      "\(type.rawValue)",
+      node.identifier,
+      node.label,
+      "\(Int(box.minX)) \(Int(box.width))",
+      "\(Int(box.height))",
+    ].joined(separator: "|")
+    let own = Item(
+      name: name,
+      isText: type == .staticText,
+      top: Int(box.minY.rounded())
+    )
+    return [own] + node.children.flatMap {
+      collect($0)
+    }
+  }
+}
+
+/// What the audit can fairly check on one
+/// page.
+private struct Page {
+  /// The navigation bar (title, Close,
+  /// Cancel, Save) is iOS's own: it doesn't
+  /// scale with text size, and its glass
+  /// can read as low contrast
+  /// mid-animation.
+  let bars: [CGRect]
+  /// Below the navigation bar and above
+  /// anything fixed at the bottom.
+  let visible: CGRect
+  let isScrolled: Bool
+
+  @MainActor
+  init(
+    _ app: XCUIApplication,
+    bottom: CGFloat?
+  ) {
+    bars = app.navigationBars
+      .descendants(matching: .any)
+      .allElementsBoundByIndex.map(\.frame)
+    let window = app.windows.firstMatch.frame
+    let bar = app.navigationBars.firstMatch
+    let top = bar.exists
+      ? bar.frame.maxY : window.minY
+    let end = bottom ?? window.maxY
+    visible = CGRect(
+      x: window.minX,
+      y: top,
+      width: window.width,
+      height: end - top
+    )
+    isScrolled = bottom != nil
+  }
+
+  /// Issues that come from iOS itself, or
+  /// from text this page only partly shows.
+  @MainActor
+  func isExpected(
+    _ issue: XCUIAccessibilityAuditIssue
+  ) -> Bool {
+    let text = issue.compactDescription
+    // "Nearly passed" contrast passes at
+    // larger text sizes; iOS's own secondary
+    // text color gets it. Real contrast
+    // failures still fail.
+    if text.contains("nearly passed") {
+      return true
+    }
+    // Text the audit can't tie to any
+    // element comes from iOS: a system
+    // control (the time picker draws its
+    // own) or, once scrolled, the blur at
+    // the screen's edges. Anything in our
+    // views has an element, and the first
+    // page is checked strictly.
+    guard let element = issue.element else {
+      return isScrolled || text.contains(
+        "Potentially inaccessible text"
+      )
+    }
+    if bars.contains(element.frame) {
+      return true
+    }
+    // Text cut off at the screen's edge,
+    // under the navigation bar or under
+    // something fixed at the bottom: it's
+    // audited in full on another page.
+    return !visible.contains(element.frame)
   }
 }
