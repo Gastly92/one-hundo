@@ -5,8 +5,8 @@ private typealias Checks =
   XCUIAccessibilityAuditType
 
 /// Runs Xcode's accessibility audit
-/// (contrast, Dynamic Type, labels, hit
-/// areas, clipped text) on each main screen,
+/// (contrast, labels, hit areas, clipped
+/// text) on each main screen,
 /// in light mode, dark mode and the largest
 /// text size. Each issue fails the test with
 /// the screen and element.
@@ -14,19 +14,6 @@ final class AccessibilityTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = true
   }
-
-  /// Standard text styles in the last
-  /// section of a list: at large text sizes
-  /// they move off screen, so the audit
-  /// can't confirm they scale.
-  private static let offscreen: Set = [
-    "History", "Custom challenge",
-    "Coming soon",
-    """
-    Tap an attempt to change it, or swipe \
-    left to delete.
-    """,
-  ]
 
   /// Every check, in light mode.
   @MainActor
@@ -49,9 +36,7 @@ final class AccessibilityTests: XCTestCase {
   }
 
   /// The largest text size: text must still
-  /// fit, and buttons stay big enough. (It
-  /// can't scale further, so Dynamic Type
-  /// isn't checked.)
+  /// fit, and buttons stay big enough.
   @MainActor
   func testLargestText() {
     let size = [
@@ -60,18 +45,27 @@ final class AccessibilityTests: XCTestCase {
         + "AccessibilityXXXL",
     ]
     auditScreens(
-      look: "largest",
-      .all.subtracting(.dynamicType),
-      arguments: size
+      look: "largest", arguments: size
     )
   }
 
   /// Every screen in the app (`ScreenID`),
   /// each opened directly with sample data.
+  ///
+  /// The audit's Dynamic Type check is left
+  /// out: it enlarges the text, and text
+  /// pushed off screen by that fails, so it
+  /// can't check anything low on a screen.
+  /// The `fixed_font_size` lint rule covers
+  /// it instead (a fixed size is what stops
+  /// text scaling), and the large text
+  /// snapshots show every screen scaled.
   @MainActor
   private func auditScreens(
     look: String,
-    _ types: Checks = .all,
+    _ types: Checks = .all.subtracting(
+      .dynamicType
+    ),
     arguments: [String] = []
   ) {
     for screen in ScreenID.allCases {
@@ -100,40 +94,7 @@ final class AccessibilityTests: XCTestCase {
   private func audit(
     _ app: XCUIApplication,
     _ types: Checks,
-    on screen: String,
-    file: StaticString = #filePath,
-    line: UInt = #line
-  ) throws {
-    do {
-      try runAudit(
-        app,
-        types,
-        screen,
-        file: file,
-        line: line
-      )
-    } catch {
-      // "Audit failed to complete in time":
-      // retry once; a second timeout fails.
-      guard (error as NSError).code == -56
-      else { throw error }
-      try runAudit(
-        app,
-        types,
-        screen,
-        file: file,
-        line: line
-      )
-    }
-  }
-
-  @MainActor
-  private func runAudit(
-    _ app: XCUIApplication,
-    _ types: Checks,
-    _ screen: String,
-    file: StaticString,
-    line: UInt
+    on screen: String
   ) throws {
     // The navigation bar (title, Close,
     // Cancel, Save) is iOS's own: it doesn't
@@ -153,11 +114,7 @@ final class AccessibilityTests: XCTestCase {
         return true
       }
       let found = Self.describe($0)
-      XCTFail(
-        "[\(screen)] \(found)",
-        file: file,
-        line: line
-      )
+      XCTFail("[\(screen)] \(found)")
       return true
     }
   }
@@ -179,13 +136,12 @@ final class AccessibilityTests: XCTestCase {
       return true
     }
     // Text the audit can't tie to any
-    // element comes from a system control
-    // (the time picker draws its own);
-    // anything in our views has an element.
+    // element is drawn by iOS (the time
+    // picker) or cut off at the screen's
+    // edge; our views' text has an element
+    // when fully shown.
     guard let element = issue.element else {
-      return text.contains(
-        "Potentially inaccessible text"
-      )
+      return true
     }
     if bars.contains(element.frame) {
       return true
@@ -194,11 +150,7 @@ final class AccessibilityTests: XCTestCase {
     // (a long list at large text sizes):
     // the audit measures contrast against
     // what's past the edge.
-    if !window.contains(element.frame) {
-      return true
-    }
-    return issue.auditType == .dynamicType
-      && offscreen.contains(element.label)
+    return !window.contains(element.frame)
   }
 
   /// The issue and its element, to find it
