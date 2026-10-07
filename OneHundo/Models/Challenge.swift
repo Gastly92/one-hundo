@@ -11,7 +11,7 @@ import SwiftData
 /// unique.
 @Model
 final class Challenge {
-  var id: UUID = .init()
+  var id = UUID()
   /// A built-in challenge id (see `BuiltIn`),
   /// or `Challenge.customKind`.
   var kind: String = "custom"
@@ -28,7 +28,7 @@ final class Challenge {
   /// Reminder time as minutes after midnight
   /// (18:00 by default).
   var reminderMinutes: Int = 1080
-  var createdDate: Date = .now
+  var createdDate = Date.now
   var completedDate: Date?
   @Relationship(
     deleteRule: .cascade,
@@ -67,7 +67,7 @@ final class Challenge {
 /// doesn't allow unique constraints).
 @Model
 final class Attempt {
-  var date: Date = .now
+  var date = Date.now
   var count: Int = 0
   var challenge: Challenge?
 
