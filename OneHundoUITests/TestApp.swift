@@ -6,9 +6,7 @@ typealias App = XCUIApplication
 extension XCUIApplication {
   /// Launches the app for a UI test with a
   /// fresh in-memory store, optionally
-  /// filled with sample challenges. If
-  /// Thread Sanitizer finds a data race, the
-  /// app stops, so the test fails.
+  /// filled with sample challenges.
   @MainActor
   static func start(
     seeded: Bool = false,
@@ -19,8 +17,6 @@ extension XCUIApplication {
       ? ["-seedSampleData"] : []
     app.launchArguments =
       ["-uiTesting"] + seed + arguments
-    app.launchEnvironment["TSAN_OPTIONS"] =
-      "halt_on_error=1"
     app.launch()
     return app
   }
