@@ -12,7 +12,8 @@ struct ScreenHost: View {
 
   @Query(sort: \Challenge.createdDate)
   private var challenges: [Challenge]
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
 
   /// The seeded Push-ups challenge: started 3
   /// days ago, with attempts.
@@ -26,8 +27,11 @@ struct ScreenHost: View {
   }
 
   private static let outcome = LogOutcome(
-    count: 11, target: 11, goal: 100,
-    nextTarget: 12, isNewBest: true,
+    count: 11,
+    target: 11,
+    goal: 100,
+    nextTarget: 12,
+    isNewBest: true,
     unit: .reps
   )
 
@@ -41,7 +45,9 @@ struct ScreenHost: View {
     switch screen {
     case .welcome:
       NavigationStack {
-        WelcomeView(onStart: {})
+        WelcomeView {
+          // Shown alone: nothing to open.
+        }
           .navigationTitle("Challenges")
       }
     case .challengeList:
@@ -98,8 +104,11 @@ struct ScreenHost: View {
   ) -> some View {
     NavigationStack {
       EnrollFlowView(
-        .pushUps, startAt: step
-      ) {}
+        .pushUps,
+        startAt: step
+      ) {
+        // Shown alone: nothing to return to.
+      }
     }
   }
 }

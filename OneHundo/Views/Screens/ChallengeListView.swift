@@ -14,7 +14,8 @@ struct ChallengeListView: View {
   @State private var deleting: Challenge?
   @Environment(\.modelContext)
   private var modelContext
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
   @ScaledMetric(relativeTo: .headline)
   private var tileHeight: CGFloat = 120
 
@@ -102,17 +103,21 @@ struct ChallengeListView: View {
     )
   }
 
-  /// A tap gesture rather than a
-  /// NavigationLink, so the card's texts stay
-  /// separate accessibility elements for UI
-  /// tests.
+  /// A button, so VoiceOver reads the card
+  /// as one tappable item ("Push-ups, Try 11
+  /// today, 10 / 100").
   private func card(
     _ challenge: Challenge
   ) -> some View {
-    ChallengeCard(challenge: challenge)
-      .contentShape(Self.tile)
-      .onTapGesture { path.append(challenge) }
-      .contextMenu { menu(for: challenge) }
+    Button {
+      path.append(challenge)
+    } label: {
+      ChallengeCard(challenge: challenge)
+        .contentShape(Self.tile)
+    }
+    .buttonStyle(.plain)
+    .contextMenu { menu(for: challenge) }
+    .testID("card.\(challenge.kind)")
   }
 
   private var isDeleting: Binding<Bool> {

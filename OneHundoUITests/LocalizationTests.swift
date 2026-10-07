@@ -82,15 +82,18 @@ final class LocalizationTests: XCTestCase {
       XCTFail(
         "[\(screen)] Not translatable: "
           + "'\(label)' (id '\(id)')",
-        file: file, line: line
+        file: file,
+        line: line
       )
     }
     // Guards against the pseudo-language not
     // taking effect at all.
     XCTAssertGreaterThan(
-      bracketed, 0,
+      bracketed,
+      0,
       "[\(screen)] No bracketed text",
-      file: file, line: line
+      file: file,
+      line: line
     )
   }
 }

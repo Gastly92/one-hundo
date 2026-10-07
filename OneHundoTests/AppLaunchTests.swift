@@ -1,6 +1,6 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 @MainActor
 final class AppLaunchTests: XCTestCase {
@@ -31,28 +31,28 @@ final class AppLaunchTests: XCTestCase {
   }
 
   func testNormalLaunchIsEmpty() throws {
-    var asked: Bool?
+    var asked: [Bool] = []
     let launch = AppLaunch(
       arguments: ["OneHundo"]
     ) {
-      asked = $0
+      asked.append($0)
       return try self.memory($0)
     }
     XCTAssertFalse(launch.isUITesting)
-    XCTAssertEqual(asked, false)
+    XCTAssertEqual(asked, [false])
     XCTAssertEqual(try count(launch), 0)
   }
 
   func testUITestingIsInMemory() throws {
-    var asked: Bool?
+    var asked: [Bool] = []
     let launch = AppLaunch(
       arguments: ["-uiTesting"]
     ) {
-      asked = $0
+      asked.append($0)
       return try self.memory($0)
     }
     XCTAssertTrue(launch.isUITesting)
-    XCTAssertEqual(asked, true)
+    XCTAssertEqual(asked, [true])
     XCTAssertEqual(try count(launch), 0)
   }
 

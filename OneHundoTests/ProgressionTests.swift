@@ -1,5 +1,5 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 final class ProgressionTests: XCTestCase {
   func testTargetAfterNormalDay() {

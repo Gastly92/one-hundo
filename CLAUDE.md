@@ -83,8 +83,16 @@ features land.
     unbracketed text.
 - SwiftLint runs in CI with `--strict`
   (warnings fail). Config: `.swiftlint.yml`.
-  It can't be downloaded in this container, so
-  read the `SwiftLint` job log on failure.
+  Every opt-in rule is on; the few turned
+  off each say why there. When two rules
+  disagree, keep the one that makes code
+  shorter. No `swiftlint:disable` comments
+  in code: fix the cause (a flagged line
+  usually has a cleaner form), or turn the
+  rule off in `.swiftlint.yml` with a
+  reason. SwiftLint can't be downloaded in
+  this container, so read the `SwiftLint`
+  job log (it prints file:line) on failure.
 - Lines max 46 chars, so a diff line fits a
   phone in portrait without wrapping. This
   covers docs, YAML and scripts too: CI's
@@ -162,8 +170,9 @@ features land.
   `indentation_width` rule checks it.
 - Periphery (CI step after tests) fails on
   unused code. Delete it rather than ignore
-  it; for a real false positive, add a `//
-  periphery:ignore` comment saying why.
+  it; no `periphery:ignore` comments. For a
+  real false positive, restructure the code
+  or ask the owner.
   Homebrew marks it deprecated (archived
   upstream, disabled 2027-08); if it stops
   installing or supporting the current Xcode,
@@ -185,7 +194,9 @@ features land.
   `CA92.1`).
 - Dependabot opens weekly PRs for GitHub
   Actions and test-only Swift package
-  versions; merge them if CI is green.
+  versions. Check CI and summarize what
+  changed (release notes); the owner reviews
+  and merges them.
 - After pushing, check CI with the GitHub MCP
   tools (`actions_list`, `get_job_logs`) and
   fix failures before calling the work done.

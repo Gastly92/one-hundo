@@ -1,39 +1,45 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 /// Targets, progress, card text, and stats.
-final class ChallengeTests: ModelTestCase {
-  func testTargetStartsFromTest() {
-    let pushUps = makePushUps()
+@MainActor
+final class ChallengeTests: XCTestCase {
+  func testTargetStartsFromTest() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     XCTAssertEqual(pushUps.target(day: 1), 6)
     XCTAssertEqual(pushUps.currentCount, 5)
   }
 
-  func testTargetAfterNormalDay() {
-    let pushUps = makePushUps()
+  func testTargetAfterNormalDay() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2)
     XCTAssertEqual(pushUps.target(day: 3), 7)
   }
 
-  func testTargetAfterShortDay() {
-    let pushUps = makePushUps()
+  func testTargetAfterShortDay() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     XCTAssertEqual(pushUps.target(day: 2), 6)
     pushUps.log(4, day: 2)
     XCTAssertEqual(pushUps.target(day: 3), 5)
   }
 
-  func testMissedDaysDoNotChangeTarget() {
-    let pushUps = makePushUps()
+  func testMissedDaysKeepTarget() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(6, day: 2)
     XCTAssertEqual(pushUps.target(day: 3), 7)
     XCTAssertEqual(pushUps.target(day: 10), 7)
   }
 
-  func testLoggingTodayKeepsTodaysTarget() {
-    let pushUps = makePushUps()
+  func testLogKeepsTodaysTarget() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2, hour: 8)
     let evening = pushUps.target(
@@ -43,16 +49,18 @@ final class ChallengeTests: ModelTestCase {
     XCTAssertEqual(pushUps.target(day: 3), 7)
   }
 
-  func testTargetIsCappedAtGoal() {
-    let pushUps = makePushUps(
+  func testTargetIsCappedAtGoal() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps(
       start: 95, increase: 10
     )
     let target = pushUps.target(day: 1)
     XCTAssertEqual(target, 100)
   }
 
-  func testLoggingSameDayReplacesAttempt() {
-    let pushUps = makePushUps()
+  func testSameDayLogReplaces() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(6, day: 2, hour: 9)
     pushUps.log(8, day: 2, hour: 18)
     XCTAssertEqual(pushUps.attempts?.count, 1)
@@ -61,8 +69,9 @@ final class ChallengeTests: ModelTestCase {
     XCTAssertEqual(pushUps.currentCount, 8)
   }
 
-  func testProgressAndDaysToGoal() {
-    let pushUps = makePushUps()
+  func testProgressAndDaysToGoal() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     XCTAssertEqual(pushUps.daysToGoal, 95)
     pushUps.log(20, day: 2)
     XCTAssertEqual(
@@ -75,20 +84,22 @@ final class ChallengeTests: ModelTestCase {
   }
 
   func testAttemptsSavedNewestFirst() throws {
-    let pushUps = makePushUps()
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2)
-    try context.save()
+    try store.context.save()
     let all = FetchDescriptor<Attempt>()
-    let saved = try context.fetch(all)
+    let saved = try store.context.fetch(all)
     XCTAssertEqual(saved.count, 2)
     let counts = pushUps.sortedAttempts
       .map(\.count)
     XCTAssertEqual(counts, [6, 5])
   }
 
-  func testCardTextTryAndDone() {
-    let pushUps = makePushUps()
+  func testCardTextTryAndDone() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     XCTAssertEqual(
       pushUps.todayText(day: 2), "Try 6 today"
@@ -102,8 +113,9 @@ final class ChallengeTests: ModelTestCase {
     )
   }
 
-  func testStartDayIsDone() {
-    let pushUps = makePushUps()
+  func testStartDayIsDone() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     XCTAssertEqual(
       pushUps.todayText(day: 1), "Done: 5"
@@ -121,8 +133,9 @@ final class ChallengeTests: ModelTestCase {
     XCTAssertEqual(pushUps.target(day: 2), 7)
   }
 
-  func testCardTextUsesUnit() {
-    let plank = makePushUps(start: 45)
+  func testCardTextUsesUnit() throws {
+    let store = try TestStore()
+    let plank = store.pushUps(start: 45)
     plank.unit = .seconds
     XCTAssertEqual(
       plank.todayText(day: 2),
@@ -136,8 +149,9 @@ final class ChallengeTests: ModelTestCase {
     )
   }
 
-  func testBuiltInLookupAndUnit() {
-    let pushUps = makePushUps()
+  func testBuiltInLookupAndUnit() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     XCTAssertEqual(
       pushUps.builtIn?.name, "Push-ups"
     )
@@ -151,8 +165,9 @@ final class ChallengeTests: ModelTestCase {
     )
   }
 
-  func testBestIncludesStartingTest() {
-    let pushUps = makePushUps()
+  func testBestIncludesStartingTest() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     XCTAssertEqual(pushUps.personalBest, 5)
     pushUps.log(5, day: 1)
     pushUps.log(9, day: 2)
@@ -160,8 +175,9 @@ final class ChallengeTests: ModelTestCase {
     XCTAssertEqual(pushUps.personalBest, 9)
   }
 
-  func testDaysLoggedCountsDistinctDays() {
-    let pushUps = makePushUps()
+  func testDaysLoggedIsDistinct() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     XCTAssertEqual(daysLogged(pushUps), 0)
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2, hour: 8)
@@ -185,16 +201,18 @@ final class ChallengeTests: ModelTestCase {
     )
   }
 
-  func testNilAttemptsCountAsNone() {
-    let pushUps = makePushUps()
+  func testNilAttemptsCountAsNone() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.attempts = nil
     XCTAssertTrue(pushUps.allAttempts.isEmpty)
     XCTAssertEqual(pushUps.currentCount, 5)
     XCTAssertEqual(daysLogged(pushUps), 0)
   }
 
-  func testUnknownUnitIsReps() {
-    let pushUps = makePushUps()
+  func testUnknownUnitIsReps() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.unitRaw = "laps"
     XCTAssertEqual(pushUps.unit, .reps)
   }

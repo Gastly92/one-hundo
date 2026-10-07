@@ -26,24 +26,34 @@ final class ChallengeListTests: XCTestCase {
   @MainActor
   func testSeededChallengesShowAsCards() {
     let app = App.start(seeded: true)
-    let pushUps = app.text("Push-ups")
+    let pushUps = app.card("pushups")
     XCTAssertTrue(pushUps.appears(within: 10))
     let title = app.text("welcomeTitle")
     XCTAssertFalse(title.exists)
 
-    for label in [
+    let cards = [
       // Logged yesterday: target is
       // yesterday's 10 + 1.
-      "Try 11 today", "10 / 100",
+      "pushups": [
+        "Push-ups",
+        "Try 11 today",
+        "10 / 100",
+      ],
       // Logged today.
-      "Sit-ups", "Done: 20", "20 / 100",
+      "situps":
+        ["Sit-ups", "Done: 20", "20 / 100"],
       // Started today with a test of 3: the
       // test is today's attempt.
-      "Pull-ups", "Done: 3",
-    ] {
-      XCTAssertTrue(
-        app.text(label).exists, label
-      )
+      "pullups": ["Pull-ups", "Done: 3"],
+    ]
+    for (id, texts) in cards {
+      let label = app.card(id).label
+      for text in texts {
+        XCTAssertTrue(
+          label.contains(text),
+          "\(id): \(label)"
+        )
+      }
     }
   }
 
@@ -77,7 +87,7 @@ final class ChallengeListTests: XCTestCase {
   @MainActor
   func testLongPressDeletesChallenge() {
     let app = App.start(seeded: true)
-    let pullUps = app.text("Pull-ups")
+    let pullUps = app.card("pullups")
     XCTAssertTrue(pullUps.appears(within: 10))
 
     // The first press can land while the list
@@ -106,7 +116,7 @@ final class ChallengeListTests: XCTestCase {
     sure.tap()
 
     XCTAssertTrue(pullUps.disappears())
-    XCTAssertTrue(app.text("Push-ups").exists)
+    XCTAssertTrue(app.card("pushups").exists)
   }
 
   @MainActor

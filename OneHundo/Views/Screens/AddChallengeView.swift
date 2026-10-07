@@ -4,7 +4,8 @@ import SwiftUI
 /// The first step of starting a challenge:
 /// pick a built-in (or, later, a custom one).
 struct AddChallengeView: View {
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.dismiss)
+  private var dismiss
   @Query private var challenges: [Challenge]
 
   /// One active challenge per built-in; a

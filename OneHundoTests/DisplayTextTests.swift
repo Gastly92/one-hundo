@@ -1,12 +1,13 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 /// Text built in code (not in views), which
 /// goes through the String Catalog.
 @MainActor
-final class DisplayTextTests: ModelTestCase {
-  func testBuiltInsUseCatalogName() {
-    let pushUps = makePushUps()
+final class DisplayTextTests: XCTestCase {
+  func testBuiltInsUseCatalogName() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     // A name stored in another language still
     // shows in the user's language.
     pushUps.name = "Liegestütze"

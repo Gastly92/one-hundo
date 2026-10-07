@@ -33,7 +33,7 @@ extension Challenge {
   /// could never run in tests and would fail
   /// the coverage gate.)
   var allAttempts: [Attempt] {
-    let lists = [attempts].compactMap { $0 }
+    let lists = [attempts].compactMap(\.self)
     return Array(lists.joined())
   }
 
@@ -290,7 +290,9 @@ enum Progression {
     from count: Int, goal: Int, step: Int
   ) -> Int {
     let remaining = goal - count
-    guard remaining > 0 else { return 0 }
+    guard remaining > 0 else {
+      return 0
+    }
     let perDay = max(step, 1)
     return (remaining + perDay - 1) / perDay
   }
@@ -323,7 +325,9 @@ enum Progression {
   static func progress(
     current: Int, goal: Int
   ) -> Double {
-    guard goal > 0 else { return 0 }
+    guard goal > 0 else {
+      return 0
+    }
     let ratio = Double(current) / Double(goal)
     return min(max(ratio, 0), 1)
   }
@@ -381,7 +385,9 @@ struct LogOutcome: Equatable {
 
   /// SF Symbol for the result screen.
   var symbol: String {
-    if reachedGoal { return "trophy.fill" }
+    if reachedGoal {
+      return "trophy.fill"
+    }
     return hitTarget
       ? "hands.clap.fill"
       : "arrow.up.forward.circle.fill"

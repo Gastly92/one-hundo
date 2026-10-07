@@ -11,7 +11,7 @@ import SwiftData
 /// unique.
 @Model
 final class Challenge {
-  var id: UUID = UUID()
+  var id = UUID()
   /// A built-in challenge id (see `BuiltIn`),
   /// or `Challenge.customKind`.
   var kind: String = "custom"
@@ -28,7 +28,7 @@ final class Challenge {
   /// Reminder time as minutes after midnight
   /// (18:00 by default).
   var reminderMinutes: Int = 1080
-  var createdDate: Date = Date()
+  var createdDate = Date.now
   var completedDate: Date?
   @Relationship(
     deleteRule: .cascade,
@@ -37,16 +37,16 @@ final class Challenge {
   var attempts: [Attempt]? = []
 
   init(
-    kind: String = "custom",
     name: String,
-    unit: CountUnit = .reps,
     colorName: String,
     startingCount: Int,
+    kind: String = "custom",
+    unit: CountUnit = .reps,
     goal: Int = 100,
     dailyIncrease: Int = 1,
     reminderEnabled: Bool = true,
     reminderMinutes: Int = 1080,
-    createdDate: Date = Date()
+    createdDate: Date = .now
   ) {
     self.kind = kind
     self.name = name
@@ -67,7 +67,7 @@ final class Challenge {
 /// doesn't allow unique constraints).
 @Model
 final class Attempt {
-  var date: Date = Date()
+  var date = Date.now
   var count: Int = 0
   var challenge: Challenge?
 
@@ -86,7 +86,8 @@ enum CountUnit: String, CaseIterable {
   /// ("1 second" / "2 seconds").
   func format(_ count: Int) -> String {
     switch self {
-    case .reps: count.formatted()
+    case .reps:
+      count.formatted()
     case .seconds:
       String(localized: "\(count) seconds")
     case .minutes:
@@ -98,7 +99,8 @@ enum CountUnit: String, CaseIterable {
   /// when logging, e.g. "seconds".
   var name: String {
     switch self {
-    case .reps: String(localized: "reps")
+    case .reps:
+      String(localized: "reps")
     case .seconds:
       String(localized: "seconds")
     case .minutes:
