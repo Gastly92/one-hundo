@@ -147,10 +147,11 @@ final class AccessibilityTests: XCTestCase {
     try app.performAccessibilityAudit(
       for: types
     ) {
-      let expected = Self.isExpected(
+      if Self.isExpected(
         $0, bars: bars, window: window
-      )
-      if expected { return true }
+      ) {
+        return true
+      }
       let found = Self.describe($0)
       XCTFail(
         "[\(screen)] \(found)",
