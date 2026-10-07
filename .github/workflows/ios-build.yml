@@ -151,8 +151,43 @@ jobs:
     - name: Generate Xcode project
       run: xcodegen generate
 
+    # The last build from main (packages
+    # like swift-syntax compile once, not on
+    # every run). Changed files rebuild as
+    # usual. Saved only from main, so a PR
+    # never feeds another.
+    - name: Cache key
+      id: key
+      run: |
+        xcode=$(
+          xcodebuild -version | head -1
+        )
+        deps=$(find project.yml Packages \
+          -type f | sort | xargs cat \
+          | shasum | cut -c1-12)
+        prefix="build-${xcode// /-}-$deps"
+        echo "prefix=$prefix" \
+          >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache/restore@v6
+      with:
+        path: build/test
+        key: >-
+          ${{ steps.key.outputs.prefix }}-${{
+          github.sha }}
+        restore-keys: >-
+          ${{ steps.key.outputs.prefix }}-
+
     - name: Build
       run: .github/scripts/run-tests.sh build
+
+    - uses: actions/cache/save@v6
+      if: github.ref == 'refs/heads/main'
+      with:
+        path: build/test
+        key: >-
+          ${{ steps.key.outputs.prefix }}-${{
+          github.sha }}
 
     # A tar keeps the apps' permissions and
     # links, which artifacts drop.
@@ -206,6 +241,9 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v7
+
+    - name: Boot the simulator
+      run: .github/scripts/run-tests.sh boot
 
     - name: Install XcodeGen
       run: brew install xcodegen

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # CI's tests, in two steps on separate
 # runners:
+#   run-tests.sh boot
+#     starts the simulator early, so it
+#     boots while the build downloads;
 #   run-tests.sh build
 #     builds the app and tests once;
 #   run-tests.sh test <shard>
@@ -14,7 +17,7 @@
 # found).
 set -euo pipefail
 
-mode="${1:?build or test}"
+mode="${1:?boot, build or test}"
 
 # The first available iPhone simulator.
 devices=$(
@@ -31,6 +34,13 @@ if [ -z "$device" ]; then
   exit 1
 fi
 echo "Using simulator $device"
+
+if [ "$mode" = boot ]; then
+  # Returns while the simulator boots;
+  # xcodebuild waits for it later.
+  xcrun simctl boot "$device"
+  exit 0
+fi
 
 mkdir -p build
 common=(
