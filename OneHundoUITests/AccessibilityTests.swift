@@ -183,33 +183,17 @@ final class AccessibilityTests: XCTestCase {
     _ app: XCUIApplication,
     _ types: Checks,
     on screen: String,
-    bottom: CGFloat?,
-    file: StaticString = #filePath,
-    line: UInt = #line
+    bottom: CGFloat?
   ) throws {
     let page = Page(app, bottom: bottom)
     do {
-      try runAudit(
-        app,
-        types,
-        screen,
-        page,
-        file: file,
-        line: line
-      )
+      try runAudit(app, types, screen, page)
     } catch {
       // "Audit failed to complete in time":
       // retry once; a second timeout fails.
       guard (error as NSError).code == -56
       else { throw error }
-      try runAudit(
-        app,
-        types,
-        screen,
-        page,
-        file: file,
-        line: line
-      )
+      try runAudit(app, types, screen, page)
     }
   }
 
@@ -218,9 +202,7 @@ final class AccessibilityTests: XCTestCase {
     _ app: XCUIApplication,
     _ types: Checks,
     _ screen: String,
-    _ page: Page,
-    file: StaticString,
-    line: UInt
+    _ page: Page
   ) throws {
     try app.performAccessibilityAudit(
       for: types
@@ -229,11 +211,7 @@ final class AccessibilityTests: XCTestCase {
         return true
       }
       let found = Self.describe($0)
-      XCTFail(
-        "[\(screen)] \(found)",
-        file: file,
-        line: line
-      )
+      XCTFail("[\(screen)] \(found)")
       return true
     }
   }
