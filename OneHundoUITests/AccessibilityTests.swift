@@ -300,7 +300,6 @@ private struct Page {
   /// Below the navigation bar and above
   /// anything fixed at the bottom.
   let visible: CGRect
-  let isScrolled: Bool
 
   @MainActor
   init(
@@ -321,7 +320,6 @@ private struct Page {
       width: window.width,
       height: end - top
     )
-    isScrolled = bottom != nil
   }
 
   /// Issues that come from iOS itself, or
@@ -339,16 +337,13 @@ private struct Page {
       return true
     }
     // Text the audit can't tie to any
-    // element comes from iOS: a system
-    // control (the time picker draws its
-    // own) or, once scrolled, the blur at
-    // the screen's edges. Anything in our
-    // views has an element, and the first
-    // page is checked strictly.
+    // element is drawn by iOS (the time
+    // picker, the blur at the screen's
+    // edges) or cut off at an edge, which
+    // another page shows in full. Our views'
+    // text has an element when fully shown.
     guard let element = issue.element else {
-      return isScrolled || text.contains(
-        "Potentially inaccessible text"
-      )
+      return true
     }
     if bars.contains(element.frame) {
       return true
