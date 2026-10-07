@@ -19,9 +19,9 @@ design changed) as each one lands.
   SwiftLint (strict, 100-character lines),
   warnings as errors with strict concurrency,
   100% line coverage of non-view code
-  (`Models/`, `Support/`), Thread Sanitizer
-  on all tests, and Periphery for unused
-  code.
+  (`Models/`, `Support/`), a lint rule
+  against skipping Swift's data race
+  checks, and Periphery for unused code.
 - **Stored data**: before 1.0 the models
   change freely (a big change may need the
   app reinstalled). From 1.0 on, schemas are
@@ -429,6 +429,19 @@ go in first.
   largest text, and everything else. A
   last job merges the results for the
   coverage gate. About half the wait.
+
+#### 4.18 No Thread Sanitizer ✅
+- Snapshots set the standard text size, so
+  light and dark match a real phone.
+- Thread Sanitizer is off: Swift 6 mode
+  already makes data races compile errors,
+  it never found one, and it slowed the app
+  enough in tests that the accessibility
+  audit randomly timed out. A lint rule
+  bans the ways to skip Swift's check
+  (`@unchecked Sendable`,
+  `nonisolated(unsafe)`, `@preconcurrency`).
+- No version bump (nothing user-visible).
 
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color

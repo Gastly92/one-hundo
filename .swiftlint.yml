@@ -134,6 +134,23 @@ custom_rules:
       - comment
       - doccomment
     severity: error
+  # Swift 6 mode makes data races compile
+  # errors; these switch that check off for
+  # a type, value or import. Thread
+  # Sanitizer was dropped because nothing
+  # uses them; using one means adding it
+  # back to run-tests.sh.
+  unchecked_concurrency:
+    name: "Unchecked concurrency"
+    message: >-
+      This skips Swift's data race check.
+      Make the type safe instead.
+    regex: >-
+      @unchecked\s+Sendable|nonisolated\(unsafe\)|@preconcurrency
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    severity: error
   # Sentences shown to users must be
   # translatable. In views, literals passed
   # to Text are; in logic they need

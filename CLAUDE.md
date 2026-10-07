@@ -153,10 +153,18 @@ features land.
   using Swift's automatic initializer shows
   its private property defaults as untested;
   give it an explicit `init`.
-- Tests run with Thread Sanitizer: a data
-  race stops the app and fails the test. UI
-  tests launch the app with
-  `App.start(seeded:)`, which sets this up.
+- No Thread Sanitizer: Swift 6 mode already
+  makes data races compile errors, and it
+  slowed every test (the accessibility
+  audit timed out). The
+  `unchecked_concurrency` lint rule bans
+  the ways around that check
+  (`@unchecked Sendable`,
+  `nonisolated(unsafe)`,
+  `@preconcurrency`); if one is ever needed,
+  add `-enableThreadSanitizer YES` back to
+  `run-tests.sh`. UI tests launch the app
+  with `App.start(seeded:)`.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
   dark and large text, on a fixed day
