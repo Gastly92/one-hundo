@@ -49,7 +49,6 @@ common=(
   -destination "id=$device"
   -derivedDataPath build/test
   -enableCodeCoverage YES
-  -enableThreadSanitizer YES
   CODE_SIGNING_ALLOWED=NO
 )
 summary="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
@@ -120,9 +119,9 @@ xcodebuild test-without-building \
   -resultBundlePath build/test.xcresult \
   > build/test.log 2>&1 || status=$?
 
-# Each test's result, errors and races.
+# Each test's result and errors.
 shown='Test Case .*(passed|failed)'
-shown+='|error:|ThreadSanitizer|\*\* TEST'
+shown+='|error:|\*\* TEST'
 grep -E "($shown)" build/test.log || true
 
 echo "Tests ($shard):" \

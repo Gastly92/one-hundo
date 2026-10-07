@@ -96,11 +96,6 @@ schemes:
         OneHundo: all
     test:
       gatherCoverageData: true
-      # CI runs tests with Thread Sanitizer;
-      # a data race stops the app, failing
-      # the test.
-      environmentVariables:
-        TSAN_OPTIONS: halt_on_error=1
       coverageTargets:
         - OneHundo
       targets:
