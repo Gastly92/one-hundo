@@ -15,7 +15,7 @@ design changed) as each one lands.
   keep updated. Test and CI tooling is fine
   (it never ships to the phone).
 - **Checks on every PR**: unit tests, UI
-  tests, Xcode's accessibility audit,
+  tests, snapshots of every screen,
   SwiftLint (strict, 100-character lines),
   warnings as errors with strict concurrency,
   100% line coverage of non-view code
@@ -435,12 +435,26 @@ go in first.
   light and dark match a real phone.
 - Thread Sanitizer is off: Swift 6 mode
   already makes data races compile errors,
-  it never found one, and it slowed the app
-  enough in tests that the accessibility
-  audit randomly timed out. A lint rule
+  it never found one, and without it the
+  tests run 25–30% faster. A lint rule
   bans the ways to skip Swift's check
   (`@unchecked Sendable`,
   `nonisolated(unsafe)`, `@preconcurrency`).
+- No version bump (nothing user-visible).
+
+#### 4.19 No accessibility audit ✅
+- Xcode's accessibility audit is gone: on
+  CI's simulators one screen's audit
+  stalled at random (about 1 job in 4),
+  with or without Thread Sanitizer. Its
+  `-darkMode` launch flag and exceptions
+  went with it. Lint, large text snapshots
+  and UI tests (which find controls by
+  their labels) still cover most of it; a
+  manual check on the phone is in step 9.
+- CI runs two test shards (main,
+  localization), straight from the build's
+  `.xctestrun`, without XcodeGen.
 - No version bump (nothing user-visible).
 
 ### 5. Custom challenges and settings
@@ -504,6 +518,11 @@ go in first.
   Completed; Continue moves it back.
 - App icon, accent color, haptics, and a pass
   on empty and error states.
+- Manual accessibility check on the phone:
+  VoiceOver on every screen (each control
+  named, sensible order) and the largest
+  text size (nothing cut off, buttons easy
+  to tap). Replaces the automated audit.
 - Stored data versioning: freeze the 1.0
   models as schema V1 (a `VersionedSchema`)
   with a `SchemaMigrationPlan`, and a test

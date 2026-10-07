@@ -14,9 +14,7 @@ struct OneHundoApp: App {
 
   var body: some Scene {
     WindowGroup {
-      content.preferredColorScheme(
-        launch.isDark ? .dark : nil
-      )
+      content
     }
   }
 

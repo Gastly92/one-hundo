@@ -8,7 +8,7 @@
 #     builds the app and tests once;
 #   run-tests.sh test <shard>
 #     runs one shard of the tests on that
-#     build (light, dark, largest, main).
+#     build (main, localization).
 # The shards run in parallel, each on its own
 # runner with one simulator (the 3-core
 # runner can't run two: tried in #21, the
@@ -70,28 +70,19 @@ if [ "$mode" = build ]; then
 fi
 
 # Which tests each shard runs: the slow
-# accessibility looks get one each (dark,
-# the quickest, also takes localization),
-# and main takes the rest.
-shard="${2:?shard: light, dark, ...}"
+# localization check (every screen) on its
+# own, and main takes the rest.
+shard="${2:?shard: main or localization}"
 ui=OneHundoUITests
-a11y="$ui/AccessibilityTests"
+check="$ui/LocalizationTests"
 case "$shard" in
-  light) only=(
-    "-only-testing:$a11y/testLight"
-  ) ;;
-  dark) only=(
-    "-only-testing:$a11y/testDark"
-    "-only-testing:$ui/LocalizationTests"
-  ) ;;
-  largest) only=(
-    "-only-testing:$a11y/testLargestText"
+  localization) only=(
+    "-only-testing:$check"
   ) ;;
   main) only=(
     -only-testing:OneHundoTests
     "-only-testing:$ui"
-    "-skip-testing:$a11y"
-    "-skip-testing:$ui/LocalizationTests"
+    "-skip-testing:$check"
   ) ;;
   *)
     echo "::error::Unknown shard $shard"
@@ -114,8 +105,15 @@ diffs="$PWD/build/snapshot-diffs"
 export \
   TEST_RUNNER_SNAPSHOT_ARTIFACTS="$diffs"
 
+# The build's own test plan (.xctestrun), so
+# a shard needs no Xcode project.
+plan=$(find build/test/Build/Products \
+  -name '*.xctestrun' | head -1)
 xcodebuild test-without-building \
-  "${common[@]}" "${only[@]}" \
+  -xctestrun "$plan" \
+  -destination "id=$device" \
+  -enableCodeCoverage YES \
+  "${only[@]}" \
   -resultBundlePath build/test.xcresult \
   > build/test.log 2>&1 || status=$?
 

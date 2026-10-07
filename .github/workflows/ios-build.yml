@@ -117,9 +117,8 @@ jobs:
       run: .github/scripts/swiftlint.sh
 
   # Every screen must be in the screen list
-  # (ScreenID / ScreenHost), so the
-  # accessibility audit and localization
-  # check cover it.
+  # (ScreenID / ScreenHost), so snapshot
+  # and localization tests cover it.
   screens:
     name: Screen list
     needs: changes
@@ -232,7 +231,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [light, dark, largest, main]
+        shard: [main, localization]
     # Write access only to commit recorded
     # snapshot images to the PR branch.
     permissions:
@@ -244,12 +243,6 @@ jobs:
 
     - name: Boot the simulator
       run: .github/scripts/run-tests.sh boot
-
-    - name: Install XcodeGen
-      run: brew install xcodegen
-
-    - name: Generate Xcode project
-      run: xcodegen generate
 
     - uses: actions/download-artifact@v8
       with:
