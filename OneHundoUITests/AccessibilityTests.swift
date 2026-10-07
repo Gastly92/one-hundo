@@ -103,46 +103,55 @@ final class AccessibilityTests: XCTestCase {
     XCTFail("[\(name)] kept scrolling")
   }
 
-  /// Drags up half a screen near the leading
-  /// edge, clear of pickers. False if
-  /// nothing moved. (One snapshot of the
-  /// screen is far quicker than asking for
-  /// each element's frame.)
+  /// Drags up half a screen, quickly and in
+  /// the page margin, so no card or row
+  /// gets pressed (a slow drag opened a
+  /// card's menu). False if no text moved.
   @MainActor
   private func scrollDown(
     _ app: XCUIApplication
   ) -> Bool {
-    let before = Self.layout(of: app)
+    let before = Self.textFrames(in: app)
     let window = app.windows.firstMatch
     let start = window.coordinate(
       withNormalizedOffset: CGVector(
-        dx: 0.04, dy: 0.75
+        dx: 0.02, dy: 0.75
       )
     )
     let end = window.coordinate(
       withNormalizedOffset: CGVector(
-        dx: 0.04, dy: 0.25
+        dx: 0.02, dy: 0.25
       )
     )
     start.press(
-      forDuration: 0.05, thenDragTo: end
+      forDuration: 0.01,
+      thenDragTo: end,
+      withVelocity: .fast,
+      thenHoldForDuration: 0.2
     )
-    return Self.layout(of: app) != before
+    return Self.textFrames(in: app) != before
   }
 
-  /// Every element and its frame, without
-  /// the memory addresses that change on
-  /// each snapshot.
+  /// Where each text is, read from one
+  /// snapshot of the screen (asking each
+  /// element separately is far slower).
   @MainActor
-  private static func layout(
-    of app: XCUIApplication
-  ) -> String {
-    let tree = app.debugDescription
-    return tree.replacingOccurrences(
-      of: "0x[0-9a-fA-F]+",
-      with: "",
-      options: .regularExpression
-    )
+  private static func textFrames(
+    in app: XCUIApplication
+  ) -> [CGRect] {
+    let root = try? app.snapshot()
+    return root.map(frames) ?? []
+  }
+
+  @MainActor
+  private static func frames(
+    _ node: any XCUIElementSnapshot
+  ) -> [CGRect] {
+    let own = node.elementType == .staticText
+      ? [node.frame] : []
+    return own + node.children.flatMap {
+      frames($0)
+    }
   }
 
   /// Audits the current screen, failing once
