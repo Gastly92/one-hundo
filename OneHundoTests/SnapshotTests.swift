@@ -40,6 +40,10 @@ final class SnapshotTests: XCTestCase {
   /// sRGB color: in the app's window images
   /// are otherwise wide color (Display P3),
   /// which compares unreliably once saved.
+  /// The text size is always set: left
+  /// unset, sizes scaled with text (like
+  /// @ScaledMetric) drift from the standard
+  /// size.
   private static func traits(
     _ style: UIUserInterfaceStyle,
     large: Bool = false
@@ -48,10 +52,8 @@ final class SnapshotTests: XCTestCase {
       $0.userInterfaceStyle = style
       $0.displayScale = 2
       $0.displayGamut = .SRGB
-      if large {
-        $0.preferredContentSizeCategory =
-          .accessibilityExtraLarge
-      }
+      $0.preferredContentSizeCategory = large
+        ? .accessibilityExtraLarge : .large
     }
   }
 
