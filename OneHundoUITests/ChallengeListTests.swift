@@ -45,6 +45,12 @@ final class ChallengeListTests: XCTestCase {
       // Started today with a test of 3: the
       // test is today's attempt.
       "pullups": ["Pull-ups", "Done: 3"],
+      // A custom challenge in seconds.
+      "custom": [
+        "Plank",
+        "Try 45 seconds today",
+        "40 / 120",
+      ],
     ]
     for (id, texts) in cards {
       let label = app.card(id).label
@@ -117,6 +123,25 @@ final class ChallengeListTests: XCTestCase {
 
     XCTAssertTrue(pullUps.disappears())
     XCTAssertTrue(app.card("pushups").exists)
+  }
+
+  @MainActor
+  func testLongPressLogsToday() {
+    let app = App.start(seeded: true)
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(pushUps.appears(within: 10))
+
+    // Not logged today yet: "Log attempt".
+    let item = app.button("Log attempt")
+    for _ in 0..<3 where !item.exists {
+      pushUps.press(forDuration: 1.5)
+      _ = item.appears(within: 3)
+    }
+    item.tap()
+    let sheet = app.bar("Log attempt")
+    XCTAssertTrue(sheet.appears())
+    app.button("Cancel").tap()
+    XCTAssertTrue(sheet.disappears())
   }
 
   @MainActor

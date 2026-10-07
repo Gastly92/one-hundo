@@ -6,10 +6,20 @@ import SwiftUI
 /// challenge form, and logging attempts.
 struct NumberEntry: View {
   @Binding var value: Int
-  var range: ClosedRange<Int> = 0...9999
+  let range: ClosedRange<Int>
   /// Prefix for accessibility identifiers:
   /// `<id>.field`, `<id>.plus`, `<id>.minus`.
-  var id: String = "number"
+  let id: String
+
+  init(
+    value: Binding<Int>,
+    range: ClosedRange<Int> = 0...9999,
+    id: String
+  ) {
+    _value = value
+    self.range = range
+    self.id = id
+  }
 
   @State private var text = ""
   // The number scales fully with the user's
@@ -59,20 +69,17 @@ struct NumberEntry: View {
   }
 
   /// Keeps only digits, clamps to `range`,
-  /// and updates `value`.
+  /// and updates `value` (see `NumberText`).
   private func textChanged(
     to newText: String
   ) {
-    let digits = newText.filter(\.isNumber)
-    guard let number = Int(digits) else {
-      if digits != newText { text = digits }
-      return
+    let clean = NumberText.clean(
+      newText, in: range
+    )
+    text = clean.text
+    if let number = clean.value {
+      value = number
     }
-    let clamped = clamp(number)
-    if String(clamped) != newText {
-      text = String(clamped)
-    }
-    if clamped != value { value = clamped }
   }
 
   private func stepButton(
@@ -81,7 +88,9 @@ struct NumberEntry: View {
     by delta: Int
   ) -> some View {
     Button {
-      value = clamp(value + delta)
+      value = NumberText.clamp(
+        value + delta, to: range
+      )
     } label: {
       Image(systemName: "\(sign).circle.fill")
         .font(.system(size: buttonSize))
@@ -89,11 +98,5 @@ struct NumberEntry: View {
     }
     .accessibilityLabel(label)
     .disabled(!range.contains(value + delta))
-  }
-
-  private func clamp(_ number: Int) -> Int {
-    let low = range.lowerBound
-    let high = range.upperBound
-    return min(max(number, low), high)
   }
 }

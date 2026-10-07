@@ -123,17 +123,19 @@ features land.
   data races are compile errors.
 - Coverage gate
   (`.github/scripts/coverage.sh`): every line
-  in `OneHundo/Models/` and
-  `OneHundo/Support/` must run in tests (unit
-  and UI tests count). Keep decisions out of
-  views: put them in those folders and unit
-  test them. Pass in outside pieces (store,
-  clock, notifications) so tests can fake
-  them. Views (run by UI and snapshot tests)
-  must stay at `VIEW_MIN` (97%) or more;
-  raise it as views gain tests, never lower
-  it. The CI summary lists view files with
-  untested lines.
+  of the app must run in tests (unit,
+  snapshot and UI tests all count); the log
+  names each untested function. Keep
+  decisions out of views: put them in
+  `Models/` or `Support/` and unit test them.
+  Pass in outside pieces (store, clock,
+  notifications) so tests can fake them.
+  Every button and branch in a view needs a
+  UI test or snapshot that reaches it; code
+  nothing can reach gets deleted. A view
+  using Swift's automatic initializer shows
+  its private property defaults as untested;
+  give it an explicit `init`.
 - Tests run with Thread Sanitizer: a data race
   stops the app and fails the test. UI tests
   launch the app with `App.start(seeded:)`,

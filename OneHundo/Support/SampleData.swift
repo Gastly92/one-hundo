@@ -51,6 +51,26 @@ enum SampleData {
     // "3 / 100".
     add(.pullUps, [(0, 3)])
 
+    // A custom challenge in seconds: logged
+    // 40 yesterday, so "Try 45 seconds
+    // today", "40 / 120".
+    let plank = Challenge(
+      name: "Plank",
+      colorName: "teal",
+      startingCount: 30,
+      unit: .seconds,
+      goal: 120,
+      dailyIncrease: 5,
+      createdDate: ago(2)
+    )
+    context.insert(plank)
+    plank.logAttempt(
+      count: 30, on: ago(2), in: cal
+    )
+    plank.logAttempt(
+      count: 40, on: ago(1), in: cal
+    )
+
     try? context.save()
   }
 }

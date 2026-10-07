@@ -22,6 +22,11 @@ struct ScreenHost: View {
     return challenges.first { $0.kind == id }
   }
 
+  /// The seeded Plank, counted in seconds.
+  private var plank: Challenge? {
+    challenges.first { $0.unit == .seconds }
+  }
+
   private var lastAttempt: Attempt? {
     pushUps?.sortedAttempts.first
   }
@@ -44,12 +49,8 @@ struct ScreenHost: View {
   var body: some View {
     switch screen {
     case .welcome:
-      NavigationStack {
-        WelcomeView {
-          // Shown alone: nothing to open.
-        }
-          .navigationTitle("Challenges")
-      }
+      // The list with no challenges yet.
+      ChallengeListView()
     case .challengeList:
       ChallengeListView()
     case .calendar:
@@ -86,6 +87,10 @@ struct ScreenHost: View {
           on: now
         )
       }
+    case .logTimed:
+      if let plank {
+        LogAttemptView(plank, on: now)
+      }
     case .logResult:
       if let pushUps {
         LogAttemptView(
@@ -103,12 +108,7 @@ struct ScreenHost: View {
     at step: EnrollFlowView.Step
   ) -> some View {
     NavigationStack {
-      EnrollFlowView(
-        .pushUps,
-        startAt: step
-      ) {
-        // Shown alone: nothing to return to.
-      }
+      EnrollFlowView(.pushUps, startAt: step)
     }
   }
 }

@@ -283,6 +283,15 @@ enum Progression {
     min(baseline + max(step, 1), goal)
   }
 
+  /// The goal after today's test: kept if
+  /// it's still ahead of `count`, otherwise
+  /// raised to `count` + 10.
+  static func goal(
+    _ goal: Int, after count: Int
+  ) -> Int {
+    goal > count ? goal : count + 10
+  }
+
   /// Days needed to go from `count` to
   /// `goal`, e.g. 5 to 100 at +1 a day is 95
   /// days.

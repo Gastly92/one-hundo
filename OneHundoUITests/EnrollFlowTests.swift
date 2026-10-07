@@ -37,6 +37,12 @@ final class EnrollFlowTests: XCTestCase {
       95 days.
       """)
     XCTAssertTrue(pace100.appears())
+    // Back to the test and forward again:
+    // the count is kept.
+    app.button("enrollBack").tap()
+    XCTAssertEqual(count.textValue, "5")
+    next.tap()
+    XCTAssertTrue(pace100.appears())
     app.button("goalChoice.150").tap()
     let pace150 = app.text("""
       At this pace you'd hit 150 in about \
