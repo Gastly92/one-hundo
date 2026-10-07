@@ -53,12 +53,13 @@ final class EnrollFlowTests: XCTestCase {
     XCTAssertTrue(start.appears())
     start.tap()
 
-    let card = app.text("Push-ups")
+    let card = app.card("pushups")
     XCTAssertTrue(card.appears(within: 10))
     // The test is today's attempt; tomorrow's
     // target is 6.
-    XCTAssertTrue(app.text("Done: 5").exists)
-    XCTAssertTrue(app.text("5 / 100").exists)
+    let label = card.label
+    XCTAssertTrue(label.contains("Done: 5"))
+    XCTAssertTrue(label.contains("5 / 100"))
 
     // Push-ups is now in progress, so it
     // can't be started twice.

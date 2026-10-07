@@ -78,37 +78,24 @@ extension Challenge {
   }
 }
 
-// A base class: its setup is shared by
-// subclasses, so it isn't final or private.
-// swiftlint:disable final_test_case
-// swiftlint:disable test_case_accessibility
-
-/// Shared setup for challenge tests: an
-/// in-memory store and a Push-ups challenge
-/// factory.
+/// An in-memory store for one test, with a
+/// Push-ups challenge factory. Each test
+/// makes its own, so nothing is shared.
 @MainActor
-class ModelTestCase: XCTestCase {
-  // Set in setUp, as XCTest expects.
-  // swiftlint:disable:next implicitly_unwrapped_optional
-  var container: ModelContainer!
+struct TestStore {
+  let container: ModelContainer
+
   var context: ModelContext {
     container.mainContext
   }
 
-  override func setUp() async throws {
+  init() throws {
     container = try AppStore.open(
       inMemory: true
     )
   }
 
-  // Must keep `throws`: it overrides
-  // XCTest's throwing tearDown.
-  // swiftlint:disable:next unneeded_throws_rethrows
-  override func tearDown() async throws {
-    container = nil
-  }
-
-  func makePushUps(
+  func pushUps(
     start: Int = 5,
     goal: Int = 100,
     increase: Int = 1
@@ -126,5 +113,3 @@ class ModelTestCase: XCTestCase {
     return challenge
   }
 }
-// swiftlint:enable final_test_case
-// swiftlint:enable test_case_accessibility

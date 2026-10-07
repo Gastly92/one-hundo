@@ -56,6 +56,14 @@ extension XCUIApplication {
     textFields[id]
   }
 
+  /// A challenge card on the list, by its
+  /// built-in id (e.g. "pushups"). Its label
+  /// holds all of the card's text.
+  @MainActor
+  func card(_ id: String) -> XCUIElement {
+    buttons["card.\(id)"]
+  }
+
   /// A navigation bar, by title.
   @MainActor
   func bar(_ id: String) -> XCUIElement {

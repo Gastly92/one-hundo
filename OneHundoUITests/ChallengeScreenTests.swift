@@ -11,7 +11,7 @@ final class ChallengeScreenTests: XCTestCase {
 
     // Push-ups started 3 days ago at 8,
     // logged 10 yesterday: "Try 11 today".
-    let pushUps = app.text("Push-ups")
+    let pushUps = app.card("pushups")
     XCTAssertTrue(pushUps.appears(within: 10))
     pushUps.tap()
 
@@ -64,10 +64,10 @@ final class ChallengeScreenTests: XCTestCase {
     let back = app.navigationBars.buttons
       .element(boundBy: 0)
     back.tap()
-    XCTAssertTrue(
-      app.text("14 / 100").appears()
-    )
-    XCTAssertTrue(app.text("Done: 14").exists)
+    XCTAssertTrue(pushUps.appears())
+    let card = pushUps.label
+    XCTAssertTrue(card.contains("14 / 100"))
+    XCTAssertTrue(card.contains("Done: 14"))
   }
 
   @MainActor
@@ -76,7 +76,7 @@ final class ChallengeScreenTests: XCTestCase {
 
     // Push-ups has attempts of 8 (start) and
     // 10 (yesterday).
-    let pushUps = app.text("Push-ups")
+    let pushUps = app.card("pushups")
     XCTAssertTrue(pushUps.appears(within: 10))
     pushUps.tap()
 

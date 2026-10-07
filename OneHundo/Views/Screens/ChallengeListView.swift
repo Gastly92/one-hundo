@@ -103,21 +103,21 @@ struct ChallengeListView: View {
     )
   }
 
-  /// A tap gesture rather than a
-  /// NavigationLink, so the card's texts stay
-  /// separate accessibility elements for UI
-  /// tests.
+  /// A button, so VoiceOver reads the card
+  /// as one tappable item ("Push-ups, Try 11
+  /// today, 10 / 100").
   private func card(
     _ challenge: Challenge
   ) -> some View {
-    // A button trait would turn each text
-    // into a button for UI tests; see the
-    // note above.
-    // swiftlint:disable:next accessibility_trait_for_button
-    ChallengeCard(challenge: challenge)
-      .contentShape(Self.tile)
-      .onTapGesture { path.append(challenge) }
-      .contextMenu { menu(for: challenge) }
+    Button {
+      path.append(challenge)
+    } label: {
+      ChallengeCard(challenge: challenge)
+        .contentShape(Self.tile)
+    }
+    .buttonStyle(.plain)
+    .contextMenu { menu(for: challenge) }
+    .testID("card.\(challenge.kind)")
   }
 
   private var isDeleting: Binding<Bool> {
