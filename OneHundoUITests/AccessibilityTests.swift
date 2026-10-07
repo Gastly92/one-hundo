@@ -105,8 +105,11 @@ final class AccessibilityTests: XCTestCase {
   ) throws {
     do {
       try runAudit(
-        app, types, screen,
-        file: file, line: line
+        app,
+        types,
+        screen,
+        file: file,
+        line: line
       )
     } catch {
       // "Audit failed to complete in time":
@@ -114,8 +117,11 @@ final class AccessibilityTests: XCTestCase {
       guard (error as NSError).code == -56
       else { throw error }
       try runAudit(
-        app, types, screen,
-        file: file, line: line
+        app,
+        types,
+        screen,
+        file: file,
+        line: line
       )
     }
   }
@@ -144,7 +150,8 @@ final class AccessibilityTests: XCTestCase {
       let found = Self.describe($0)
       XCTFail(
         "[\(screen)] \(found)",
-        file: file, line: line
+        file: file,
+        line: line
       )
       return true
     }

@@ -1,24 +1,25 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 /// UTC, so dates don't depend on the test
 /// machine's time zone.
 let utc: Calendar = {
   var cal = Calendar(identifier: .gregorian)
-  cal.timeZone = TimeZone(identifier: "UTC")!
+  cal.timeZone = .gmt
   return cal
 }()
 
 /// Noon (or `hour`) on the given day of
 /// January 2026, UTC.
 func day(_ day: Int, hour: Int = 12) -> Date {
-  utc.date(
-    from: DateComponents(
-      year: 2026, month: 1,
-      day: day, hour: hour
-    )
-  )!
+  // Jan 1 2026, 00:00 UTC.
+  let start: TimeInterval = 1_767_225_600
+  let hours = (day - 1) * 24 + hour
+  return Date(
+    timeIntervalSince1970:
+      start + TimeInterval(hours * 3600)
+  )
 }
 
 /// Shorthands for tests: the logic on a
@@ -80,8 +81,14 @@ extension Challenge {
 /// Shared setup for challenge tests: an
 /// in-memory store and a Push-ups challenge
 /// factory.
+// A base class: its setup is shared by
+// subclasses, so it isn't final or private.
+// swiftlint:disable final_test_case
+// swiftlint:disable test_case_accessibility
 @MainActor
 class ModelTestCase: XCTestCase {
+  // Set in setUp, as XCTest expects.
+  // swiftlint:disable:next implicitly_unwrapped_optional
   var container: ModelContainer!
   var context: ModelContext {
     container.mainContext
@@ -93,7 +100,7 @@ class ModelTestCase: XCTestCase {
     )
   }
 
-  override func tearDown() async throws {
+  override func tearDown() async {
     container = nil
   }
 
@@ -103,10 +110,10 @@ class ModelTestCase: XCTestCase {
     increase: Int = 1
   ) -> Challenge {
     let challenge = Challenge(
-      kind: BuiltIn.pushUps.id,
       name: "Push-ups",
       colorName: BuiltIn.pushUps.colorName,
       startingCount: start,
+      kind: BuiltIn.pushUps.id,
       goal: goal,
       dailyIncrease: increase,
       createdDate: day(1)
@@ -115,3 +122,5 @@ class ModelTestCase: XCTestCase {
     return challenge
   }
 }
+// swiftlint:enable final_test_case
+// swiftlint:enable test_case_accessibility

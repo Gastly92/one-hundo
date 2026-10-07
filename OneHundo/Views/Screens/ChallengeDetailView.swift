@@ -13,7 +13,8 @@ struct ChallengeDetailView: View {
 
   @Environment(\.modelContext)
   private var modelContext
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
   @State private var sheet: LogSheet?
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
@@ -35,7 +36,8 @@ struct ChallengeDetailView: View {
   private static let dayFormat =
     Date.FormatStyle.dateTime
       .weekday(.abbreviated)
-      .month(.abbreviated).day()
+      .month(.abbreviated)
+      .day()
 
   private var color: Color { challenge.color }
 

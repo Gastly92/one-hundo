@@ -14,7 +14,8 @@ struct ChallengeListView: View {
   @State private var deleting: Challenge?
   @Environment(\.modelContext)
   private var modelContext
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
   @ScaledMetric(relativeTo: .headline)
   private var tileHeight: CGFloat = 120
 
@@ -111,6 +112,10 @@ struct ChallengeListView: View {
   ) -> some View {
     ChallengeCard(challenge: challenge)
       .contentShape(Self.tile)
+      // A button trait would turn each text
+      // into a button for UI tests; see the
+      // note above.
+      // swiftlint:disable:next accessibility_trait_for_button
       .onTapGesture { path.append(challenge) }
       .contextMenu { menu(for: challenge) }
   }

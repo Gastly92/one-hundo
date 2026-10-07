@@ -1,5 +1,5 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 /// Text built in code (not in views), which
 /// goes through the String Catalog.

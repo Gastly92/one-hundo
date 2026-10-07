@@ -11,7 +11,8 @@ struct LogAttemptView: View {
   /// a new one.
   let attempt: Attempt?
 
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.dismiss)
+  private var dismiss
   @Environment(\.modelContext)
   private var modelContext
 
@@ -59,7 +60,9 @@ struct LogAttemptView: View {
   /// Set when a new log would replace that
   /// day's attempt (one attempt per day).
   private var replacementNote: String? {
-    guard attempt == nil else { return nil }
+    guard attempt == nil else {
+      return nil
+    }
     return challenge.replacementNote(on: date)
   }
 

@@ -9,6 +9,10 @@ import SwiftData
 /// every property has a default,
 /// relationships are optional, and nothing is
 /// unique.
+// SwiftData's @Model reads each stored
+// property's type from its annotation, so
+// they stay written out.
+// swiftlint:disable redundant_type_annotation
 @Model
 final class Challenge {
   var id: UUID = UUID()
@@ -37,11 +41,11 @@ final class Challenge {
   var attempts: [Attempt]? = []
 
   init(
-    kind: String = "custom",
     name: String,
-    unit: CountUnit = .reps,
     colorName: String,
     startingCount: Int,
+    kind: String = "custom",
+    unit: CountUnit = .reps,
     goal: Int = 100,
     dailyIncrease: Int = 1,
     reminderEnabled: Bool = true,
@@ -76,6 +80,7 @@ final class Attempt {
     self.count = count
   }
 }
+// swiftlint:enable redundant_type_annotation
 
 enum CountUnit: String, CaseIterable {
   case reps, seconds, minutes
@@ -86,7 +91,8 @@ enum CountUnit: String, CaseIterable {
   /// ("1 second" / "2 seconds").
   func format(_ count: Int) -> String {
     switch self {
-    case .reps: count.formatted()
+    case .reps:
+      count.formatted()
     case .seconds:
       String(localized: "\(count) seconds")
     case .minutes:
@@ -98,7 +104,8 @@ enum CountUnit: String, CaseIterable {
   /// when logging, e.g. "seconds".
   var name: String {
     switch self {
-    case .reps: String(localized: "reps")
+    case .reps:
+      String(localized: "reps")
     case .seconds:
       String(localized: "seconds")
     case .minutes:

@@ -5,7 +5,8 @@ import SwiftUI
 struct ChallengeCard: View {
   let challenge: Challenge
 
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
   @Environment(\.dynamicTypeSize)
   private var textSize
 

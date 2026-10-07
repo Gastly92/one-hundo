@@ -40,14 +40,14 @@ struct AppLaunch {
     isUITesting = args.contains("-uiTesting")
     let inMemory = isUITesting
     store = Result { try open(inMemory) }
-    let screen = isUITesting
+    let shown = isUITesting
       ? Self.screen(in: args) : nil
-    self.screen = screen
+    screen = shown
     isDark = isUITesting
       && args.contains("-darkMode")
     let seeded = Self.seededScreens
     let needsData = seeded.contains {
-      $0 == screen
+      $0 == shown
     }
     let seedFlag = args.contains(
       "-seedSampleData"

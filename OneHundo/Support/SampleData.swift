@@ -25,10 +25,10 @@ enum SampleData {
     ) {
       let first = logs[0]
       let challenge = Challenge(
-        kind: builtIn.id,
         name: builtIn.name,
         colorName: builtIn.colorName,
         startingCount: first.count,
+        kind: builtIn.id,
         createdDate: ago(first.days)
       )
       context.insert(challenge)

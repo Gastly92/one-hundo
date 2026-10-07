@@ -18,11 +18,11 @@ struct BuiltIn: Identifiable, Hashable {
 
   static let all = [pushUps, sitUps, pullUps]
 
-  static func with(id: String) -> BuiltIn? {
+  static func with(id: String) -> Self? {
     all.first { $0.id == id }
   }
 
-  static let pushUps = BuiltIn(
+  static let pushUps = Self(
     id: "pushups",
     name: String(localized: "Push-ups"),
     summary: String(localized: """
@@ -50,7 +50,7 @@ struct BuiltIn: Identifiable, Hashable {
     ]
   )
 
-  static let sitUps = BuiltIn(
+  static let sitUps = Self(
     id: "situps",
     name: String(localized: "Sit-ups"),
     summary: String(localized: """
@@ -75,7 +75,7 @@ struct BuiltIn: Identifiable, Hashable {
     ]
   )
 
-  static let pullUps = BuiltIn(
+  static let pullUps = Self(
     id: "pullups",
     name: String(localized: "Pull-ups"),
     summary: String(localized: """

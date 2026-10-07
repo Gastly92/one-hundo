@@ -72,6 +72,15 @@ disabled_rules:
   - balanced_xctest_lifecycle
   # Tests use XCTest, not Nimble/Quick.
   - prefer_nimble
+  # A blank line between every switch case:
+  # longer files, nothing gained.
+  - vertical_whitespace_between_cases
+  # Helper files hold several small helpers
+  # (e.g. ViewHelpers.swift), not one type.
+  - file_name
+  # SwiftData models synced with CloudKit
+  # need optional relationships.
+  - discouraged_optional_collection
 
 # 2-space indents; a wrapped line goes in one
 # level (2), not aligned by hand.
@@ -89,6 +98,23 @@ identifier_name:
 line_length:
   warning: 46
   ignores_urls: true
+  # `// swiftlint:disable:next <rule>` can't
+  # be wrapped.
+  excluded_lines_patterns:
+    - '^\s*// swiftlint:'
+
+# Attributes that take a line of their own,
+# so the declaration after them stays short.
+attributes:
+  always_on_line_above:
+    - "@ViewBuilder"
+    - "@MainActor"
+    - "@ToolbarContentBuilder"
+
+# Separators from 10_000 up; 2026 and 9999
+# read fine as they are.
+number_separator:
+  minimum_length: 5
 
 # A switch over an enum (e.g. ScreenHost)
 # isn't complex, however many cases it has.

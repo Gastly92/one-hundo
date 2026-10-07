@@ -1,6 +1,6 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 /// Targets, progress, card text, and stats.
 final class ChallengeTests: ModelTestCase {

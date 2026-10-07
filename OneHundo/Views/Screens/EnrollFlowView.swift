@@ -35,8 +35,7 @@ struct EnrollFlowView: View {
   @State private var goal = 100
   @State private var increase = 1
   @State private var remind = true
-  @State private var time =
-    EnrollFlowView.sixPM
+  @State private var time = Self.sixPM
 
   private static let goals =
     [50, 100, 150, 200]
@@ -45,8 +44,10 @@ struct EnrollFlowView: View {
   private static var sixPM: Date {
     let now = Date()
     return Calendar.current.date(
-      bySettingHour: 18, minute: 0,
-      second: 0, of: now
+      bySettingHour: 18,
+      minute: 0,
+      second: 0,
+      of: now
     ) ?? now
   }
 
@@ -75,10 +76,14 @@ struct EnrollFlowView: View {
   @ViewBuilder
   private var content: some View {
     switch step {
-    case .intro: intro
-    case .test: testYourself
-    case .goal: goalAndPace
-    case .reminder: reminder
+    case .intro:
+      intro
+    case .test:
+      testYourself
+    case .goal:
+      goalAndPace
+    case .reminder:
+      reminder
     }
   }
 
@@ -145,7 +150,7 @@ struct EnrollFlowView: View {
   }
 
   private func advance() {
-    if step == .test && !isValid {
+    if step == .test, !isValid {
       goal = count + 10
     }
     move(by: 1)
@@ -167,10 +172,10 @@ struct EnrollFlowView: View {
     let minute = parts.minute ?? 0
     let minutes = hour * 60 + minute
     let challenge = Challenge(
-      kind: builtIn.id,
       name: builtIn.name,
       colorName: builtIn.colorName,
       startingCount: count,
+      kind: builtIn.id,
       goal: goal,
       dailyIncrease: increase,
       reminderEnabled: remind,
@@ -346,7 +351,8 @@ extension EnrollFlowView {
       )
       if remind {
         DatePicker(
-          "Time", selection: $time,
+          "Time",
+          selection: $time,
           displayedComponents: .hourAndMinute
         )
       }

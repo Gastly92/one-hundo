@@ -1,5 +1,5 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 /// Logging an attempt: the outcome (target
 /// hit, new best, next target), its wording,
