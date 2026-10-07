@@ -94,9 +94,11 @@ features land.
   usually has a cleaner form), or turn the
   rule off in `.swiftlint.yml` with a
   reason. Run `.github/scripts/swiftlint.sh`
-  before pushing Swift changes: it lints in
-  Docker with the same pinned image as CI
-  (the session start hook prepares it).
+  before pushing Swift changes: CI's
+  SwiftLint job runs the same script. It
+  lints in Docker with the version pinned
+  in `.github/swiftlint/Dockerfile` (the
+  session start hook prepares it).
 - Lines max 45 chars, so a diff line fits a
   phone in portrait without wrapping. This
   covers docs, YAML and scripts too: CI's
@@ -206,10 +208,10 @@ features land.
   `UserDefaults`/`@AppStorage`: reason
   `CA92.1`).
 - Dependabot opens weekly PRs for GitHub
-  Actions and test-only Swift package
-  versions. Check CI and summarize what
-  changed (release notes); the owner reviews
-  and merges them.
+  Actions, SwiftLint and test-only Swift
+  package versions. Check CI and summarize
+  what changed (release notes); the owner
+  reviews and merges them.
 - After pushing, check CI with the GitHub MCP
   tools (`actions_list`, `get_job_logs`) and
   fix failures before calling the work done.

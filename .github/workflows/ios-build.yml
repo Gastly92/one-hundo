@@ -46,6 +46,7 @@ jobs:
             - 'project.yml'
             - 'Packages/**'
             - '.swiftlint.yml'
+            - '.github/swiftlint/**'
             - '.github/scripts/**'
             - '.github/workflows/**'
 
@@ -106,20 +107,14 @@ jobs:
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
-    # Pinned. .github/scripts/swiftlint.sh
-    # reads this line to lint locally with
-    # the same version.
-    container: ghcr.io/realm/swiftlint:0.65.1
     steps:
     - uses: actions/checkout@v7
 
+    # The same script Claude runs before
+    # pushing; the version is pinned in
+    # .github/swiftlint/Dockerfile.
     - name: Lint
-      run: |
-        swiftlint version
-        # Plain file:line output: GitHub
-        # shows only 10 annotations per step.
-        swiftlint lint --strict \
-          --reporter xcode
+      run: .github/scripts/swiftlint.sh
 
   # Every screen must be in the screen list
   # (ScreenID / ScreenHost), so the
