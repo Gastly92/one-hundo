@@ -13,8 +13,8 @@ struct NumberEntry: View {
 
   init(
     value: Binding<Int>,
-    range: ClosedRange<Int> = 0...9999,
-    id: String
+    id: String,
+    range: ClosedRange<Int> = 0...9999
   ) {
     _value = value
     self.range = range

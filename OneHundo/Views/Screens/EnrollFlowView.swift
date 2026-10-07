@@ -211,8 +211,8 @@ extension EnrollFlowView {
         .font(.title2.bold())
       NumberEntry(
         value: $count,
-        range: 0...999,
-        id: "testCount"
+        id: "testCount",
+        range: 0...999
       )
       Text("""
         This is your starting point. Be \
@@ -245,8 +245,8 @@ extension EnrollFlowView {
         .font(.headline)
       NumberEntry(
         value: $goal,
-        range: 1...9999,
-        id: "goal"
+        id: "goal",
+        range: 1...9999
       )
       GoalChips(
         goals: quickGoals, goal: $goal
