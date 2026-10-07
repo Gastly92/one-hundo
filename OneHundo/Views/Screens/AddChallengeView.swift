@@ -2,7 +2,8 @@ import SwiftData
 import SwiftUI
 
 /// The first step of starting a challenge:
-/// pick a built-in (or, later, a custom one).
+/// pick a built-in (or, later, a custom
+/// one).
 struct AddChallengeView: View {
   @Environment(\.dismiss)
   private var dismiss
@@ -88,8 +89,8 @@ private struct ChoiceRow: View {
   let title: Text
   let subtitle: Text
   /// Unavailable rows use secondary text
-  /// rather than fading the whole row, so the
-  /// text keeps enough contrast to read.
+  /// rather than fading the whole row, so
+  /// the text keeps enough contrast to read.
   var isDimmed = false
 
   private var titleColor: Color {

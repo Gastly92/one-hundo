@@ -34,7 +34,9 @@ final class ChallengeTests: XCTestCase {
     let pushUps = store.pushUps()
     pushUps.log(6, day: 2)
     XCTAssertEqual(pushUps.target(day: 3), 7)
-    XCTAssertEqual(pushUps.target(day: 10), 7)
+    XCTAssertEqual(
+      pushUps.target(day: 10), 7
+    )
   }
 
   func testLogKeepsTodaysTarget() throws {
@@ -63,7 +65,9 @@ final class ChallengeTests: XCTestCase {
     let pushUps = store.pushUps()
     pushUps.log(6, day: 2, hour: 9)
     pushUps.log(8, day: 2, hour: 18)
-    XCTAssertEqual(pushUps.attempts?.count, 1)
+    XCTAssertEqual(
+      pushUps.attempts?.count, 1
+    )
     let day2 = pushUps.attempt(day: 2)
     XCTAssertEqual(day2?.count, 8)
     XCTAssertEqual(pushUps.currentCount, 8)
@@ -83,7 +87,7 @@ final class ChallengeTests: XCTestCase {
     XCTAssertTrue(pushUps.isGoalReached)
   }
 
-  func testAttemptsSavedNewestFirst() throws {
+  func testNewestAttemptFirst() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
@@ -102,7 +106,8 @@ final class ChallengeTests: XCTestCase {
     let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     XCTAssertEqual(
-      pushUps.todayText(day: 2), "Try 6 today"
+      pushUps.todayText(day: 2),
+      "Try 6 today"
     )
     pushUps.log(6, day: 2)
     XCTAssertEqual(
@@ -121,11 +126,12 @@ final class ChallengeTests: XCTestCase {
       pushUps.todayText(day: 1), "Done: 5"
     )
     XCTAssertEqual(
-      pushUps.todayText(day: 2), "Try 6 today"
+      pushUps.todayText(day: 2),
+      "Try 6 today"
     )
 
-    // Logging again on the start day replaces
-    // the test.
+    // Logging again on the start day
+    // replaces the test.
     pushUps.log(6, day: 1, hour: 18)
     XCTAssertEqual(
       pushUps.todayText(day: 1), "Done: 6"
@@ -158,14 +164,16 @@ final class ChallengeTests: XCTestCase {
     XCTAssertFalse(pushUps.isCustom)
     XCTAssertEqual(pushUps.unit, .reps)
     pushUps.unit = .seconds
-    XCTAssertEqual(pushUps.unitRaw, "seconds")
+    XCTAssertEqual(
+      pushUps.unitRaw, "seconds"
+    )
     XCTAssertEqual(
       BuiltIn.all.map(\.id),
       ["pushups", "situps", "pullups"]
     )
   }
 
-  func testBestIncludesStartingTest() throws {
+  func testBestCountsStartTest() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
     XCTAssertEqual(pushUps.personalBest, 5)
@@ -191,11 +199,15 @@ final class ChallengeTests: XCTestCase {
     let secs = CountUnit.seconds
     let mins = CountUnit.minutes
     XCTAssertEqual(reps.format(1), "1")
-    XCTAssertEqual(secs.format(1), "1 second")
+    XCTAssertEqual(
+      secs.format(1), "1 second"
+    )
     XCTAssertEqual(
       secs.format(45), "45 seconds"
     )
-    XCTAssertEqual(mins.format(1), "1 minute")
+    XCTAssertEqual(
+      mins.format(1), "1 minute"
+    )
     XCTAssertEqual(
       mins.format(3), "3 minutes"
     )
@@ -205,7 +217,9 @@ final class ChallengeTests: XCTestCase {
     let store = try TestStore()
     let pushUps = store.pushUps()
     pushUps.attempts = nil
-    XCTAssertTrue(pushUps.allAttempts.isEmpty)
+    XCTAssertTrue(
+      pushUps.allAttempts.isEmpty
+    )
     XCTAssertEqual(pushUps.currentCount, 5)
     XCTAssertEqual(daysLogged(pushUps), 0)
   }

@@ -8,8 +8,8 @@ final class ProgressionTests: XCTestCase {
   }
 
   func testTargetAfterShortDay() {
-    // Target was 6 but only 4 were done: next
-    // target is 4 + 1.
+    // Target was 6 but only 4 were done:
+    // next target is 4 + 1.
     XCTAssertEqual(target(4, step: 1), 5)
   }
 
@@ -21,7 +21,8 @@ final class ProgressionTests: XCTestCase {
 
   func testGoalAfterTest() {
     // Still ahead of today's test: kept.
-    let kept = Progression.goal(100, after: 5)
+    let kept =
+      Progression.goal(100, after: 5)
     XCTAssertEqual(kept, 100)
     // Reached or passed: raised past it.
     let same = Progression.goal(

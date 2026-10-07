@@ -12,7 +12,9 @@ let utc: Calendar = {
 
 /// Noon (or `hour`) on the given day of
 /// January 2026, UTC.
-func day(_ day: Int, hour: Int = 12) -> Date {
+func day(
+  _ day: Int, hour: Int = 12
+) -> Date {
   // Jan 1 2026, 00:00 UTC.
   let start: TimeInterval = 1_767_225_600
   let hours = (day - 1) * 24 + hour

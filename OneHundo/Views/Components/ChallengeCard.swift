@@ -10,7 +10,9 @@ struct ChallengeCard: View {
   @Environment(\.dynamicTypeSize)
   private var textSize
 
-  private var color: Color { challenge.color }
+  private var color: Color {
+    challenge.color
+  }
   private var isDoneToday: Bool {
     challenge.attempt(on: now) != nil
   }
@@ -25,8 +27,9 @@ struct ChallengeCard: View {
         Text(challenge.progressText)
           .font(.caption)
           .foregroundStyle(.secondary)
-        // The text above already says this; a
-        // 4-point bar isn't a useful target.
+        // The text above already says this;
+        // a 4-point bar isn't a useful
+        // target.
         ProgressView(
           value: challenge.progress
         )
@@ -47,9 +50,9 @@ struct ChallengeCard: View {
   }
 
   /// "Try 6 today", or a checkmark and
-  /// "Done: 6". At the largest text sizes the
-  /// checkmark goes above, so the text isn't
-  /// squeezed into breaking mid-word.
+  /// "Done: 6". At the largest text sizes
+  /// the checkmark goes above, so the text
+  /// isn't squeezed into breaking mid-word.
   private var today: some View {
     let stack = textSize.isAccessibilitySize
       ? AnyLayout(VStackLayout(

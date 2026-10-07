@@ -22,8 +22,8 @@ Program membership is active.
 5. Tap Continue → **Register**.
 
 ## 3. Create the app in App Store Connect
-1. Open appstoreconnect.apple.com → **Apps** →
-   **+** → **New App**.
+1. Open appstoreconnect.apple.com → **Apps**
+   → **+** → **New App**.
 2. Platform: **iOS**. Name: `One Hundo`. If
    the name is taken, add a word; you can
    change it later.
@@ -42,8 +42,8 @@ Program membership is active.
 3. Under **Team Keys** tap **+**. Name:
    `GitHub`. Access: **Admin**. Tap
    **Generate**.
-4. Copy the **Issuer ID** (shown above the key
-   list) into Notes.
+4. Copy the **Issuer ID** (shown above the
+   key list) into Notes.
 5. Copy the key's **Key ID** into Notes.
 6. Tap **Download** next to the key. You can
    only download it once.
@@ -53,9 +53,9 @@ Program membership is active.
    `AuthKey_XXXXXXXXXX.p8`.
 2. Long-press → **Rename** → change `.p8` to
    `.txt`.
-3. Open it, select all the text (including the
-   `-----BEGIN` and `-----END` lines), and
-   copy it.
+3. Open it, select all the text (including
+   the `-----BEGIN` and `-----END` lines),
+   and copy it.
 
 ## 6. Add GitHub secrets
 1. In Safari, open

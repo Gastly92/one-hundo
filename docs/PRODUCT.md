@@ -20,21 +20,22 @@ step a day.
    change it.
 4. **Train daily.** Each day the app suggests
    a target: your last result plus the daily
-   increment (default 1). Did 5 yesterday? Try
-   for 6 today.
+   increment (default 1). Did 5 yesterday?
+   Try for 6 today.
 5. **Log your attempt.** Enter how many you
-   actually did. That becomes the new baseline
-   for tomorrow's target.
-6. **Track progress.** The challenge shows how
-   far you are from start to goal, e.g. "6 /
-   100", with a progress bar and your history.
+   actually did. That becomes the new
+   baseline for tomorrow's target.
+6. **Track progress.** The challenge shows
+   how far you are from start to goal, e.g.
+   "6 / 100", with a progress bar and your
+   history.
 
 ## Daily reminders
 
-The app can send a phone notification each day
-to remind you to try your challenges, e.g.
-"Push-ups: try for 6 today." You choose the
-time, and can turn reminders off per
+The app can send a phone notification each
+day to remind you to try your challenges,
+e.g. "Push-ups: try for 6 today." You choose
+the time, and can turn reminders off per
 challenge.
 
 ## Challenges
@@ -47,14 +48,14 @@ for example:
 - Pull-ups
 
 Each built-in challenge has tips, and images
-where helpful, explaining good form and common
-mistakes.
+where helpful, explaining good form and
+common mistakes.
 
 **Custom challenges** let you track anything
-else. You name it, pick a unit (reps, seconds,
-or minutes) and a color, give it a starting
-count and a goal, and it works like the
-built-in ones (no form tips).
+else. You name it, pick a unit (reps,
+seconds, or minutes) and a color, give it a
+starting count and a goal, and it works like
+the built-in ones (no form tips).
 
 ## Screens
 
@@ -66,8 +67,8 @@ The app has two tabs at the bottom:
 - A grid of challenge cards, 2 columns,
   scrolling down as far as you have cards.
 - An **Add challenge** tile, the last card in
-  the grid, opens Add challenge. The title bar
-  stays plain.
+  the grid, opens Add challenge. The title
+  bar stays plain.
 - First launch, with no challenges yet: a
   welcome that explains the idea in three
   steps (test yourself, do one more each day,
@@ -77,31 +78,33 @@ The app has two tabs at the bottom:
 ### Challenge card
 
 - The name, e.g. "Push-ups". No icons:
-  challenges are told apart by name and color.
+  challenges are told apart by name and
+  color.
 - Today's target, large: "Try 6 today", or
   "Done: 6" with a checkmark once logged
   today. On the day you start, your test
   counts: "Done: 5" until tomorrow.
 - Progress toward the goal: "6 / 100" with a
   thin progress bar.
-- Tapping the card opens the challenge screen.
+- Tapping the card opens the challenge
+  screen.
 - Long-pressing the card opens a menu: **Log
   attempt** (or **Edit today**) and **Delete
   challenge**, with a confirmation.
 
 ### Add challenge (sheet)
 
-The first step of starting a challenge. A list
-of choices:
+The first step of starting a challenge. A
+list of choices:
 
-- Each built-in challenge, with its name and a
-  one-line description. Built-ins you're
+- Each built-in challenge, with its name and
+  a one-line description. Built-ins you're
   currently doing are shown greyed out with
   "In progress", so there is only one active
-  challenge per built-in. Once it's completed,
-  the built-in is available to start again (as
-  a fresh challenge). Custom challenges have
-  no such limit.
+  challenge per built-in. Once it's
+  completed, the built-in is available to
+  start again (as a fresh challenge). Custom
+  challenges have no such limit.
 - **Custom challenge** at the bottom, which
   opens the custom challenge form.
 
@@ -124,14 +127,14 @@ same sheet, with Back/Next):
    - Goal: number entry, defaulting to 100
      (must be above the starting count), with
      quick buttons for 50, 100, 150, and 200.
-   - Daily step: "1 more each day", with − / +
-     (1 to 10).
+   - Daily step: "1 more each day", with − /
+     + (1 to 10).
    - A preview: "5 Today → 6 Tomorrow → 100
      Goal" and "At this pace you'd hit 100 in
      about 95 days."
 4. **Reminder**: a toggle (on by default) and
-   a time picker (default 6:00 PM). Turning it
-   on asks for notification permission the
+   a time picker (default 6:00 PM). Turning
+   it on asks for notification permission the
    first time.
 5. **Start** button: saves the challenge with
    today's test as its first attempt, and
@@ -139,7 +142,8 @@ same sheet, with Back/Next):
 
 ### Custom challenge form
 
-Opened from Add challenge. One scrolling form:
+Opened from Add challenge. One scrolling
+form:
 
 - **Name** (required), e.g. "Plank" or
   "Burpees".
@@ -168,15 +172,16 @@ Opened from a card or from the calendar.
   **Edit today**.
 - **History**: a line chart of your counts
   over time, and a list of attempts (date and
-  count), newest first. Tap an attempt to edit
-  it; swipe left or long-press to delete it.
-- **Form tips** (built-ins only): the tips and
-  images, collapsible.
-- **Settings** (the gear in the top bar): edit
-  goal, daily increase, reminder, and for
-  custom challenges name, unit, and color. A
-  red **Delete challenge** button at the
-  bottom, with a confirmation.
+  count), newest first. Tap an attempt to
+  edit it; swipe left or long-press to delete
+  it.
+- **Form tips** (built-ins only): the tips
+  and images, collapsible.
+- **Settings** (the gear in the top bar):
+  edit goal, daily increase, reminder, and
+  for custom challenges name, unit, and
+  color. A red **Delete challenge** button at
+  the bottom, with a confirmation.
   - The goal can be raised or lowered at any
     time. Lowering it to at or below your
     current count counts as reaching it: you
@@ -188,9 +193,9 @@ Opened from a card or from the calendar.
   entry, prefilled with today's target.
 - Date: today by default; can be changed to
   log a past day.
-- **Save**. One attempt per challenge per day:
-  logging the same day again replaces that
-  day's count.
+- **Save**. One attempt per challenge per
+  day: logging the same day again replaces
+  that day's count.
 - Editing an attempt (swipe in History, or
   **Edit today**) opens the same sheet with
   its count; the date stays fixed.
@@ -225,8 +230,8 @@ success haptic, then two choices:
 ### Calendar (Calendar tab)
 
 - A month calendar you can swipe between
-  months; days with logged attempts show a dot
-  (one per challenge, in the challenge's
+  months; days with logged attempts show a
+  dot (one per challenge, in the challenge's
   color, up to 3).
 - Tap a day to open the day view: each
   challenge you logged that day with its
@@ -239,23 +244,23 @@ success haptic, then two choices:
 
 - **Missed days are fine.** The target stays
   the same until you log again. There are no
-  streaks to break; the challenge screen shows
-  "days logged" instead.
+  streaks to break; the challenge screen
+  shows "days logged" instead.
 - **Fell short?** The next target is what you
   actually did plus the increment. Did 4 when
   the target was 6? Try for 5 next time.
 
 ## Data
 
-- Stored on the phone only, with no account or
-  server.
+- Stored on the phone only, with no account
+  or server.
 - Saved with SwiftData in the app's normal
   storage, which iCloud Backup includes
-  automatically. Restoring a phone from backup
-  brings your challenges back. Don't put user
-  data in `Caches` or `tmp`, or mark it
-  excluded from backup, since iCloud Backup
-  skips those.
+  automatically. Restoring a phone from
+  backup brings your challenges back. Don't
+  put user data in `Caches` or `tmp`, or mark
+  it excluded from backup, since iCloud
+  Backup skips those.
 - This is backup, not sync: data doesn't move
   live between devices.
 
@@ -263,8 +268,8 @@ success haptic, then two choices:
 
 - **Apple Health integration**: e.g. save
   workouts to the Health app.
-- **Ads or other monetization**, in some light
-  form.
+- **Ads or other monetization**, in some
+  light form.
 - **iCloud sync** (CloudKit) so data shows up
   on a new phone or iPad without a full
   restore. Needs the iCloud entitlement and

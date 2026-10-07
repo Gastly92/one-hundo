@@ -4,8 +4,8 @@ import XCTest
 /// pseudo-language, which wraps every
 /// translatable string in "[# ... #]".
 /// Visible text without the brackets would
-/// stay in English after translation, so each
-/// screen fails on any such text.
+/// stay in English after translation, so
+/// each screen fails on any such text.
 final class LocalizationTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = true
@@ -23,7 +23,8 @@ final class LocalizationTests: XCTestCase {
   ]
 
   /// Text the user typed (the sample custom
-  /// challenge's name), which stays as typed.
+  /// challenge's name), which stays as
+  /// typed.
   private static let userText: Set = [
     "Plank",
   ]
@@ -34,7 +35,8 @@ final class LocalizationTests: XCTestCase {
   func testEveryScreen() {
     for screen in ScreenID.allCases {
       let app = App.start(
-        screen: screen, arguments: Self.pseudo
+        screen: screen,
+        arguments: Self.pseudo
       )
       let text = app.staticTexts.firstMatch
       guard text.appears(within: 10) else {
@@ -64,7 +66,8 @@ final class LocalizationTests: XCTestCase {
       .allElementsBoundByIndex
     let bars = app.navigationBars.buttons
       .allElementsBoundByIndex
-    let system = (bars + pickers).map(\.frame)
+    let system =
+      (bars + pickers).map(\.frame)
     let elements =
       app.staticTexts.allElementsBoundByIndex
       + app.buttons.allElementsBoundByIndex

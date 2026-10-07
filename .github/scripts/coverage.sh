@@ -74,8 +74,8 @@ done <<<"$files"
 echo "Coverage: $sum_cov/$sum_all lines"
 if [ "$failed" -ne 0 ] \
   || [ "$sum_all" -eq 0 ]; then
-  echo "::error::Every line of the app must" \
-    "run in tests (see untested lines" \
+  echo "::error::Every line of the app" \
+    "must run in tests (see untested lines" \
     "above)."
   exit 1
 fi

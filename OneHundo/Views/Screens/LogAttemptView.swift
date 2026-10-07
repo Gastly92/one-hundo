@@ -49,7 +49,9 @@ struct LogAttemptView: View {
     _outcome = State(initialValue: outcome)
   }
 
-  private var color: Color { challenge.color }
+  private var color: Color {
+    challenge.color
+  }
 
   private var title: Text {
     attempt == nil
@@ -63,7 +65,8 @@ struct LogAttemptView: View {
     guard attempt == nil else {
       return nil
     }
-    return challenge.replacementNote(on: date)
+    return challenge
+      .replacementNote(on: date)
   }
 
   var body: some View {

@@ -4,8 +4,8 @@ import SwiftUI
 /// Shows one screen on its own for UI tests
 /// (`-uiTesting -showScreen <id>`), with the
 /// sample challenges where it needs them
-/// (`AppLaunch.seededScreens`). Every view in
-/// `Views/Screens/` must appear here; CI
+/// (`AppLaunch.seededScreens`). Every view
+/// in `Views/Screens/` must appear here; CI
 /// (`check-screens.sh`) fails otherwise.
 struct ScreenHost: View {
   let screen: ScreenID
@@ -15,8 +15,8 @@ struct ScreenHost: View {
   @Environment(\.now)
   private var now
 
-  /// The seeded Push-ups challenge: started 3
-  /// days ago, with attempts.
+  /// The seeded Push-ups challenge: started
+  /// 3 days ago, with attempts.
   private var pushUps: Challenge? {
     let id = BuiltIn.pushUps.id
     return challenges.first { $0.kind == id }

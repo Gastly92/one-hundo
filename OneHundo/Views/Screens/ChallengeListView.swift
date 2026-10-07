@@ -6,8 +6,9 @@ struct ChallengeListView: View {
   private var challenges: [Challenge]
   @State private var isAdding = false
   @State private var path: [Challenge] = []
-  /// The challenge whose Log attempt sheet is
-  /// open (from a card's long-press menu).
+  /// The challenge whose Log attempt sheet
+  /// is open (from a card's long-press
+  /// menu).
   @State private var logging: Challenge?
   /// The challenge waiting for delete
   /// confirmation.
@@ -70,8 +71,9 @@ struct ChallengeListView: View {
         confirmButton(challenge)
       } message: { _ in
         Text("""
-          This deletes the challenge and all \
-          its attempts. You can't undo this.
+          This deletes the challenge and \
+          all its attempts. You can't undo \
+          this.
           """)
       }
   }
@@ -86,7 +88,9 @@ struct ChallengeListView: View {
   }
 
   private var grid: some View {
-    LazyVGrid(columns: columns, spacing: 12) {
+    LazyVGrid(
+      columns: columns, spacing: 12
+    ) {
       ForEach(active) { card($0) }
       addTile
     }

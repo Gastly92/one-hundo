@@ -7,19 +7,19 @@ included:
   - OneHundoUITests
   - Packages
 
-# Every opt-in rule is on. Rules below are off
-# on purpose: where two rules disagree, the
-# one that keeps code shorter wins, since
-# lines are capped at 46.
+# Every opt-in rule is on. Rules below are
+# off on purpose: where two rules disagree,
+# the one that keeps code shorter wins, since
+# lines are capped at 45.
 opt_in_rules:
   - all
 
 disabled_rules:
-  # Multi-line lists end with a trailing comma
-  # here, so diffs stay one line.
+  # Multi-line lists end with a trailing
+  # comma here, so diffs stay one line.
   - trailing_comma
 
-  # Longer code, against the 46 limit:
+  # Longer code, against the 45 limit:
   # Writing every type out
   # (redundant_type_annotation, on, does the
   # opposite).
@@ -91,12 +91,12 @@ identifier_name:
   excluded:
     - id
 
-# Diffs get read in the GitHub iPhone app; 46
+# Diffs get read in the GitHub iPhone app; 45
 # fits a portrait line without wrapping. Long
 # lines also point at names that could be
 # shorter.
 line_length:
-  warning: 46
+  warning: 45
   ignores_urls: true
 
 # Attributes that take a line of their own,
@@ -119,8 +119,8 @@ cyclomatic_complexity:
 
 custom_rules:
   # Sentences shown to users must be
-  # translatable. In views, literals passed to
-  # Text are; in logic they need
+  # translatable. In views, literals passed
+  # to Text are; in logic they need
   # String(localized:). Catches e.g.
   # `return "Nice work!"`.
   untranslated_logic_text:

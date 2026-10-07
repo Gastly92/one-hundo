@@ -4,8 +4,8 @@ import Foundation
 /// from SwiftData so it is easy to test.
 /// `step` is the daily increase.
 enum Progression {
-  /// The last result plus the daily increase,
-  /// capped at the goal.
+  /// The last result plus the daily
+  /// increase, capped at the goal.
   static func target(
     baseline: Int, step: Int, goal: Int
   ) -> Int {
@@ -48,8 +48,8 @@ enum Progression {
     let days = daysToGoal(
       from: count, goal: goal, step: step
     )
-    // "1 day" / "95 days": the String Catalog
-    // has the plural forms.
+    // "1 day" / "95 days": the String
+    // Catalog has the plural forms.
     let duration = String(
       localized: "\(days) days"
     )
@@ -66,7 +66,8 @@ enum Progression {
     guard goal > 0 else {
       return 0
     }
-    let ratio = Double(current) / Double(goal)
+    let ratio =
+      Double(current) / Double(goal)
     return min(max(ratio, 0), 1)
   }
 }

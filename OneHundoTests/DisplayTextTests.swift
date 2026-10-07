@@ -8,8 +8,8 @@ final class DisplayTextTests: XCTestCase {
   func testBuiltInsUseCatalogName() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
-    // A name stored in another language still
-    // shows in the user's language.
+    // A name stored in another language
+    // still shows in the user's language.
     pushUps.name = "Liegestütze"
     XCTAssertEqual(
       pushUps.displayName, "Push-ups"
@@ -22,11 +22,14 @@ final class DisplayTextTests: XCTestCase {
       colorName: "teal",
       startingCount: 30
     )
-    XCTAssertEqual(plank.displayName, "Plank")
+    XCTAssertEqual(
+      plank.displayName, "Plank"
+    )
   }
 
   func testUnitNames() {
-    let names = CountUnit.allCases.map(\.name)
+    let names =
+      CountUnit.allCases.map(\.name)
     XCTAssertEqual(
       names, ["reps", "seconds", "minutes"]
     )
@@ -35,8 +38,10 @@ final class DisplayTextTests: XCTestCase {
   func testBuiltInTestQuestions() {
     for builtIn in BuiltIn.all {
       let what = builtIn.name.lowercased()
-      XCTAssertEqual(builtIn.testQuestion, """
-        How many \(what) can you do in one go?
+      let question = builtIn.testQuestion
+      XCTAssertEqual(question, """
+        How many \(what) can you do in one \
+        go?
         """)
     }
   }

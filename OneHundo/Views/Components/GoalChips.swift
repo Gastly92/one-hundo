@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Quick goal buttons (e.g. 50, 100, 150,
-/// 200); the selected one is filled. One row,
-/// or two rows at the largest text sizes so
-/// "100" fits in its button.
+/// 200); the selected one is filled. One
+/// row, or two rows at the largest text
+/// sizes so "100" fits in its button.
 struct GoalChips: View {
   let goals: [Int]
   @Binding var goal: Int

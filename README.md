@@ -2,10 +2,11 @@
 
 A daily tracker for fitness challenges like
 100 push-ups in one go, built entirely from a
-phone with Claude Code and GitHub Actions. See
-[docs/PRODUCT.md](docs/PRODUCT.md) for what
-the app does and [docs/PLAN.md](docs/PLAN.md)
-for build progress.
+phone with Claude Code and GitHub Actions.
+See [docs/PRODUCT.md](docs/PRODUCT.md) for
+what the app does and
+[docs/PLAN.md](docs/PLAN.md) for build
+progress.
 
 Every PR and push to `main` runs
 `.github/workflows/ios-build.yml` on a macOS

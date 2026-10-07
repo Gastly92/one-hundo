@@ -54,8 +54,8 @@ enum SampleData {
     // A custom challenge in seconds, started
     // 4 days ago (no other challenge starts
     // that day, so the list order is fixed):
-    // logged 40 yesterday, so "Try 45 seconds
-    // today", "40 / 120".
+    // logged 40 yesterday, so
+    // "Try 45 seconds today", "40 / 120".
     let plank = Challenge(
       name: "Plank",
       colorName: "teal",

@@ -2,18 +2,20 @@ import Foundation
 import SwiftData
 
 /// What the app does at launch: read the
-/// launch arguments, open the data store, and
-/// seed sample data for UI tests. Kept out of
-/// the `App` so it can be unit tested with a
-/// fake store.
+/// launch arguments, open the data store,
+/// and seed sample data for UI tests. Kept
+/// out of the `App` so it can be unit tested
+/// with a fake store.
 @MainActor
 struct AppLaunch {
   let isUITesting: Bool
   /// The opened store, or the error that
   /// stopped it from opening.
-  let store: Result<ModelContainer, any Error>
+  let store:
+    Result<ModelContainer, any Error>
   /// A single screen to show instead of the
-  /// app (`-showScreen <id>`, UI tests only).
+  /// app (`-showScreen <id>`, UI tests
+  /// only).
   let screen: ScreenID?
   /// Dark mode for the whole app
   /// (`-darkMode`, UI tests only), so tests
@@ -69,13 +71,13 @@ struct AppLaunch {
     SampleData.insert(into: context)
   }
 
-  /// The screen named after `-showScreen`, if
-  /// any and if it exists.
+  /// The screen named after `-showScreen`,
+  /// if any and if it exists.
   private static func screen(
     in args: [String]
   ) -> ScreenID? {
-    let flag = "-showScreen"
-    guard let pos = args.firstIndex(of: flag),
+    let key = "-showScreen"
+    guard let pos = args.firstIndex(of: key),
       pos + 1 < args.count
     else { return nil }
     return ScreenID(rawValue: args[pos + 1])
