@@ -245,12 +245,6 @@ jobs:
     - name: Boot the simulator
       run: .github/scripts/run-tests.sh boot
 
-    - name: Install XcodeGen
-      run: brew install xcodegen
-
-    - name: Generate Xcode project
-      run: xcodegen generate
-
     - uses: actions/download-artifact@v8
       with:
         name: test-build

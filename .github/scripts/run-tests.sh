@@ -115,8 +115,15 @@ diffs="$PWD/build/snapshot-diffs"
 export \
   TEST_RUNNER_SNAPSHOT_ARTIFACTS="$diffs"
 
+# The build's own test plan (.xctestrun), so
+# a shard needs no Xcode project.
+plan=$(find build/test/Build/Products \
+  -name '*.xctestrun' | head -1)
 xcodebuild test-without-building \
-  "${common[@]}" "${only[@]}" \
+  -xctestrun "$plan" \
+  -destination "id=$device" \
+  -enableCodeCoverage YES \
+  "${only[@]}" \
   -resultBundlePath build/test.xcresult \
   > build/test.log 2>&1 || status=$?
 
