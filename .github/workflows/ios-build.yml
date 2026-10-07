@@ -138,7 +138,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 40
     # Write access only to commit recorded
     # snapshot images to the PR branch.
     permissions:

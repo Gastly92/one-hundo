@@ -104,15 +104,15 @@ final class AccessibilityTests: XCTestCase {
   }
 
   /// Drags up half a screen near the leading
-  /// edge, clear of pickers. False if no
-  /// text moved.
+  /// edge, clear of pickers. False if
+  /// nothing moved. (One snapshot of the
+  /// screen is far quicker than asking for
+  /// each element's frame.)
   @MainActor
   private func scrollDown(
     _ app: XCUIApplication
   ) -> Bool {
-    let texts = app.staticTexts
-    let before = texts
-      .allElementsBoundByIndex.map(\.frame)
+    let before = Self.layout(of: app)
     let window = app.windows.firstMatch
     let start = window.coordinate(
       withNormalizedOffset: CGVector(
@@ -127,9 +127,22 @@ final class AccessibilityTests: XCTestCase {
     start.press(
       forDuration: 0.05, thenDragTo: end
     )
-    let after = texts
-      .allElementsBoundByIndex.map(\.frame)
-    return after != before
+    return Self.layout(of: app) != before
+  }
+
+  /// Every element and its frame, without
+  /// the memory addresses that change on
+  /// each snapshot.
+  @MainActor
+  private static func layout(
+    of app: XCUIApplication
+  ) -> String {
+    let tree = app.debugDescription
+    return tree.replacingOccurrences(
+      of: "0x[0-9a-fA-F]+",
+      with: "",
+      options: .regularExpression
+    )
   }
 
   /// Audits the current screen, failing once
