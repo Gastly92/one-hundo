@@ -1,8 +1,8 @@
 # Dependabot opens a PR when a newer version
-# of something we depend on is out. Today
-# that's only the GitHub Actions our workflows
-# use. Weekly, and grouped into one PR so it
-# stays quiet.
+# of something we depend on is out: the
+# GitHub Actions our workflows use, and the
+# test-only Swift packages. Weekly, grouped
+# so it stays quiet.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -11,4 +11,11 @@ updates:
       interval: weekly
     groups:
       actions:
+        patterns: ["*"]
+  - package-ecosystem: swift
+    directory: /Packages/TestSupport
+    schedule:
+      interval: weekly
+    groups:
+      swift:
         patterns: ["*"]

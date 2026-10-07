@@ -5,6 +5,7 @@ included:
   - OneHundo
   - OneHundoTests
   - OneHundoUITests
+  - Packages
 
 disabled_rules:
   # Multi-line lists end with a trailing comma

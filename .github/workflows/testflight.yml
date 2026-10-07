@@ -9,6 +9,10 @@ name: TestFlight
 on:
   workflow_dispatch:
 
+# Write access to push the build's tag.
+permissions:
+  contents: write
+
 concurrency:
   group: testflight
   cancel-in-progress: false
@@ -117,12 +121,30 @@ jobs:
           -authenticationKeyIssuerID \
           "$ASC_ISSUER_ID"
 
+    # Marks the uploaded commit, e.g.
+    # v0.4.6-build12, so it's clear what each
+    # TestFlight build contains.
+    - name: Tag the build
+      run: |
+        pattern='s/.*"([^"]+)".*/\1/'
+        key=MARKETING_VERSION
+        version=$(
+          grep -m1 "$key" project.yml \
+            | sed -E "$pattern"
+        )
+        num="$GITHUB_RUN_NUMBER"
+        tag="v$version-build$num"
+        git tag "$tag"
+        git push origin "$tag"
+        echo "TAG=$tag" >> "$GITHUB_ENV"
+
     - name: Summary
       run: |
         num="$GITHUB_RUN_NUMBER"
         {
           echo "Uploaded build $num to App" \
             "Store Connect."
+          echo "Tagged $TAG."
           echo "It appears in TestFlight" \
             "after Apple finishes" \
             "processing (usually 5–15 min)."
