@@ -131,18 +131,14 @@ jobs:
     - name: Check every screen is listed
       run: .github/scripts/check-screens.sh
 
+  # Builds the app and tests once, for the
+  # test shards below.
   build:
-    name: Build & test
+    name: Build for testing
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
-    timeout-minutes: 30
-    # Write access only to commit recorded
-    # snapshot images to the PR branch.
-    permissions:
-      contents: write
-      actions: write
-      pull-requests: write
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v7
 
@@ -155,44 +151,25 @@ jobs:
     - name: Generate Xcode project
       run: xcodegen generate
 
-    - name: Run tests
-      env:
-        LABELS: >-
-          ${{ toJSON(
-          github.event.pull_request.labels.*.name
-          ) }}
-      run: .github/scripts/run-tests.sh
+    - name: Build
+      run: .github/scripts/run-tests.sh build
 
-    # New screens' images (or all, with the
-    # label) go to the PR branch, and CI runs
-    # again on that commit.
-    - name: Save snapshot images
-      if: >-
-        always() && github.event_name
-        == 'pull_request'
-      env:
-        GH_TOKEN: ${{ github.token }}
-        BRANCH: ${{ github.head_ref }}
-        PR: ${{ github.event.number }}
-      run: .github/scripts/save-snapshots.sh
-
-    # On a mismatch: the reference, the new
-    # image and their difference.
-    - name: Upload snapshot diffs
-      if: failure()
-      uses: actions/upload-artifact@v7
-      with:
-        name: snapshot-diffs
-        path: build/snapshot-diffs
-        if-no-files-found: ignore
-
-    - name: Coverage gate
+    # A tar keeps the apps' permissions and
+    # links, which artifacts drop.
+    - name: Pack the build
       run: >-
-        .github/scripts/coverage.sh
-        build/test.xcresult
+        tar -cf build/products.tar
+        build/test/Build/Products
+
+    - uses: actions/upload-artifact@v7
+      with:
+        name: test-build
+        path: build/products.tar
+        retention-days: 1
 
     # Unused code (functions, properties,
-    # types). Reuses the test build's index.
+    # types). Reuses the build's index, while
+    # the tests run.
     - name: Periphery
       run: |
         brew install periphery
@@ -208,6 +185,124 @@ jobs:
           --relative-results \
           --format github-actions \
           --strict
+
+  # The tests, split into shards that run in
+  # parallel on separate runners (one
+  # simulator each). See run-tests.sh.
+  test:
+    name: Test (${{ matrix.shard }})
+    needs: build
+    runs-on: macos-26
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [a11y, large, main]
+    # Write access only to commit recorded
+    # snapshot images to the PR branch.
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install XcodeGen
+      run: brew install xcodegen
+
+    - name: Generate Xcode project
+      run: xcodegen generate
+
+    - uses: actions/download-artifact@v8
+      with:
+        name: test-build
+        path: build
+
+    - name: Unpack the build
+      run: tar -xf build/products.tar
+
+    - name: Run tests
+      env:
+        LABELS: >-
+          ${{ toJSON(
+          github.event.pull_request.labels.*.name
+          ) }}
+      run: >-
+        .github/scripts/run-tests.sh test
+        ${{ matrix.shard }}
+
+    # New screens' images (or all, with the
+    # label) go to the PR branch, and CI runs
+    # again on that commit. Snapshot tests
+    # are in the main shard.
+    - name: Save snapshot images
+      if: >-
+        always() && matrix.shard == 'main'
+        && github.event_name
+        == 'pull_request'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        BRANCH: ${{ github.head_ref }}
+        PR: ${{ github.event.number }}
+      run: .github/scripts/save-snapshots.sh
+
+    # On a mismatch: the reference, the new
+    # image and their difference.
+    - name: Upload snapshot diffs
+      if: failure() && matrix.shard == 'main'
+      uses: actions/upload-artifact@v7
+      with:
+        name: snapshot-diffs
+        path: build/snapshot-diffs
+        if-no-files-found: ignore
+
+    # For the coverage gate, which merges
+    # all shards.
+    - name: Pack the results
+      if: always()
+      run: >-
+        tar -cf build/result.tar
+        build/test.xcresult
+
+    - uses: actions/upload-artifact@v7
+      if: always()
+      with:
+        name: result-${{ matrix.shard }}
+        path: build/result.tar
+        retention-days: 1
+
+  # Every line of the app runs in some
+  # shard's tests.
+  coverage:
+    name: Coverage
+    needs: test
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v7
+
+    - uses: actions/download-artifact@v8
+      with:
+        pattern: result-*
+
+    - name: Merge the shards' results
+      run: |
+        results=()
+        for tar in result-*/result.tar; do
+          dir="${tar%/result.tar}"
+          tar -xf "$tar" -C "$dir"
+          results+=(
+            "$dir/build/test.xcresult"
+          )
+        done
+        xcrun xcresulttool merge \
+          "${results[@]}" \
+          --output-path merged.xcresult
+
+    - name: Coverage gate
+      run: >-
+        .github/scripts/coverage.sh
+        merged.xcresult
 
   # The Release build for a real iPhone, in
   # parallel with the tests so it doesn't add
@@ -253,6 +348,8 @@ jobs:
     - lint
     - screens
     - build
+    - test
+    - coverage
     - release
     if: always()
     runs-on: ubuntu-latest
@@ -266,11 +363,13 @@ jobs:
         LINT: ${{ needs.lint.result }}
         SCREENS: ${{ needs.screens.result }}
         BUILD: ${{ needs.build.result }}
+        TEST: ${{ needs.test.result }}
+        COVER: ${{ needs.coverage.result }}
         RELEASE: ${{ needs.release.result }}
       run: |
         for job in CHANGES LINES STRINGS \
-          SCRIPTS LINT SCREENS BUILD \
-          RELEASE; do
+          SCRIPTS LINT SCREENS BUILD TEST \
+          COVER RELEASE; do
           echo "$job: ${!job}"
         done
         [ "$CHANGES" = success ] || exit 1
@@ -278,7 +377,8 @@ jobs:
         [ "$STRINGS" = success ] || exit 1
         [ "$SCRIPTS" = success ] || exit 1
         for result in "$LINT" "$SCREENS" \
-          "$BUILD" "$RELEASE"; do
+          "$BUILD" "$TEST" "$COVER" \
+          "$RELEASE"; do
           case "$result" in
             success|skipped) ;;
             *) exit 1 ;;

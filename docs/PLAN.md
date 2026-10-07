@@ -421,6 +421,15 @@ go in first.
   accessibility sizes.
 - Version 0.4.8 (visible fix).
 
+#### 4.17 Parallel CI ✅
+- CI builds the tests once, then runs them
+  in three shards on separate runners at
+  the same time: accessibility (light and
+  dark), the largest text with
+  localization, and everything else. A
+  last job merges the results for the
+  coverage gate. About half the wait.
+
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
   swatches, counts, reminder (no icon).

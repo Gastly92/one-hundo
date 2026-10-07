@@ -24,12 +24,17 @@ features land.
   compiler.
 - `.github/workflows/ios-build.yml` runs on
   every PR and push to `main` (macOS runner,
-  `macos-26`). It generates the project,
-  builds, and runs all tests on one simulator
-  (the runner is too small for two in
-  parallel); a Release device build runs in
+  `macos-26`). It generates the project and
+  builds the tests once, then runs them in
+  three shards on separate runners in
+  parallel (`run-tests.sh`; one simulator
+  each, as the runner is too small for two),
+  and a `Coverage` job merges the shards'
+  results. A Release device build runs in
   its own job alongside. The CI summary shows
-  how long building and testing took.
+  how long building and each shard took.
+  When adding a slow test class, check the
+  shards stay balanced.
   Docs-only PRs skip the macOS job. The `CI
   Gate` job is the single pass/fail check for
   a PR; keep its name stable, and add new
