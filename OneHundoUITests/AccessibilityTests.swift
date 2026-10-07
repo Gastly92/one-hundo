@@ -5,8 +5,8 @@ private typealias Checks =
   XCUIAccessibilityAuditType
 
 /// Runs Xcode's accessibility audit
-/// (contrast, Dynamic Type, labels, hit
-/// areas, clipped text) on each main screen,
+/// (contrast, labels, hit areas, clipped
+/// text) on each main screen,
 /// in light mode, dark mode and the largest
 /// text size. Each issue fails the test with
 /// the screen and element.
@@ -40,9 +40,7 @@ final class AccessibilityTests: XCTestCase {
   }
 
   /// The largest text size: text must still
-  /// fit, and buttons stay big enough. (It
-  /// can't scale further, so Dynamic Type
-  /// isn't checked.)
+  /// fit, and buttons stay big enough.
   @MainActor
   func testLargestText() {
     let size = [
@@ -51,18 +49,27 @@ final class AccessibilityTests: XCTestCase {
         + "AccessibilityXXXL",
     ]
     auditScreens(
-      look: "largest",
-      .all.subtracting(.dynamicType),
-      arguments: size
+      look: "largest", arguments: size
     )
   }
 
   /// Every screen in the app (`ScreenID`),
   /// each opened directly with sample data.
+  ///
+  /// The audit's Dynamic Type check is left
+  /// out: it enlarges the text, and text
+  /// pushed off screen by that fails, so it
+  /// can't check anything low on a screen.
+  /// The `fixed_font_size` lint rule covers
+  /// it instead (a fixed size is what stops
+  /// text scaling), and the large text
+  /// snapshots show every screen scaled.
   @MainActor
   private func auditScreens(
     look: String,
-    _ types: Checks = .all,
+    _ types: Checks = .all.subtracting(
+      .dynamicType
+    ),
     arguments: [String] = []
   ) {
     for screen in ScreenID.allCases {
@@ -111,7 +118,7 @@ final class AccessibilityTests: XCTestCase {
   private func scrollDown(
     _ app: XCUIApplication
   ) -> Bool {
-    let before = Self.textFrames(in: app)
+    let before = Self.settledFrames(in: app)
     let window = app.windows.firstMatch
     let start = window.coordinate(
       withNormalizedOffset: CGVector(
@@ -129,7 +136,26 @@ final class AccessibilityTests: XCTestCase {
       withVelocity: .fast,
       thenHoldForDuration: 0.2
     )
-    return Self.textFrames(in: app) != before
+    return Self.settledFrames(in: app)
+      != before
+  }
+
+  /// Text frames once the screen stops
+  /// moving (a drag can leave it bouncing).
+  @MainActor
+  private static func settledFrames(
+    in app: XCUIApplication
+  ) -> [CGRect] {
+    var last = textFrames(in: app)
+    for _ in 0..<10 {
+      Thread.sleep(forTimeInterval: 0.3)
+      let next = textFrames(in: app)
+      if next == last {
+        return next
+      }
+      last = next
+    }
+    return last
   }
 
   /// Where each text is, read from one
@@ -204,12 +230,12 @@ final class AccessibilityTests: XCTestCase {
     let bars = app.navigationBars
       .descendants(matching: .any)
       .allElementsBoundByIndex.map(\.frame)
-    let window = app.windows.firstMatch.frame
+    let visible = Self.visibleArea(of: app)
     try app.performAccessibilityAudit(
       for: types
     ) {
       if Self.isExpected(
-        $0, bars: bars, window: window
+        $0, bars: bars, visible: visible
       ) {
         return true
       }
@@ -229,7 +255,7 @@ final class AccessibilityTests: XCTestCase {
   private static func isExpected(
     _ issue: XCUIAccessibilityAuditIssue,
     bars: [CGRect],
-    window: CGRect
+    visible: CGRect
   ) -> Bool {
     let text = issue.compactDescription
     // "Nearly passed" contrast passes at
@@ -251,11 +277,33 @@ final class AccessibilityTests: XCTestCase {
     if bars.contains(element.frame) {
       return true
     }
-    // Text cut off at the screen's edge:
-    // the audit measures it against what's
-    // past the edge. It's audited in full
-    // on the next page.
-    return !window.contains(element.frame)
+    // Text cut off at the screen's edge or
+    // under the navigation bar: the audit
+    // measures it against what's past the
+    // edge. It's audited in full on another
+    // page.
+    return !visible.contains(element.frame)
+  }
+
+  /// The window below the navigation bar:
+  /// text scrolled under the bar's glass
+  /// is partly hidden.
+  @MainActor
+  private static func visibleArea(
+    of app: XCUIApplication
+  ) -> CGRect {
+    let window = app.windows.firstMatch.frame
+    let bar = app.navigationBars.firstMatch
+    guard bar.exists else {
+      return window
+    }
+    let top = bar.frame.maxY
+    return CGRect(
+      x: window.minX,
+      y: top,
+      width: window.width,
+      height: window.maxY - top
+    )
   }
 
   /// The issue and its element, to find it

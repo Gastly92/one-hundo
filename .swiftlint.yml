@@ -118,6 +118,22 @@ cyclomatic_complexity:
   ignores_case_statements: true
 
 custom_rules:
+  # A fixed font size doesn't grow with the
+  # user's text size. Use a text style, or a
+  # @ScaledMetric size for big icons and
+  # numbers. (Replaces the accessibility
+  # audit's Dynamic Type check, which can't
+  # see text low on a screen.)
+  fixed_font_size:
+    name: "Fixed font size"
+    message: >-
+      Use a text style, or a @ScaledMetric
+      size, so text scales.
+    regex: '\.system\(\s*size:\s*[0-9]'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    severity: error
   # Sentences shown to users must be
   # translatable. In views, literals passed
   # to Text are; in logic they need

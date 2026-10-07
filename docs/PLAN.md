@@ -408,6 +408,12 @@ go in first.
   on screen. It now scrolls each screen and
   audits every page, so text below the fold
   is checked too, and no labels are exempt.
+- The audit's Dynamic Type check is off: it
+  enlarges text and fails on whatever that
+  pushes off screen. A `fixed_font_size`
+  lint rule catches the real cause instead;
+  it found a fixed 72pt icon on the log
+  result screen, now scaled.
 - With one card per row, the done
   checkmark fits beside "Done: 20" again at
   accessibility sizes.
