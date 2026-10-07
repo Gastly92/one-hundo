@@ -5,7 +5,7 @@
 #     builds the app and tests once;
 #   run-tests.sh test <shard>
 #     runs one shard of the tests on that
-#     build (shards: a11y, large, main).
+#     build (light, dark, largest, main).
 # The shards run in parallel, each on its own
 # runner with one simulator (the 3-core
 # runner can't run two: tried in #21, the
@@ -60,20 +60,23 @@ if [ "$mode" = build ]; then
   exit 0
 fi
 
-# Which tests each shard runs. The two
-# accessibility looks and the largest text
-# (with localization) are the slow ones.
-shard="${2:?shard: a11y, large or main}"
+# Which tests each shard runs: the slow
+# accessibility looks get one each (dark,
+# the quickest, also takes localization),
+# and main takes the rest.
+shard="${2:?shard: light, dark, ...}"
 ui=OneHundoUITests
 a11y="$ui/AccessibilityTests"
 case "$shard" in
-  a11y) only=(
+  light) only=(
     "-only-testing:$a11y/testLight"
-    "-only-testing:$a11y/testDark"
   ) ;;
-  large) only=(
-    "-only-testing:$a11y/testLargestText"
+  dark) only=(
+    "-only-testing:$a11y/testDark"
     "-only-testing:$ui/LocalizationTests"
+  ) ;;
+  largest) only=(
+    "-only-testing:$a11y/testLargestText"
   ) ;;
   main) only=(
     -only-testing:OneHundoTests

@@ -423,10 +423,10 @@ go in first.
 
 #### 4.17 Parallel CI ✅
 - CI builds the tests once, then runs them
-  in three shards on separate runners at
-  the same time: accessibility (light and
-  dark), the largest text with
-  localization, and everything else. A
+  in four shards on separate runners at
+  the same time: accessibility in light,
+  in dark (with localization), and at the
+  largest text, and everything else. A
   last job merges the results for the
   coverage gate. About half the wait.
 

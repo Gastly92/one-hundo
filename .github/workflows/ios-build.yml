@@ -197,7 +197,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [a11y, large, main]
+        shard: [light, dark, largest, main]
     # Write access only to commit recorded
     # snapshot images to the PR branch.
     permissions:

@@ -26,7 +26,7 @@ features land.
   every PR and push to `main` (macOS runner,
   `macos-26`). It generates the project and
   builds the tests once, then runs them in
-  three shards on separate runners in
+  four shards on separate runners in
   parallel (`run-tests.sh`; one simulator
   each, as the runner is too small for two),
   and a `Coverage` job merges the shards'
