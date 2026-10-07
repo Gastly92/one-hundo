@@ -18,6 +18,8 @@ final class AccessibilityTests: XCTestCase {
   /// A stop for screens that keep moving
   /// when swiped.
   private static let maxPages = 12
+  /// Attempts per audit, for timeouts.
+  private static let tries = 3
 
   /// Every check, in light mode.
   @MainActor
@@ -185,15 +187,22 @@ final class AccessibilityTests: XCTestCase {
     on screen: String,
     _ page: Page
   ) throws {
-    do {
-      try runAudit(app, types, screen, page)
-    } catch {
-      // "Audit failed to complete in time":
-      // retry once; a second timeout fails.
-      guard (error as NSError).code == -56
-      else { throw error }
-      try runAudit(app, types, screen, page)
+    // "Audit failed to complete in time"
+    // (a long page at the largest text):
+    // try up to three times; the third
+    // timeout fails.
+    for _ in 1..<Self.tries {
+      do {
+        try runAudit(
+          app, types, screen, page
+        )
+        return
+      } catch let error as NSError
+        where error.code == -56 {
+        continue
+      }
     }
+    try runAudit(app, types, screen, page)
   }
 
   @MainActor
