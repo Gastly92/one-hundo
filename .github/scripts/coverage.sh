@@ -23,6 +23,30 @@ files=$(jq -r "$pick"' app | .files[]
      .executableLines] | @tsv' \
   <<<"$report")
 
+# Prints each function in $1 with untested
+# lines, and the line it starts on.
+gaps() {
+  jq -r --arg path "$1" "$pick"'
+    app | .files[]
+    | select(.path == $path)
+    | (.functions // [])[]
+    | select(.coveredLines
+      < .executableLines)
+    | (.executableLines
+      - .coveredLines) as $n
+    | "\(.name) (line \(.lineNumber)): "
+      + "\($n) untested"' \
+    <<<"$report"
+}
+
+# Logs "<file>: <function> (line N): M
+# untested" for file $1 at path $2.
+show_gaps() {
+  while IFS= read -r gap; do
+    [ -n "$gap" ] && echo "  $1: $gap"
+  done < <(gaps "$2")
+}
+
 sum_cov=0
 sum_all=0
 low_views=0
@@ -45,6 +69,7 @@ do
       if [ "$covered" -lt "$total" ]; then
         views+="| $name | $total |"
         views+=" $covered |\n"
+        show_gaps "$name" "$path"
       fi
       continue
       ;;
@@ -54,26 +79,11 @@ do
   table+="| $name | $total | $covered |\n"
   if [ "$covered" -lt "$total" ]; then
     failed=1
-    # Name each function with untested
-    # lines, and the line it starts on.
-    gaps=$(jq -r --arg path "$path" "$pick"'
-      app | .files[]
-      | select(.path == $path)
-      | (.functions // [])[]
-      | select(.coveredLines
-        < .executableLines)
-      | (.executableLines
-        - .coveredLines) as $n
-      | "\(.name) (line \(.lineNumber)): "
-        + "\($n) untested"' \
-      <<<"$report")
     untested=$((total - covered))
     file="OneHundo/$name"
     echo "::error file=$file::$name" \
       "has $untested untested lines"
-    while IFS= read -r gap; do
-      [ -n "$gap" ] && echo "  $name: $gap"
-    done <<<"$gaps"
+    show_gaps "$name" "$path"
   fi
 done <<<"$files"
 
