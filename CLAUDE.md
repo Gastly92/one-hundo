@@ -83,8 +83,15 @@ features land.
     unbracketed text.
 - SwiftLint runs in CI with `--strict`
   (warnings fail). Config: `.swiftlint.yml`.
-  It can't be downloaded in this container, so
-  read the `SwiftLint` job log on failure.
+  Every opt-in rule is on; the few turned
+  off each say why there. When two rules
+  disagree, keep the one that makes code
+  shorter. Silence a single case with
+  `// swiftlint:disable:next <rule>` plus a
+  comment saying why (these lines may pass
+  46). SwiftLint can't be downloaded in this
+  container, so read the `SwiftLint` job log
+  (it prints file:line) on failure.
 - Lines max 46 chars, so a diff line fits a
   phone in portrait without wrapping. This
   covers docs, YAML and scripts too: CI's
