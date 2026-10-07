@@ -19,8 +19,9 @@ features land.
   Safari's Find on page helps.
 
 ## Building
-- This container is Linux: nothing Swift/Xcode
-  builds locally. CI is the compiler.
+- This container is Linux: nothing
+  Swift/Xcode builds locally. CI is the
+  compiler.
 - `.github/workflows/ios-build.yml` runs on
   every PR and push to `main` (macOS runner,
   `macos-26`). It generates the project,
@@ -31,9 +32,10 @@ features land.
   how long building and testing took.
   Docs-only PRs skip the macOS job. The `CI
   Gate` job is the single pass/fail check for
-  a PR; keep its name stable, and add new code
-  paths to the `changes` filter. Test steps
-  live in `.github/scripts/run-tests.sh`.
+  a PR; keep its name stable, and add new
+  code paths to the `changes` filter. Test
+  steps live in
+  `.github/scripts/run-tests.sh`.
 - Tests: `OneHundoTests/` (unit tests for
   logic in `OneHundo/Models/`) and
   `OneHundoUITests/` (XCTest UI tests that
@@ -42,18 +44,18 @@ features land.
 - Screens: every full screen is a view in
   `OneHundo/Views/Screens/` (one per file;
   pieces of screens go in
-  `Views/Components/`). Each screen and screen
-  state has a case in `ScreenID` (`Support/`,
-  also compiled into the UI tests) and is
-  shown by `ScreenHost`, which UI tests open
-  directly with `-showScreen <id>`. CI's
-  `Screen list` job fails if a screen in
-  `Views/Screens/` isn't in `ScreenHost`.
-  Screens that need challenges are listed in
-  `AppLaunch.seededScreens`.
+  `Views/Components/`). Each screen and
+  screen state has a case in `ScreenID`
+  (`Support/`, also compiled into the UI
+  tests) and is shown by `ScreenHost`, which
+  UI tests open directly with `-showScreen
+  <id>`. CI's `Screen list` job fails if a
+  screen in `Views/Screens/` isn't in
+  `ScreenHost`. Screens that need challenges
+  are listed in `AppLaunch.seededScreens`.
 - `AccessibilityTests` runs Xcode's
-  accessibility audit on every `ScreenID`. Use
-  system colors and text styles (or
+  accessibility audit on every `ScreenID`.
+  Use system colors and text styles (or
   `@ScaledMetric` for big custom sizes) so
   text scales and both light and dark mode
   work.
@@ -65,14 +67,15 @@ features land.
     `LocalizedStringKey`, not `String`. Never
     join text with `+` (one literal, or a
     `"""` literal with `\` line breaks).
-  - Text built in `Models/` or `Support/` uses
-    `String(localized:)`, as whole sentences
-    (no gluing words together). A SwiftLint
-    rule flags plain sentences there.
-  - Words that change with a number ("1 day" /
-    "2 days") get plural forms in
-    `OneHundo/Localizable.xcstrings`; edit its
-    JSON by hand (no Xcode here).
+  - Text built in `Models/` or `Support/`
+    uses `String(localized:)`, as whole
+    sentences (no gluing words together). A
+    SwiftLint rule flags plain sentences
+    there.
+  - Words that change with a number ("1 day"
+    / "2 days") get plural forms in
+    `OneHundo/Localizable.xcstrings`; edit
+    its JSON by hand (no Xcode here).
   - CI's `String catalog` job
     (`.github/scripts/check-strings.py`)
     fails on catalog keys no Swift string
@@ -93,7 +96,7 @@ features land.
   reason. SwiftLint can't be downloaded in
   this container, so read the `SwiftLint`
   job log (it prints file:line) on failure.
-- Lines max 46 chars, so a diff line fits a
+- Lines max 45 chars, so a diff line fits a
   phone in portrait without wrapping. This
   covers docs, YAML and scripts too: CI's
   `Line length` job runs
@@ -110,12 +113,13 @@ features land.
   - Use the shared helpers: `LeadingStack`,
     `.testID(_:)`, `.fullWidth(_:)`,
     `.wrapsText()`
-    (`Views/Components/ViewHelpers.swift`); in
-    UI tests `App.start`,
+    (`Views/Components/ViewHelpers.swift`);
+    in UI tests `App.start`,
     `app.text/button/field/bar(_:)`,
     `element.appears()`.
   - Long text uses a `"""` literal with `\`
-    line breaks (one key, still one sentence).
+    line breaks (one key, still one
+    sentence).
   - Otherwise wrap: one argument per line is
     fine.
 - Compiler warnings are errors, and every
@@ -136,10 +140,10 @@ features land.
   using Swift's automatic initializer shows
   its private property defaults as untested;
   give it an explicit `init`.
-- Tests run with Thread Sanitizer: a data race
-  stops the app and fails the test. UI tests
-  launch the app with `App.start(seeded:)`,
-  which sets this up.
+- Tests run with Thread Sanitizer: a data
+  race stops the app and fails the test. UI
+  tests launch the app with
+  `App.start(seeded:)`, which sets this up.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
   dark and large text, on a fixed day
@@ -207,15 +211,17 @@ features land.
 - After pushing, check CI with the GitHub MCP
   tools (`actions_list`, `get_job_logs`) and
   fix failures before calling the work done.
-  Re-read Swift changes carefully first, since
-  each CI round trip takes a few minutes.
+  Re-read Swift changes carefully first,
+  since each CI round trip takes a few
+  minutes.
 - The Xcode project is generated from
   `project.yml` by XcodeGen. Never add a
   `.xcodeproj`; put new source files under
   `OneHundo/` (picked up automatically) and
   build settings in `project.yml`. Info.plist
-  is generated from `INFOPLIST_KEY_*` settings
-  there. Add permission strings (e.g.
+  is generated from `INFOPLIST_KEY_*`
+  settings there. Add permission strings
+  (e.g.
   `INFOPLIST_KEY_NSHealthShareUsageDescription`)
   the same way.
 
@@ -229,8 +235,8 @@ features land.
 - After a feature PR merges, trigger it with
   `actions_run_trigger` (`run_workflow`,
   `workflow_id: testflight.yml`, `ref: main`)
-  when the owner asks to ship or test on their
-  phone. Verify the log shows "Upload
+  when the owner asks to ship or test on
+  their phone. Verify the log shows "Upload
   succeeded". The build shows in TestFlight
   about 5–15 min later. Each upload tags its
   commit, e.g. `v0.4.6-build12`.
@@ -238,13 +244,13 @@ features land.
   `project.yml`; Apple allows only three
   numbers):
   - Before 1.0: `0.<plan step>.0` when a plan
-    step's PR lands (step 4 → 0.4.0), and bump
-    the patch for fixes between steps (0.4.1).
-    Make the bump in the same PR as the
-    change.
+    step's PR lands (step 4 → 0.4.0), and
+    bump the patch for fixes between steps
+    (0.4.1). Make the bump in the same PR as
+    the change.
   - 1.0.0 is the first App Store release (end
-    of plan step 9). After that: patch for bug
-    fixes, minor for new features.
+    of plan step 9). After that: patch for
+    bug fixes, minor for new features.
   - Build number = workflow run number
     (automatic), shown in TestFlight as e.g.
     0.4.0 (5).

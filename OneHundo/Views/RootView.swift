@@ -18,6 +18,8 @@ struct RootView: View {
   }
 
   private var calendarTab: some View {
-    Label("Calendar", systemImage: "calendar")
+    Label(
+      "Calendar", systemImage: "calendar"
+    )
   }
 }

@@ -61,8 +61,8 @@ final class EnrollFlowTests: XCTestCase {
 
     let card = app.card("pushups")
     XCTAssertTrue(card.appears(within: 10))
-    // The test is today's attempt; tomorrow's
-    // target is 6.
+    // The test is today's attempt;
+    // tomorrow's target is 6.
     let label = card.label
     XCTAssertTrue(label.contains("Done: 5"))
     XCTAssertTrue(label.contains("5 / 100"))

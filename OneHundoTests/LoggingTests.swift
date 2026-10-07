@@ -44,7 +44,7 @@ final class LoggingTests: XCTestCase {
       """)
   }
 
-  func testMatchingBestIsNotNewBest() throws {
+  func testTyingBestIsNotNewBest() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
     pushUps.log(8, day: 2)
@@ -60,14 +60,16 @@ final class LoggingTests: XCTestCase {
     pushUps.log(5, day: 1)
     pushUps.record(7, day: 2, hour: 9)
     // Re-logging day 2 with 6: still above
-    // the earlier best of 5, and replaces the
-    // 7.
+    // the earlier best of 5, and replaces
+    // the 7.
     let outcome = pushUps.record(
       6, day: 2, hour: 18
     )
     XCTAssertTrue(outcome.isNewBest)
     XCTAssertEqual(outcome.target, 6)
-    XCTAssertEqual(pushUps.attempts?.count, 2)
+    XCTAssertEqual(
+      pushUps.attempts?.count, 2
+    )
     XCTAssertEqual(pushUps.personalBest, 6)
   }
 
@@ -79,7 +81,9 @@ final class LoggingTests: XCTestCase {
       6, day: 1, hour: 18
     )
     XCTAssertTrue(outcome.isNewBest)
-    XCTAssertEqual(pushUps.attempts?.count, 1)
+    XCTAssertEqual(
+      pushUps.attempts?.count, 1
+    )
   }
 
   func testReachingGoal() throws {
@@ -135,8 +139,8 @@ final class LoggingTests: XCTestCase {
     let store = try TestStore()
     let plank = store.pushUps(start: 30)
     plank.unit = .seconds
-    let before = plank.replacementNote(day: 2)
-    XCTAssertNil(before)
+    let first = plank.replacementNote(day: 2)
+    XCTAssertNil(first)
     plank.log(31, day: 2)
     let note = plank.replacementNote(
       day: 2, hour: 20

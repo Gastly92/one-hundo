@@ -7,13 +7,13 @@ import SwiftData
 /// Follows CloudKit's rules so iCloud sync
 /// can be added later without a migration:
 /// every property has a default,
-/// relationships are optional, and nothing is
-/// unique.
+/// relationships are optional, and nothing
+/// is unique.
 @Model
 final class Challenge {
   var id = UUID()
-  /// A built-in challenge id (see `BuiltIn`),
-  /// or `Challenge.customKind`.
+  /// A built-in challenge id (see
+  /// `BuiltIn`), or `Challenge.customKind`.
   var kind: String = "custom"
   var name: String = ""
   /// Raw value of `CountUnit`; use `unit`
@@ -62,8 +62,8 @@ final class Challenge {
 }
 
 /// One logged result. There is at most one
-/// attempt per challenge per day (enforced by
-/// `Challenge.logAttempt`, since CloudKit
+/// attempt per challenge per day (enforced
+/// by `Challenge.logAttempt`, since CloudKit
 /// doesn't allow unique constraints).
 @Model
 final class Attempt {

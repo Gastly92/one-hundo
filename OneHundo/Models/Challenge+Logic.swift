@@ -20,8 +20,8 @@ extension Challenge {
 
   /// The name to show: a built-in's name in
   /// the user's language (the stored name is
-  /// in whatever language it was started in),
-  /// or a custom challenge's own name.
+  /// in whatever language it was started
+  /// in), or a custom challenge's own name.
   var displayName: String {
     builtIn?.name ?? name
   }
@@ -43,8 +43,8 @@ extension Challenge {
   }
 
   /// The attempt logged on the same calendar
-  /// day as `day`, if any. That day counts as
-  /// done, including the start day: the
+  /// day as `day`, if any. That day counts
+  /// as done, including the start day: the
   /// starting test is that day's attempt.
   func attempt(
     on day: Date,
@@ -138,8 +138,9 @@ extension Challenge {
     )
   }
 
-  /// The latest logged count, or the starting
-  /// count if nothing is logged yet.
+  /// The latest logged count, or the
+  /// starting count if nothing is logged
+  /// yet.
   var currentCount: Int {
     let last = latest(of: allAttempts)
     return last?.count ?? startingCount
@@ -153,8 +154,8 @@ extension Challenge {
     )
   }
 
-  /// Estimated days left to reach the goal at
-  /// the current pace.
+  /// Estimated days left to reach the goal
+  /// at the current pace.
   var daysToGoal: Int {
     Progression.daysToGoal(
       from: currentCount,
@@ -175,7 +176,8 @@ extension Challenge {
 
   /// Number of days with an attempt (the
   /// starting test counts). Missed days are
-  /// fine; this is shown instead of a streak.
+  /// fine; this is shown instead of a
+  /// streak.
   func daysLogged(
     in cal: Calendar = .current
   ) -> Int {
@@ -187,8 +189,9 @@ extension Challenge {
 
   /// The best count on any day other than
   /// `day`'s, or the starting count. Logging
-  /// a day replaces that day's count, so it's
-  /// left out when checking for a new best.
+  /// a day replaces that day's count, so
+  /// it's left out when checking for a new
+  /// best.
   func best(
     excludingDayOf day: Date,
     in cal: Calendar = .current
@@ -231,9 +234,9 @@ extension Challenge {
   }
 
   /// Logs a count for the day of `date`.
-  /// Logging the same day again replaces that
-  /// day's count, keeping one attempt per
-  /// day.
+  /// Logging the same day again replaces
+  /// that day's count, keeping one attempt
+  /// per day.
   @discardableResult
   func logAttempt(
     count: Int,
@@ -266,14 +269,16 @@ extension Challenge {
   private func best(
     of attempts: [Attempt]
   ) -> Int {
-    let top = attempts.map(\.count).max() ?? 0
+    let top =
+      attempts.map(\.count).max() ?? 0
     return max(startingCount, top)
   }
 }
 
 /// What the Log attempt sheet shows after
 /// saving: a small celebration or an
-/// encouraging message, plus the next target.
+/// encouraging message, plus the next
+/// target.
 struct LogOutcome: Equatable {
   let count: Int
   /// That day's target.

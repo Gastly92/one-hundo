@@ -8,7 +8,8 @@ struct NumberEntry: View {
   @Binding var value: Int
   let range: ClosedRange<Int>
   /// Prefix for accessibility identifiers:
-  /// `<id>.field`, `<id>.plus`, `<id>.minus`.
+  /// `<id>.field`, `<id>.plus`,
+  /// `<id>.minus`.
   let id: String
 
   init(
@@ -23,9 +24,10 @@ struct NumberEntry: View {
 
   @State private var text = ""
   // The number scales fully with the user's
-  // text size setting. The − / + buttons grow
-  // less, so a three-digit number and both
-  // buttons still fit across the screen.
+  // text size setting. The − / + buttons
+  // grow less, so a three-digit number and
+  // both buttons still fit across the
+  // screen.
   @ScaledMetric(relativeTo: .largeTitle)
   private var numberSize: CGFloat = 56
   @ScaledMetric(relativeTo: .body)
@@ -92,7 +94,9 @@ struct NumberEntry: View {
         value + delta, to: range
       )
     } label: {
-      Image(systemName: "\(sign).circle.fill")
+      Image(
+        systemName: "\(sign).circle.fill"
+      )
         .font(.system(size: buttonSize))
         .symbolRenderingMode(.hierarchical)
     }

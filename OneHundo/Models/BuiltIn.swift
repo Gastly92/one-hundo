@@ -89,8 +89,8 @@ struct BuiltIn: Identifiable, Hashable {
     colorName: "green",
     tips: [
       String(localized: """
-        Start from a full hang with straight \
-        arms.
+        Start from a full hang with \
+        straight arms.
         """),
       String(localized: """
         Pull until your chin is over the \

@@ -58,8 +58,8 @@ struct WelcomeView: View {
         title: "Reach 100",
         detail: """
           Small steps add up. Missed a day? \
-          No problem, pick up where you left \
-          off.
+          No problem, pick up where you \
+          left off.
           """
       )
     }

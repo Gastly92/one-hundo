@@ -62,8 +62,8 @@ final class AppLaunchTests: XCTestCase {
     )
     XCTAssertEqual(try count(seeded), 4)
 
-    // -seedSampleData alone is ignored, so it
-    // can never touch real data.
+    // -seedSampleData alone is ignored, so
+    // it can never touch real data.
     let real = start(["-seedSampleData"])
     XCTAssertEqual(try count(real), 0)
   }
@@ -93,9 +93,9 @@ final class AppLaunchTests: XCTestCase {
     // sample data; the rest start empty.
     XCTAssertEqual(try count(detail), 4)
 
-    let welcome = start(
-      ["-uiTesting", "-showScreen", "welcome"]
-    )
+    let welcome = start([
+      "-uiTesting", "-showScreen", "welcome",
+    ])
     XCTAssertEqual(welcome.screen, .welcome)
     XCTAssertEqual(try count(welcome), 0)
   }
@@ -128,10 +128,10 @@ final class AppLaunchTests: XCTestCase {
 
   func testDarkModeOnlyInUITests() {
     let flag = "-darkMode"
-    let tests = "-uiTesting"
-    XCTAssertTrue(start([tests, flag]).isDark)
+    let test = "-uiTesting"
+    XCTAssertTrue(start([test, flag]).isDark)
     XCTAssertFalse(start([flag]).isDark)
-    XCTAssertFalse(start([tests]).isDark)
+    XCTAssertFalse(start([test]).isDark)
   }
 
   func testDefaultStoreOpens() throws {

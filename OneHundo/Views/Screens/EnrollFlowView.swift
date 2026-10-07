@@ -1,8 +1,9 @@
 import SwiftData
 import SwiftUI
 
-/// Starting a built-in challenge: intro, test
-/// yourself, goal and pace, reminder, Start.
+/// Starting a built-in challenge: intro,
+/// test yourself, goal and pace, reminder,
+/// Start.
 struct EnrollFlowView: View {
   let builtIn: BuiltIn
   /// Called after the challenge is saved, to
@@ -30,16 +31,16 @@ struct EnrollFlowView: View {
     _step = State(initialValue: step)
   }
 
-  /// Today's test result: the starting count.
+  /// Today's test result: the starting
+  /// count.
   @State private var count = 1
   @State private var goal = 100
   @State private var increase = 1
   @State private var remind = true
   /// The reminder time, as `ReminderTime`
   /// keeps it for the picker.
-  @State private var time = ReminderTime.date(
-    minutes: ReminderTime.sixPM
-  )
+  @State private var time = ReminderTime
+    .date(minutes: ReminderTime.sixPM)
 
   private static let goals =
     [50, 100, 150, 200]
@@ -193,8 +194,8 @@ extension EnrollFlowView {
       }
       Text("""
         Warm up, then test yourself: do as \
-        many as you can in one go, with good \
-        form.
+        many as you can in one go, with \
+        good form.
         """)
         .foregroundStyle(.secondary)
     }
@@ -345,8 +346,8 @@ extension EnrollFlowView {
           selection: $time,
           displayedComponents: .hourAndMinute
         )
-        // Times are moments on a fixed day in
-        // GMT (see `ReminderTime`).
+        // Times are moments on a fixed day
+        // in GMT (see `ReminderTime`).
         .environment(\.timeZone, .gmt)
       }
       Text("""

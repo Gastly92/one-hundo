@@ -5,15 +5,17 @@
 /// localization check on all of them.
 /// `ScreenHost` shows each case.
 ///
-/// Also compiled into the UI test target (see
-/// `project.yml`), so the tests always loop
-/// over the full list. Adding a screen: add a
-/// case here and show it in `ScreenHost`; CI
-/// (`check-screens.sh`) fails if a view in
-/// `Views/Screens/` isn't shown there.
+/// Also compiled into the UI test target
+/// (see `project.yml`), so the tests always
+/// loop over the full list. Adding a screen:
+/// add a case here and show it in
+/// `ScreenHost`; CI (`check-screens.sh`)
+/// fails if a view in `Views/Screens/` isn't
+/// shown there.
 enum ScreenID: String, CaseIterable {
   case welcome, challengeList, calendar
-  case addChallenge, customChallengeComingSoon
+  case addChallenge
+  case customChallengeComingSoon
   case enrollIntro, enrollTest
   case enrollGoal, enrollReminder
   case challengeDetail, logAttempt
