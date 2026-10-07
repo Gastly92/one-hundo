@@ -124,21 +124,15 @@ final class DetailScreenTests: XCTestCase {
     XCTAssertTrue(empty.appears())
   }
 
-  /// Long-presses `row` until its menu
-  /// opens, then taps `label`. The first
-  /// press can land while the screen is
-  /// still settling.
+  /// Long-presses `row`, then taps `label`
+  /// in its menu.
   @MainActor
   private func pick(
     _ label: String,
     on row: XCUIElement,
     _ app: XCUIApplication
   ) {
-    let item = app.buttons[label].firstMatch
-    for _ in 0..<3 where !item.exists {
-      row.press(forDuration: 1.5)
-      _ = item.appears(within: 3)
-    }
+    let item = app.menuItem(label, on: row)
     item.tap()
     // Wait for the menu to close, so the
     // next pick doesn't find this one.

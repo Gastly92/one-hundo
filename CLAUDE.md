@@ -117,7 +117,8 @@ features land.
     (`Views/Components/ViewHelpers.swift`);
     in UI tests `App.start`,
     `app.text/button/field/bar(_:)`,
-    `element.appears()`.
+    `app.menuItem(_:on:)` (one long-press,
+    no retries), `element.appears()`.
   - Long text uses a `"""` literal with `\`
     line breaks (one key, still one
     sentence).
