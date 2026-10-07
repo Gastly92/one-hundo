@@ -392,7 +392,7 @@ go in first.
   exactly 46.
 - No version bump (nothing visible changes).
 
-#### 4.15 Challenge card layout
+#### 4.15 Challenge card layout ✅
 - Found in the snapshots at large text:
   cards in a row have different heights and
   aren't top-aligned, and narrow cards break

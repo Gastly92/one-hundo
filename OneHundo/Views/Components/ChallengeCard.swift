@@ -38,7 +38,13 @@ struct ChallengeCard: View {
       }
     }
     .padding()
-    .fullWidth(.leading)
+    // Fills its grid cell, so cards in a
+    // row match heights.
+    .frame(
+      maxWidth: .infinity,
+      maxHeight: .infinity,
+      alignment: .topLeading
+    )
     .background(
       Color(.secondarySystemBackground),
       in: RoundedRectangle(cornerRadius: 16)

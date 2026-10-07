@@ -143,10 +143,13 @@ final class AccessibilityTests: XCTestCase {
     let bars = app.navigationBars
       .descendants(matching: .any)
       .allElementsBoundByIndex.map(\.frame)
+    let window = app.windows.firstMatch.frame
     try app.performAccessibilityAudit(
       for: types
     ) {
-      if Self.isExpected($0, bars: bars) {
+      if Self.isExpected(
+        $0, bars: bars, window: window
+      ) {
         return true
       }
       let found = Self.describe($0)
@@ -164,7 +167,8 @@ final class AccessibilityTests: XCTestCase {
   @MainActor
   private static func isExpected(
     _ issue: XCUIAccessibilityAuditIssue,
-    bars: [CGRect]
+    bars: [CGRect],
+    window: CGRect
   ) -> Bool {
     let text = issue.compactDescription
     // "Nearly passed" contrast passes at
@@ -184,6 +188,13 @@ final class AccessibilityTests: XCTestCase {
       )
     }
     if bars.contains(element.frame) {
+      return true
+    }
+    // Text cut off at the screen's edge
+    // (a long list at large text sizes):
+    // the audit measures contrast against
+    // what's past the edge.
+    if !window.contains(element.frame) {
       return true
     }
     return issue.auditType == .dynamicType
