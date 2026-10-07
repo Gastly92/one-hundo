@@ -60,7 +60,7 @@ final class AppLaunchTests: XCTestCase {
     let seeded = start(
       ["-uiTesting", "-seedSampleData"]
     )
-    XCTAssertEqual(try count(seeded), 3)
+    XCTAssertEqual(try count(seeded), 4)
 
     // -seedSampleData alone is ignored, so it
     // can never touch real data.
@@ -91,13 +91,24 @@ final class AppLaunchTests: XCTestCase {
     )
     // Screens that show challenges get the
     // sample data; the rest start empty.
-    XCTAssertEqual(try count(detail), 3)
+    XCTAssertEqual(try count(detail), 4)
 
     let welcome = start(
       ["-uiTesting", "-showScreen", "welcome"]
     )
     XCTAssertEqual(welcome.screen, .welcome)
     XCTAssertEqual(try count(welcome), 0)
+  }
+
+  func testStoreErrorScreenFails() {
+    let error = start([
+      "-uiTesting",
+      "-showScreen", "storeError",
+    ])
+    XCTAssertEqual(error.screen, .storeError)
+    XCTAssertThrowsError(
+      try error.store.get()
+    )
   }
 
   func testShowScreenNeedsUITesting() {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The first screen, before any challenge
+/// The challenge list before any challenge
 /// exists: what the app does in three steps,
 /// and one button to start.
 struct WelcomeView: View {

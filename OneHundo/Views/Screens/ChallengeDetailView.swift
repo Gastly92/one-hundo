@@ -26,6 +26,10 @@ struct ChallengeDetailView: View {
   private struct LogSheet: Identifiable {
     let id = UUID()
     let attempt: Attempt?
+
+    init(attempt: Attempt?) {
+      self.attempt = attempt
+    }
   }
 
   private static let ringStroke = StrokeStyle(

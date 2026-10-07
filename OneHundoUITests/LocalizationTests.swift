@@ -22,6 +22,12 @@ final class LocalizationTests: XCTestCase {
     "errorDetails",
   ]
 
+  /// Text the user typed (the sample custom
+  /// challenge's name), which stays as typed.
+  private static let userText: Set = [
+    "Plank",
+  ]
+
   /// Every screen in the app (`ScreenID`),
   /// each opened directly with sample data.
   @MainActor
@@ -73,7 +79,8 @@ final class LocalizationTests: XCTestCase {
         bracketed += 1
         continue
       }
-      if Self.systemIDs.contains(id) {
+      if Self.systemIDs.contains(id)
+        || Self.userText.contains(label) {
         continue
       }
       if system.contains(element.frame) {

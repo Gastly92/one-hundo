@@ -7,7 +7,7 @@ struct EnrollFlowView: View {
   let builtIn: BuiltIn
   /// Called after the challenge is saved, to
   /// close the Add challenge sheet.
-  let onStarted: () -> Void
+  let onStarted: (() -> Void)?
 
   @Environment(\.modelContext)
   private var modelContext
@@ -23,7 +23,7 @@ struct EnrollFlowView: View {
   init(
     _ builtIn: BuiltIn,
     startAt step: Step = .intro,
-    onStarted: @escaping () -> Void
+    onStarted: (() -> Void)? = nil
   ) {
     self.builtIn = builtIn
     self.onStarted = onStarted
@@ -35,21 +35,14 @@ struct EnrollFlowView: View {
   @State private var goal = 100
   @State private var increase = 1
   @State private var remind = true
-  @State private var time = Self.sixPM
+  /// The reminder time, as `ReminderTime`
+  /// keeps it for the picker.
+  @State private var time = ReminderTime.date(
+    minutes: ReminderTime.sixPM
+  )
 
   private static let goals =
     [50, 100, 150, 200]
-
-  /// The default reminder time.
-  private static var sixPM: Date {
-    let now = Date()
-    return Calendar.current.date(
-      bySettingHour: 18,
-      minute: 0,
-      second: 0,
-      of: now
-    ) ?? now
-  }
 
   private var color: Color { builtIn.color }
 
@@ -150,8 +143,10 @@ struct EnrollFlowView: View {
   }
 
   private func advance() {
-    if step == .test, !isValid {
-      goal = count + 10
+    if step == .test {
+      goal = Progression.goal(
+        goal, after: count
+      )
     }
     move(by: 1)
   }
@@ -164,13 +159,6 @@ struct EnrollFlowView: View {
   }
 
   private func start() {
-    let cal = Calendar.current
-    let parts = cal.dateComponents(
-      [.hour, .minute], from: time
-    )
-    let hour = parts.hour ?? 18
-    let minute = parts.minute ?? 0
-    let minutes = hour * 60 + minute
     let challenge = Challenge(
       name: builtIn.name,
       colorName: builtIn.colorName,
@@ -179,13 +167,15 @@ struct EnrollFlowView: View {
       goal: goal,
       dailyIncrease: increase,
       reminderEnabled: remind,
-      reminderMinutes: minutes
+      reminderMinutes: ReminderTime.minutes(
+        of: time
+      )
     )
     modelContext.insert(challenge)
     // Today's test is the first attempt.
     challenge.logAttempt(count: count)
     try? modelContext.save()
-    onStarted()
+    onStarted?()
   }
 }
 
@@ -225,8 +215,8 @@ extension EnrollFlowView {
         .font(.title2.bold())
       NumberEntry(
         value: $count,
-        range: 0...999,
-        id: "testCount"
+        id: "testCount",
+        range: 0...999
       )
       Text("""
         This is your starting point. Be \
@@ -259,8 +249,8 @@ extension EnrollFlowView {
         .font(.headline)
       NumberEntry(
         value: $goal,
-        range: 1...9999,
-        id: "goal"
+        id: "goal",
+        range: 1...9999
       )
       GoalChips(
         goals: quickGoals, goal: $goal
@@ -355,6 +345,9 @@ extension EnrollFlowView {
           selection: $time,
           displayedComponents: .hourAndMinute
         )
+        // Times are moments on a fixed day in
+        // GMT (see `ReminderTime`).
+        .environment(\.timeZone, .gmt)
       }
       Text("""
         Your reminder time is saved now; \

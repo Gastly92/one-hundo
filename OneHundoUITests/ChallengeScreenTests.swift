@@ -94,6 +94,50 @@ final class ChallengeScreenTests: XCTestCase {
     XCTAssertTrue(log.appears())
   }
 
+  @MainActor
+  func testHistoryMenuEditsAndDeletes() {
+    let app = App.start(seeded: true)
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(pushUps.appears(within: 10))
+    pushUps.tap()
+    let row = app.button("attemptRow")
+      .firstMatch
+    XCTAssertTrue(row.appears())
+
+    // Edit from the row's menu.
+    pick("Edit", on: row, app)
+    let sheet = app.bar("Edit attempt")
+    XCTAssertTrue(sheet.appears())
+    app.button("Cancel").tap()
+    XCTAssertTrue(sheet.disappears())
+
+    // Delete both attempts (8 and 10).
+    pick("Delete", on: row, app)
+    pick("Delete", on: row, app)
+    let empty = app.text("No attempts yet")
+    XCTAssertTrue(empty.appears())
+  }
+
+  /// Long-presses `row` until its menu opens,
+  /// then taps `label`. The first press can
+  /// land while the screen is still settling.
+  @MainActor
+  private func pick(
+    _ label: String,
+    on row: XCUIElement,
+    _ app: XCUIApplication
+  ) {
+    let item = app.buttons[label].firstMatch
+    for _ in 0..<3 where !item.exists {
+      row.press(forDuration: 1.5)
+      _ = item.appears(within: 3)
+    }
+    item.tap()
+    // Wait for the menu to close, so the next
+    // pick doesn't find this one.
+    _ = item.disappears()
+  }
+
   /// In the open Log attempt sheet: checks
   /// the count starts at `start`, taps + up
   /// to `end`, and saves.

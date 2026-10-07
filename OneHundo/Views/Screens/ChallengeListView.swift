@@ -200,7 +200,6 @@ struct ChallengeListView: View {
   private func delete(
     _ challenge: Challenge
   ) {
-    path.removeAll { $0 == challenge }
     modelContext.delete(challenge)
     try? modelContext.save()
     deleting = nil

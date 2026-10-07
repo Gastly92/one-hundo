@@ -15,6 +15,10 @@ struct StoreErrorView: View {
   @ScaledMetric(relativeTo: .largeTitle)
   private var iconSize: CGFloat = 48
 
+  init(details: String) {
+    self.details = details
+  }
+
   var body: some View {
     ScrollView {
       message

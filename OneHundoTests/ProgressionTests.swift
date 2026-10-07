@@ -19,6 +19,21 @@ final class ProgressionTests: XCTestCase {
     XCTAssertEqual(target(120, step: 1), 100)
   }
 
+  func testGoalAfterTest() {
+    // Still ahead of today's test: kept.
+    let kept = Progression.goal(100, after: 5)
+    XCTAssertEqual(kept, 100)
+    // Reached or passed: raised past it.
+    let same = Progression.goal(
+      100, after: 100
+    )
+    XCTAssertEqual(same, 110)
+    let past = Progression.goal(
+      100, after: 150
+    )
+    XCTAssertEqual(past, 160)
+  }
+
   func testDaysToGoal() {
     XCTAssertEqual(days(5, step: 1), 95)
     XCTAssertEqual(days(5, step: 2), 48)

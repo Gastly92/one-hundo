@@ -1,3 +1,4 @@
+import Foundation
 import SwiftData
 
 /// What the app does at launch: read the
@@ -23,7 +24,8 @@ struct AppLaunch {
   /// challenges; the rest show an empty app.
   static let seededScreens: Set<ScreenID> = [
     .challengeList, .challengeDetail,
-    .logAttempt, .editAttempt, .logResult,
+    .logAttempt, .editAttempt, .logTimed,
+    .logResult,
   ]
 
   /// Opens the store, in memory or on disk.
@@ -39,10 +41,18 @@ struct AppLaunch {
     // clean.
     isUITesting = args.contains("-uiTesting")
     let inMemory = isUITesting
-    store = Result { try open(inMemory) }
     let shown = isUITesting
       ? Self.screen(in: args) : nil
     screen = shown
+    if shown == .storeError {
+      // The store-error screen opens through
+      // the real failure path (a full disk).
+      store = .failure(
+        CocoaError(.fileWriteOutOfSpace)
+      )
+    } else {
+      store = Result { try open(inMemory) }
+    }
     isDark = isUITesting
       && args.contains("-darkMode")
     let seeded = Self.seededScreens

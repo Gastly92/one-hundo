@@ -323,7 +323,8 @@ go in first.
   images as an artifact and fails.
 - No version bump (nothing user-visible).
 - Then add a coverage gate for views, set from
-  what the snapshots reach.
+  what the snapshots reach (4.13 gates every
+  line at 100%).
 
 #### 4.12 Dark mode and large text audit ✅
 - Run the accessibility audit on every screen
@@ -341,6 +342,53 @@ go in first.
   goal buttons (50/100/150/200) go in two
   rows, so "100" fits inside its button.
 - Version 0.4.6 (the card fix shows).
+
+#### 4.13 Swift 6 and 100% coverage ✅
+- Every target builds in Swift 6 language
+  mode, so data races are compile errors
+  (tests included), before step 5 adds
+  settings and step 6 notifications.
+- Every line of the app must run in tests,
+  views included (they were at 97%). To get
+  there:
+  - UI tests now cover the card's long-press
+    Log attempt, editing and deleting history
+    attempts, and Back in the enroll flow.
+  - Logic moved out of views and is unit
+    tested: number field input
+    (`NumberText`), raising the goal past
+    today's test (`Progression.goal`), and
+    reminder times as minutes
+    (`ReminderTime`).
+  - The welcome screen is the real empty
+    list, and the store-error screen opens
+    through the real failure path.
+  - Sample data gains a Plank in seconds,
+    with a `logTimed` screen state.
+  - Dead code went.
+- No version bump (nothing visible changes).
+
+#### 4.14 45-character lines
+- A 46-character line still wraps by one
+  character in the GitHub app on the phone.
+  Lower the limit to 45 everywhere:
+  SwiftLint's `line_length`,
+  `.github/scripts/check-lines.py`, and
+  every mention of 46 in CLAUDE.md and
+  comments; rewrap the ~240 lines at
+  exactly 46.
+- No version bump (nothing visible changes).
+
+#### 4.15 Challenge card layout
+- Found in the snapshots at large text:
+  cards in a row have different heights and
+  aren't top-aligned, and narrow cards break
+  words ("sec-onds", "Push-ups").
+- Cards in a row match heights, top-aligned.
+- At accessibility text sizes the list shows
+  one card per row.
+- Re-record the challenge list snapshots.
+- Version 0.4.7 (visible fix).
 
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
