@@ -69,6 +69,21 @@ extension XCUIApplication {
   func bar(_ id: String) -> XCUIElement {
     navigationBars[id]
   }
+
+  /// Long-presses `element` once and returns
+  /// its menu's `label` item, which must
+  /// appear. No second press: a missed one
+  /// is a real failure.
+  @MainActor
+  func menuItem(
+    _ label: String,
+    on element: XCUIElement
+  ) -> XCUIElement {
+    element.press(forDuration: 1.5)
+    let item = buttons[label].firstMatch
+    XCTAssertTrue(item.appears())
+    return item
+  }
 }
 
 extension XCUIElement {

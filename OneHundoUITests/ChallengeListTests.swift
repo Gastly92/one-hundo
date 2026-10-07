@@ -100,15 +100,9 @@ final class ChallengeListTests: XCTestCase {
       pullUps.appears(within: 10)
     )
 
-    // The first press can land while the
-    // list is still settling: press up to
-    // three times until the menu opens.
-    let item = app.button("Delete challenge")
-    for _ in 0..<3 where !item.exists {
-      pullUps.press(forDuration: 1.5)
-      _ = item.appears(within: 3)
-    }
-    XCTAssertTrue(item.exists)
+    let item = app.menuItem(
+      "Delete challenge", on: pullUps
+    )
     let edit = app.button("Edit today")
     XCTAssertTrue(edit.exists)
     item.tap()
@@ -138,12 +132,8 @@ final class ChallengeListTests: XCTestCase {
     )
 
     // Not logged today yet: "Log attempt".
-    let item = app.button("Log attempt")
-    for _ in 0..<3 where !item.exists {
-      pushUps.press(forDuration: 1.5)
-      _ = item.appears(within: 3)
-    }
-    item.tap()
+    app.menuItem("Log attempt", on: pushUps)
+      .tap()
     let sheet = app.bar("Log attempt")
     XCTAssertTrue(sheet.appears())
     app.button("Cancel").tap()
