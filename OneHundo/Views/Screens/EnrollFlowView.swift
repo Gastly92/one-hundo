@@ -35,9 +35,11 @@ struct EnrollFlowView: View {
   @State private var goal = 100
   @State private var increase = 1
   @State private var remind = true
-  /// Minutes after midnight.
-  @State private var minutes =
-    ReminderTime.sixPM
+  /// The reminder time, as `ReminderTime`
+  /// keeps it for the picker.
+  @State private var time = ReminderTime.date(
+    minutes: ReminderTime.sixPM
+  )
 
   private static let goals =
     [50, 100, 150, 200]
@@ -165,7 +167,9 @@ struct EnrollFlowView: View {
       goal: goal,
       dailyIncrease: increase,
       reminderEnabled: remind,
-      reminderMinutes: minutes
+      reminderMinutes: ReminderTime.minutes(
+        of: time
+      )
     )
     modelContext.insert(challenge)
     // Today's test is the first attempt.
@@ -322,15 +326,6 @@ extension EnrollFlowView {
     Self.goals.filter { $0 > count }
   }
 
-  /// The picker's view of `minutes`.
-  private var time: Binding<Date> {
-    Binding {
-      ReminderTime.date(minutes: minutes)
-    } set: {
-      minutes = ReminderTime.minutes(of: $0)
-    }
-  }
-
   private var paceText: String {
     Progression.paceText(
       from: count, goal: goal, step: increase
@@ -347,7 +342,7 @@ extension EnrollFlowView {
       if remind {
         DatePicker(
           "Time",
-          selection: time,
+          selection: $time,
           displayedComponents: .hourAndMinute
         )
         // Times are moments on a fixed day in
