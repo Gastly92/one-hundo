@@ -101,7 +101,10 @@ class ModelTestCase: XCTestCase {
     )
   }
 
-  override func tearDown() async {
+  // Must keep `throws`: it overrides
+  // XCTest's throwing tearDown.
+  // swiftlint:disable:next unneeded_throws_rethrows
+  override func tearDown() async throws {
     container = nil
   }
 
