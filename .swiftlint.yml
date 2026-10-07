@@ -7,30 +7,71 @@ included:
   - OneHundoUITests
   - Packages
 
+# Every opt-in rule is on. Rules below are off
+# on purpose: where two rules disagree, the
+# one that keeps code shorter wins, since
+# lines are capped at 46.
+opt_in_rules:
+  - all
+
 disabled_rules:
   # Multi-line lists end with a trailing comma
   # here, so diffs stay one line.
   - trailing_comma
 
-opt_in_rules:
-  - closure_spacing
-  - contains_over_filter_count
-  - contains_over_filter_is_empty
-  - contains_over_first_not_nil
-  - empty_count
-  - empty_string
-  - first_where
-  - indentation_width
-  - last_where
-  - modifier_order
-  - prefer_zero_over_explicit_init
-  - redundant_nil_coalescing
-  - sorted_first_last
-  - toggle_bool
-  - unneeded_parentheses_in_closure_argument
-  - vertical_whitespace_closing_braces
-  - vertical_whitespace_opening_braces
-  - yoda_condition
+  # Longer code, against the 46 limit:
+  # Writing every type out
+  # (redundant_type_annotation, on, does the
+  # opposite).
+  - explicit_type_interface
+  # `internal` on every declaration.
+  - explicit_acl
+  - explicit_top_level_acl
+  # `case push = "push"` for every case.
+  - explicit_enum_raw_value
+  # A `k` prefix on top-level constants.
+  - prefixed_toplevel_constant
+  # Named arguments instead of `$0` in
+  # multi-line closures.
+  - anonymous_argument_in_multiline_closure
+  - shorthand_argument
+  # Defaults keep call sites short.
+  - discouraged_default_parameter
+  # A named constant for every padding and
+  # size in views.
+  - no_magic_numbers
+
+  # Conflicts with a rule that's on:
+  # `private extension` once is shorter than
+  # `private` on each member
+  # (extension_access_modifier, on).
+  - no_extension_access_modifier
+  # Brace on its own line; opening_brace
+  # wants it on the same line.
+  - contrasted_opening_brace
+  # Hand-aligned arguments; indentation_width
+  # wants one level in.
+  - vertical_parameter_alignment_on_call
+
+  # Doesn't fit this project:
+  # Views keep small helpers and extensions
+  # next to the screen they belong to.
+  - one_declaration_per_file
+  - no_grouping_extension
+  # Fixed member/type order adds churn;
+  # files are ordered by reading flow.
+  - file_types_order
+  - type_contents_order
+  # ScreenID lists screens in app flow order.
+  - sorted_enum_cases
+  # Boilerplate: a header in every file, a
+  # deinit in every class, a tearDown for
+  # every setUp.
+  - file_header
+  - required_deinit
+  - balanced_xctest_lifecycle
+  # Tests use XCTest, not Nimble/Quick.
+  - prefer_nimble
 
 # 2-space indents; a wrapped line goes in one
 # level (2), not aligned by hand.

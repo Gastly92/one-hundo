@@ -185,7 +185,9 @@ features land.
   `CA92.1`).
 - Dependabot opens weekly PRs for GitHub
   Actions and test-only Swift package
-  versions; merge them if CI is green.
+  versions. Check CI and summarize what
+  changed (release notes); the owner reviews
+  and merges them.
 - After pushing, check CI with the GitHub MCP
   tools (`actions_list`, `get_job_logs`) and
   fix failures before calling the work done.
