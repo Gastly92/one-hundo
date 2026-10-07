@@ -1,3 +1,4 @@
+import Foundation
 import SwiftData
 
 /// What the app does at launch: read the
