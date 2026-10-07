@@ -1,6 +1,6 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 @MainActor
 final class AppLaunchTests: XCTestCase {
@@ -31,28 +31,28 @@ final class AppLaunchTests: XCTestCase {
   }
 
   func testNormalLaunchIsEmpty() throws {
-    var asked: Bool?
+    var asked: [Bool] = []
     let launch = AppLaunch(
       arguments: ["OneHundo"]
     ) {
-      asked = $0
+      asked.append($0)
       return try self.memory($0)
     }
     XCTAssertFalse(launch.isUITesting)
-    XCTAssertEqual(asked, false)
+    XCTAssertEqual(asked, [false])
     XCTAssertEqual(try count(launch), 0)
   }
 
   func testUITestingIsInMemory() throws {
-    var asked: Bool?
+    var asked: [Bool] = []
     let launch = AppLaunch(
       arguments: ["-uiTesting"]
     ) {
-      asked = $0
+      asked.append($0)
       return try self.memory($0)
     }
     XCTAssertTrue(launch.isUITesting)
-    XCTAssertEqual(asked, true)
+    XCTAssertEqual(asked, [true])
     XCTAssertEqual(try count(launch), 0)
   }
 
@@ -60,10 +60,10 @@ final class AppLaunchTests: XCTestCase {
     let seeded = start(
       ["-uiTesting", "-seedSampleData"]
     )
-    XCTAssertEqual(try count(seeded), 3)
+    XCTAssertEqual(try count(seeded), 4)
 
-    // -seedSampleData alone is ignored, so it
-    // can never touch real data.
+    // -seedSampleData alone is ignored, so
+    // it can never touch real data.
     let real = start(["-seedSampleData"])
     XCTAssertEqual(try count(real), 0)
   }
@@ -91,13 +91,24 @@ final class AppLaunchTests: XCTestCase {
     )
     // Screens that show challenges get the
     // sample data; the rest start empty.
-    XCTAssertEqual(try count(detail), 3)
+    XCTAssertEqual(try count(detail), 4)
 
-    let welcome = start(
-      ["-uiTesting", "-showScreen", "welcome"]
-    )
+    let welcome = start([
+      "-uiTesting", "-showScreen", "welcome",
+    ])
     XCTAssertEqual(welcome.screen, .welcome)
     XCTAssertEqual(try count(welcome), 0)
+  }
+
+  func testStoreErrorScreenFails() {
+    let error = start([
+      "-uiTesting",
+      "-showScreen", "storeError",
+    ])
+    XCTAssertEqual(error.screen, .storeError)
+    XCTAssertThrowsError(
+      try error.store.get()
+    )
   }
 
   func testShowScreenNeedsUITesting() {
@@ -117,10 +128,10 @@ final class AppLaunchTests: XCTestCase {
 
   func testDarkModeOnlyInUITests() {
     let flag = "-darkMode"
-    let tests = "-uiTesting"
-    XCTAssertTrue(start([tests, flag]).isDark)
+    let test = "-uiTesting"
+    XCTAssertTrue(start([test, flag]).isDark)
     XCTAssertFalse(start([flag]).isDark)
-    XCTAssertFalse(start([tests]).isDark)
+    XCTAssertFalse(start([test]).isDark)
   }
 
   func testDefaultStoreOpens() throws {

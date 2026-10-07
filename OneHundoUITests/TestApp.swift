@@ -5,10 +5,10 @@ typealias App = XCUIApplication
 
 extension XCUIApplication {
   /// Launches the app for a UI test with a
-  /// fresh in-memory store, optionally filled
-  /// with sample challenges. If Thread
-  /// Sanitizer finds a data race, the app
-  /// stops, so the test fails.
+  /// fresh in-memory store, optionally
+  /// filled with sample challenges. If
+  /// Thread Sanitizer finds a data race, the
+  /// app stops, so the test fails.
   @MainActor
   static func start(
     seeded: Bool = false,
@@ -56,6 +56,14 @@ extension XCUIApplication {
     textFields[id]
   }
 
+  /// A challenge card on the list, by its
+  /// built-in id (e.g. "pushups"). Its label
+  /// holds all of the card's text.
+  @MainActor
+  func card(_ id: String) -> XCUIElement {
+    buttons["card.\(id)"]
+  }
+
   /// A navigation bar, by title.
   @MainActor
   func bar(_ id: String) -> XCUIElement {
@@ -64,8 +72,8 @@ extension XCUIApplication {
 }
 
 extension XCUIElement {
-  /// Waits up to `seconds` for the element to
-  /// exist.
+  /// Waits up to `seconds` for the element
+  /// to exist.
   @MainActor
   func appears(
     within seconds: TimeInterval = 5
@@ -73,8 +81,8 @@ extension XCUIElement {
     waitForExistence(timeout: seconds)
   }
 
-  /// Waits up to `seconds` for the element to
-  /// go away.
+  /// Waits up to `seconds` for the element
+  /// to go away.
   @MainActor
   func disappears(
     within seconds: TimeInterval = 5

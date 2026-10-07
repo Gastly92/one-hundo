@@ -1,5 +1,5 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 final class ProgressionTests: XCTestCase {
   func testTargetAfterNormalDay() {
@@ -8,8 +8,8 @@ final class ProgressionTests: XCTestCase {
   }
 
   func testTargetAfterShortDay() {
-    // Target was 6 but only 4 were done: next
-    // target is 4 + 1.
+    // Target was 6 but only 4 were done:
+    // next target is 4 + 1.
     XCTAssertEqual(target(4, step: 1), 5)
   }
 
@@ -17,6 +17,22 @@ final class ProgressionTests: XCTestCase {
     XCTAssertEqual(target(98, step: 5), 100)
     XCTAssertEqual(target(100, step: 1), 100)
     XCTAssertEqual(target(120, step: 1), 100)
+  }
+
+  func testGoalAfterTest() {
+    // Still ahead of today's test: kept.
+    let kept =
+      Progression.goal(100, after: 5)
+    XCTAssertEqual(kept, 100)
+    // Reached or passed: raised past it.
+    let same = Progression.goal(
+      100, after: 100
+    )
+    XCTAssertEqual(same, 110)
+    let past = Progression.goal(
+      100, after: 150
+    )
+    XCTAssertEqual(past, 160)
   }
 
   func testDaysToGoal() {

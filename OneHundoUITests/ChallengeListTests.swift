@@ -26,24 +26,42 @@ final class ChallengeListTests: XCTestCase {
   @MainActor
   func testSeededChallengesShowAsCards() {
     let app = App.start(seeded: true)
-    let pushUps = app.text("Push-ups")
-    XCTAssertTrue(pushUps.appears(within: 10))
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
     let title = app.text("welcomeTitle")
     XCTAssertFalse(title.exists)
 
-    for label in [
+    let cards = [
       // Logged yesterday: target is
       // yesterday's 10 + 1.
-      "Try 11 today", "10 / 100",
+      "pushups": [
+        "Push-ups",
+        "Try 11 today",
+        "10 / 100",
+      ],
       // Logged today.
-      "Sit-ups", "Done: 20", "20 / 100",
+      "situps":
+        ["Sit-ups", "Done: 20", "20 / 100"],
       // Started today with a test of 3: the
       // test is today's attempt.
-      "Pull-ups", "Done: 3",
-    ] {
-      XCTAssertTrue(
-        app.text(label).exists, label
-      )
+      "pullups": ["Pull-ups", "Done: 3"],
+      // A custom challenge in seconds.
+      "custom": [
+        "Plank",
+        "Try 45 seconds today",
+        "40 / 120",
+      ],
+    ]
+    for (id, texts) in cards {
+      let label = app.card(id).label
+      for text in texts {
+        XCTAssertTrue(
+          label.contains(text),
+          "\(id): \(label)"
+        )
+      }
     }
   }
 
@@ -77,12 +95,14 @@ final class ChallengeListTests: XCTestCase {
   @MainActor
   func testLongPressDeletesChallenge() {
     let app = App.start(seeded: true)
-    let pullUps = app.text("Pull-ups")
-    XCTAssertTrue(pullUps.appears(within: 10))
+    let pullUps = app.card("pullups")
+    XCTAssertTrue(
+      pullUps.appears(within: 10)
+    )
 
-    // The first press can land while the list
-    // is still settling: press up to three
-    // times until the menu opens.
+    // The first press can land while the
+    // list is still settling: press up to
+    // three times until the menu opens.
     let item = app.button("Delete challenge")
     for _ in 0..<3 where !item.exists {
       pullUps.press(forDuration: 1.5)
@@ -97,8 +117,8 @@ final class ChallengeListTests: XCTestCase {
     // label as the menu item, which is gone
     // by now.
     let warning = app.text("""
-      This deletes the challenge and all its \
-      attempts. You can't undo this.
+      This deletes the challenge and all \
+      its attempts. You can't undo this.
       """)
     XCTAssertTrue(warning.appears())
     let sure = app.button("Delete challenge")
@@ -106,7 +126,28 @@ final class ChallengeListTests: XCTestCase {
     sure.tap()
 
     XCTAssertTrue(pullUps.disappears())
-    XCTAssertTrue(app.text("Push-ups").exists)
+    XCTAssertTrue(app.card("pushups").exists)
+  }
+
+  @MainActor
+  func testLongPressLogsToday() {
+    let app = App.start(seeded: true)
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
+
+    // Not logged today yet: "Log attempt".
+    let item = app.button("Log attempt")
+    for _ in 0..<3 where !item.exists {
+      pushUps.press(forDuration: 1.5)
+      _ = item.appears(within: 3)
+    }
+    item.tap()
+    let sheet = app.bar("Log attempt")
+    XCTAssertTrue(sheet.appears())
+    app.button("Cancel").tap()
+    XCTAssertTrue(sheet.disappears())
   }
 
   @MainActor

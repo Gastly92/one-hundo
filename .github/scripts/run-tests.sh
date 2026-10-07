@@ -38,7 +38,8 @@ echo "Snapshot record mode: $mode"
 export \
   TEST_RUNNER_SNAPSHOT_TESTING_RECORD="$mode"
 diffs="$PWD/build/snapshot-diffs"
-export TEST_RUNNER_SNAPSHOT_ARTIFACTS="$diffs"
+export \
+  TEST_RUNNER_SNAPSHOT_ARTIFACTS="$diffs"
 common=(
   -project OneHundo.xcodeproj
   -scheme OneHundo

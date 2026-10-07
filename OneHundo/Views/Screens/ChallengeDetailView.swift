@@ -3,7 +3,8 @@ import SwiftUI
 
 /// One challenge: progress ring and stats,
 /// today's target with Log attempt, and the
-/// attempt history (swipe to edit or delete).
+/// attempt history (swipe to edit or
+/// delete).
 struct ChallengeDetailView: View {
   let challenge: Challenge
 
@@ -13,7 +14,8 @@ struct ChallengeDetailView: View {
 
   @Environment(\.modelContext)
   private var modelContext
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
   @State private var sheet: LogSheet?
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
@@ -25,9 +27,13 @@ struct ChallengeDetailView: View {
   private struct LogSheet: Identifiable {
     let id = UUID()
     let attempt: Attempt?
+
+    init(attempt: Attempt?) {
+      self.attempt = attempt
+    }
   }
 
-  private static let ringStroke = StrokeStyle(
+  private static let ring = StrokeStyle(
     lineWidth: 14, lineCap: .round
   )
 
@@ -35,9 +41,12 @@ struct ChallengeDetailView: View {
   private static let dayFormat =
     Date.FormatStyle.dateTime
       .weekday(.abbreviated)
-      .month(.abbreviated).day()
+      .month(.abbreviated)
+      .day()
 
-  private var color: Color { challenge.color }
+  private var color: Color {
+    challenge.color
+  }
 
   var body: some View {
     List {
@@ -65,8 +74,8 @@ struct ChallengeDetailView: View {
     sheet = LogSheet(attempt: attempt)
   }
 
-  /// Section titles in a standard text style,
-  /// so they scale and read clearly.
+  /// Section titles in a standard text
+  /// style, so they scale and read clearly.
   private func sectionHeader(
     _ title: LocalizedStringKey
   ) -> some View {
@@ -94,7 +103,7 @@ struct ChallengeDetailView: View {
         )
       Circle()
         .trim(from: 0, to: progress)
-        .stroke(color, style: Self.ringStroke)
+        .stroke(color, style: Self.ring)
         .rotationEffect(.degrees(-90))
         .animation(.easeOut, value: progress)
       VStack(spacing: 2) {
@@ -195,9 +204,9 @@ struct ChallengeDetailView: View {
       }
       ForEach(attempts) { attemptRow($0) }
       if !attempts.isEmpty {
-        // A row rather than a section footer,
-        // which has low contrast and doesn't
-        // scale with text size.
+        // A row rather than a section
+        // footer, which has low contrast and
+        // doesn't scale with text size.
         Text("""
           Tap an attempt to change it, or \
           swipe left to delete.
@@ -219,7 +228,8 @@ struct ChallengeDetailView: View {
     } label: {
       HStack {
         Text(
-          attempt.date, format: Self.dayFormat
+          attempt.date,
+          format: Self.dayFormat
         )
         .testID("attemptDate")
         Spacer()

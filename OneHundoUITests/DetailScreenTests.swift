@@ -1,6 +1,6 @@
 import XCTest
 
-final class ChallengeScreenTests: XCTestCase {
+final class DetailScreenTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = false
   }
@@ -11,8 +11,10 @@ final class ChallengeScreenTests: XCTestCase {
 
     // Push-ups started 3 days ago at 8,
     // logged 10 yesterday: "Try 11 today".
-    let pushUps = app.text("Push-ups")
-    XCTAssertTrue(pushUps.appears(within: 10))
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
     pushUps.tap()
 
     let log = app.button("logAttemptButton")
@@ -64,10 +66,10 @@ final class ChallengeScreenTests: XCTestCase {
     let back = app.navigationBars.buttons
       .element(boundBy: 0)
     back.tap()
-    XCTAssertTrue(
-      app.text("14 / 100").appears()
-    )
-    XCTAssertTrue(app.text("Done: 14").exists)
+    XCTAssertTrue(pushUps.appears())
+    let card = pushUps.label
+    XCTAssertTrue(card.contains("14 / 100"))
+    XCTAssertTrue(card.contains("Done: 14"))
   }
 
   @MainActor
@@ -76,8 +78,10 @@ final class ChallengeScreenTests: XCTestCase {
 
     // Push-ups has attempts of 8 (start) and
     // 10 (yesterday).
-    let pushUps = app.text("Push-ups")
-    XCTAssertTrue(pushUps.appears(within: 10))
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
     pushUps.tap()
 
     let row = app.button("attemptRow")
@@ -92,6 +96,53 @@ final class ChallengeScreenTests: XCTestCase {
     app.button("Cancel").tap()
     let log = app.button("logAttemptButton")
     XCTAssertTrue(log.appears())
+  }
+
+  @MainActor
+  func testHistoryMenuEditsAndDeletes() {
+    let app = App.start(seeded: true)
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
+    pushUps.tap()
+    let row = app.button("attemptRow")
+      .firstMatch
+    XCTAssertTrue(row.appears())
+
+    // Edit from the row's menu.
+    pick("Edit", on: row, app)
+    let sheet = app.bar("Edit attempt")
+    XCTAssertTrue(sheet.appears())
+    app.button("Cancel").tap()
+    XCTAssertTrue(sheet.disappears())
+
+    // Delete both attempts (8 and 10).
+    pick("Delete", on: row, app)
+    pick("Delete", on: row, app)
+    let empty = app.text("No attempts yet")
+    XCTAssertTrue(empty.appears())
+  }
+
+  /// Long-presses `row` until its menu
+  /// opens, then taps `label`. The first
+  /// press can land while the screen is
+  /// still settling.
+  @MainActor
+  private func pick(
+    _ label: String,
+    on row: XCUIElement,
+    _ app: XCUIApplication
+  ) {
+    let item = app.buttons[label].firstMatch
+    for _ in 0..<3 where !item.exists {
+      row.press(forDuration: 1.5)
+      _ = item.appears(within: 3)
+    }
+    item.tap()
+    // Wait for the menu to close, so the
+    // next pick doesn't find this one.
+    _ = item.disappears()
   }
 
   /// In the open Log attempt sheet: checks

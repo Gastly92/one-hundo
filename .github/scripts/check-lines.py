@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fails on lines over 46 characters in docs,
+"""Fails on lines over 45 characters in docs,
 YAML and scripts, so each diff line fits a
 phone in portrait. Swift is checked by
 SwiftLint.
@@ -14,7 +14,7 @@ import re
 import subprocess
 import sys
 
-LIMIT = 46
+LIMIT = 45
 SUFFIXES = (".md", ".yml", ".yaml", ".sh",
             ".py")
 
@@ -43,12 +43,13 @@ def exempt(line, in_code):
 def check(path):
     bad = 0
     in_code = False
+    is_md = path.endswith(".md")
     with open(path, encoding="utf-8") as f:
         for num, line in enumerate(f, 1):
             line = line.rstrip("\n")
             fence = line.strip().startswith(
                 "```")
-            if path.endswith(".md") and fence:
+            if is_md and fence:
                 in_code = not in_code
                 continue
             if len(line) <= LIMIT:

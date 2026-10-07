@@ -3,8 +3,8 @@ name: TestFlight
 # Run from the GitHub app: Actions →
 # TestFlight → Run workflow. Signing is done
 # by Apple ("cloud signing") using the App
-# Store Connect API key, so no certificates or
-# provisioning profiles are stored in the
+# Store Connect API key, so no certificates
+# or provisioning profiles are stored in the
 # repo.
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 
 # Steps sit at the same indent as `steps:`
-# (valid YAML), so lines fit in 46.
+# (valid YAML), so lines fit in 45.
 jobs:
   upload:
     name: Build & upload to TestFlight
@@ -36,15 +36,16 @@ jobs:
     - name: Check secrets
       run: |
         missing=""
-        for name in APPLE_TEAM_ID ASC_KEY_ID \
-          ASC_ISSUER_ID ASC_KEY_P8; do
+        for name in APPLE_TEAM_ID \
+          ASC_KEY_ID ASC_KEY_P8 \
+          ASC_ISSUER_ID; do
           [ -n "${!name}" ] \
             || missing+=" $name"
         done
         if [ -n "$missing" ]; then
-          echo "::error::Missing repository" \
-            "secrets:$missing (see" \
-            "docs/TESTFLIGHT.md)"
+          echo "::error::Missing" \
+            "repository secrets:$missing" \
+            "(see docs/TESTFLIGHT.md)"
           exit 1
         fi
 
@@ -92,7 +93,7 @@ jobs:
       run: |
         options=build/ExportOptions.plist
         cat > "$options" <<PLIST
-        <?xml version="1.0" encoding="UTF-8"?>
+        <?xml version="1.0"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>
@@ -116,8 +117,10 @@ jobs:
           -exportOptionsPlist "$options" \
           -exportPath build/export \
           -allowProvisioningUpdates \
-          -authenticationKeyPath "$KEY_PATH" \
-          -authenticationKeyID "$ASC_KEY_ID" \
+          -authenticationKeyPath \
+          "$KEY_PATH" \
+          -authenticationKeyID \
+          "$ASC_KEY_ID" \
           -authenticationKeyIssuerID \
           "$ASC_ISSUER_ID"
 

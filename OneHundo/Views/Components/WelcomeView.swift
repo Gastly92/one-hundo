@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The first screen, before any challenge
+/// The challenge list before any challenge
 /// exists: what the app does in three steps,
 /// and one button to start.
 struct WelcomeView: View {
@@ -58,8 +58,8 @@ struct WelcomeView: View {
         title: "Reach 100",
         detail: """
           Small steps add up. Missed a day? \
-          No problem, pick up where you left \
-          off.
+          No problem, pick up where you \
+          left off.
           """
       )
     }

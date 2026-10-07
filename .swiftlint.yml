@@ -7,30 +7,80 @@ included:
   - OneHundoUITests
   - Packages
 
+# Every opt-in rule is on. Rules below are
+# off on purpose: where two rules disagree,
+# the one that keeps code shorter wins, since
+# lines are capped at 45.
+opt_in_rules:
+  - all
+
 disabled_rules:
-  # Multi-line lists end with a trailing comma
-  # here, so diffs stay one line.
+  # Multi-line lists end with a trailing
+  # comma here, so diffs stay one line.
   - trailing_comma
 
-opt_in_rules:
-  - closure_spacing
-  - contains_over_filter_count
-  - contains_over_filter_is_empty
-  - contains_over_first_not_nil
-  - empty_count
-  - empty_string
-  - first_where
-  - indentation_width
-  - last_where
-  - modifier_order
-  - prefer_zero_over_explicit_init
-  - redundant_nil_coalescing
-  - sorted_first_last
-  - toggle_bool
-  - unneeded_parentheses_in_closure_argument
-  - vertical_whitespace_closing_braces
-  - vertical_whitespace_opening_braces
-  - yoda_condition
+  # Longer code, against the 45 limit:
+  # Writing every type out
+  # (redundant_type_annotation, on, does the
+  # opposite).
+  - explicit_type_interface
+  # `internal` on every declaration.
+  - explicit_acl
+  - explicit_top_level_acl
+  # `case push = "push"` for every case.
+  - explicit_enum_raw_value
+  # A `k` prefix on top-level constants.
+  - prefixed_toplevel_constant
+  # Named arguments instead of `$0` in
+  # multi-line closures.
+  - anonymous_argument_in_multiline_closure
+  - shorthand_argument
+  # Defaults keep call sites short.
+  - discouraged_default_parameter
+  # A named constant for every padding and
+  # size in views.
+  - no_magic_numbers
+
+  # Conflicts with a rule that's on:
+  # `private extension` once is shorter than
+  # `private` on each member
+  # (extension_access_modifier, on).
+  - no_extension_access_modifier
+  # Brace on its own line; opening_brace
+  # wants it on the same line.
+  - contrasted_opening_brace
+  # Hand-aligned arguments; indentation_width
+  # wants one level in.
+  - vertical_parameter_alignment_on_call
+
+  # Doesn't fit this project:
+  # Views keep small helpers and extensions
+  # next to the screen they belong to.
+  - one_declaration_per_file
+  - no_grouping_extension
+  # Fixed member/type order adds churn;
+  # files are ordered by reading flow.
+  - file_types_order
+  - type_contents_order
+  # ScreenID lists screens in app flow order.
+  - sorted_enum_cases
+  # Boilerplate: a header in every file, a
+  # deinit in every class, a tearDown for
+  # every setUp.
+  - file_header
+  - required_deinit
+  - balanced_xctest_lifecycle
+  # Tests use XCTest, not Nimble/Quick.
+  - prefer_nimble
+  # A blank line between every switch case:
+  # longer files, nothing gained.
+  - vertical_whitespace_between_cases
+  # Helper files hold several small helpers
+  # (e.g. ViewHelpers.swift), not one type.
+  - file_name
+  # SwiftData models synced with CloudKit
+  # need optional relationships.
+  - discouraged_optional_collection
 
 # 2-space indents; a wrapped line goes in one
 # level (2), not aligned by hand.
@@ -41,13 +91,26 @@ identifier_name:
   excluded:
     - id
 
-# Diffs get read in the GitHub iPhone app; 46
+# Diffs get read in the GitHub iPhone app; 45
 # fits a portrait line without wrapping. Long
 # lines also point at names that could be
 # shorter.
 line_length:
-  warning: 46
+  warning: 45
   ignores_urls: true
+
+# Attributes that take a line of their own,
+# so the declaration after them stays short.
+attributes:
+  always_on_line_above:
+    - "@ViewBuilder"
+    - "@MainActor"
+    - "@ToolbarContentBuilder"
+
+# Separators from 10_000 up; 2026 and 9999
+# read fine as they are.
+number_separator:
+  minimum_length: 5
 
 # A switch over an enum (e.g. ScreenHost)
 # isn't complex, however many cases it has.
@@ -56,8 +119,8 @@ cyclomatic_complexity:
 
 custom_rules:
   # Sentences shown to users must be
-  # translatable. In views, literals passed to
-  # Text are; in logic they need
+  # translatable. In views, literals passed
+  # to Text are; in logic they need
   # String(localized:). Catches e.g.
   # `return "Nice work!"`.
   untranslated_logic_text:

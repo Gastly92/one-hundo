@@ -5,22 +5,24 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
   # Code is indented with 2 spaces (lines max
-  # 46).
+  # 45).
   indentWidth: 2
   tabWidth: 2
   usesTabs: false
 settings:
   base:
-    MARKETING_VERSION: "0.4.6"
+    MARKETING_VERSION: "0.4.7"
     CURRENT_PROJECT_VERSION: "1"
-    SWIFT_VERSION: "5.0"
+    # Swift 6: data races are compile errors
+    # in every target, tests included.
+    SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: ""
     # Every compiler warning fails the build,
     # so none pile up unread.
     SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
     # Translations live in
-    # OneHundo/Localizable.xcstrings (a String
-    # Catalog).
+    # OneHundo/Localizable.xcstrings (a
+    # String Catalog).
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
 # Test-only libraries.
@@ -57,9 +59,6 @@ targets:
           AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
-        # Swift 6's data-race checks, in Swift
-        # 5 mode (warnings, so errors above).
-        SWIFT_STRICT_CONCURRENCY: complete
   OneHundoTests:
     type: bundle.unit-test
     platform: iOS
@@ -79,8 +78,8 @@ targets:
     platform: iOS
     sources:
       - OneHundoUITests
-      # The app's list of screens, so UI tests
-      # loop over every one.
+      # The app's list of screens, so UI
+      # tests loop over every one.
       - path: OneHundo/Support/ScreenID.swift
     dependencies:
       - target: OneHundo
@@ -97,9 +96,9 @@ schemes:
         OneHundo: all
     test:
       gatherCoverageData: true
-      # CI runs tests with Thread Sanitizer; a
-      # data race stops the app, failing the
-      # test.
+      # CI runs tests with Thread Sanitizer;
+      # a data race stops the app, failing
+      # the test.
       environmentVariables:
         TSAN_OPTIONS: halt_on_error=1
       coverageTargets:

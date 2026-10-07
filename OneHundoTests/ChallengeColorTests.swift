@@ -1,6 +1,6 @@
+@testable import OneHundo
 import SwiftUI
 import XCTest
-@testable import OneHundo
 
 final class ChallengeColorTests: XCTestCase {
   func testKnownNamesUsePalette() {

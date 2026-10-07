@@ -20,8 +20,8 @@ extension Challenge {
 
   /// The name to show: a built-in's name in
   /// the user's language (the stored name is
-  /// in whatever language it was started in),
-  /// or a custom challenge's own name.
+  /// in whatever language it was started
+  /// in), or a custom challenge's own name.
   var displayName: String {
     builtIn?.name ?? name
   }
@@ -33,7 +33,7 @@ extension Challenge {
   /// could never run in tests and would fail
   /// the coverage gate.)
   var allAttempts: [Attempt] {
-    let lists = [attempts].compactMap { $0 }
+    let lists = [attempts].compactMap(\.self)
     return Array(lists.joined())
   }
 
@@ -43,8 +43,8 @@ extension Challenge {
   }
 
   /// The attempt logged on the same calendar
-  /// day as `day`, if any. That day counts as
-  /// done, including the start day: the
+  /// day as `day`, if any. That day counts
+  /// as done, including the start day: the
   /// starting test is that day's attempt.
   func attempt(
     on day: Date,
@@ -138,8 +138,9 @@ extension Challenge {
     )
   }
 
-  /// The latest logged count, or the starting
-  /// count if nothing is logged yet.
+  /// The latest logged count, or the
+  /// starting count if nothing is logged
+  /// yet.
   var currentCount: Int {
     let last = latest(of: allAttempts)
     return last?.count ?? startingCount
@@ -153,8 +154,8 @@ extension Challenge {
     )
   }
 
-  /// Estimated days left to reach the goal at
-  /// the current pace.
+  /// Estimated days left to reach the goal
+  /// at the current pace.
   var daysToGoal: Int {
     Progression.daysToGoal(
       from: currentCount,
@@ -175,7 +176,8 @@ extension Challenge {
 
   /// Number of days with an attempt (the
   /// starting test counts). Missed days are
-  /// fine; this is shown instead of a streak.
+  /// fine; this is shown instead of a
+  /// streak.
   func daysLogged(
     in cal: Calendar = .current
   ) -> Int {
@@ -187,8 +189,9 @@ extension Challenge {
 
   /// The best count on any day other than
   /// `day`'s, or the starting count. Logging
-  /// a day replaces that day's count, so it's
-  /// left out when checking for a new best.
+  /// a day replaces that day's count, so
+  /// it's left out when checking for a new
+  /// best.
   func best(
     excludingDayOf day: Date,
     in cal: Calendar = .current
@@ -231,9 +234,9 @@ extension Challenge {
   }
 
   /// Logs a count for the day of `date`.
-  /// Logging the same day again replaces that
-  /// day's count, keeping one attempt per
-  /// day.
+  /// Logging the same day again replaces
+  /// that day's count, keeping one attempt
+  /// per day.
   @discardableResult
   func logAttempt(
     count: Int,
@@ -266,72 +269,16 @@ extension Challenge {
   private func best(
     of attempts: [Attempt]
   ) -> Int {
-    let top = attempts.map(\.count).max() ?? 0
+    let top =
+      attempts.map(\.count).max() ?? 0
     return max(startingCount, top)
-  }
-}
-
-/// Pure target and progress math, kept apart
-/// from SwiftData so it is easy to test.
-/// `step` is the daily increase.
-enum Progression {
-  /// The last result plus the daily increase,
-  /// capped at the goal.
-  static func target(
-    baseline: Int, step: Int, goal: Int
-  ) -> Int {
-    min(baseline + max(step, 1), goal)
-  }
-
-  /// Days needed to go from `count` to
-  /// `goal`, e.g. 5 to 100 at +1 a day is 95
-  /// days.
-  static func daysToGoal(
-    from count: Int, goal: Int, step: Int
-  ) -> Int {
-    let remaining = goal - count
-    guard remaining > 0 else { return 0 }
-    let perDay = max(step, 1)
-    return (remaining + perDay - 1) / perDay
-  }
-
-  /// The enroll preview line, e.g. "At this
-  /// pace you'd hit 100 in about 95 days."
-  static func paceText(
-    from count: Int, goal: Int, step: Int
-  ) -> String {
-    guard goal > count else {
-      return String(localized: """
-        Your goal needs to be above \(count).
-        """)
-    }
-    let days = daysToGoal(
-      from: count, goal: goal, step: step
-    )
-    // "1 day" / "95 days": the String Catalog
-    // has the plural forms.
-    let duration = String(
-      localized: "\(days) days"
-    )
-    return String(localized: """
-      At this pace you'd hit \(goal) \
-      in about \(duration).
-      """)
-  }
-
-  /// `current / goal`, clamped to 0...1.
-  static func progress(
-    current: Int, goal: Int
-  ) -> Double {
-    guard goal > 0 else { return 0 }
-    let ratio = Double(current) / Double(goal)
-    return min(max(ratio, 0), 1)
   }
 }
 
 /// What the Log attempt sheet shows after
 /// saving: a small celebration or an
-/// encouraging message, plus the next target.
+/// encouraging message, plus the next
+/// target.
 struct LogOutcome: Equatable {
   let count: Int
   /// That day's target.
@@ -381,7 +328,9 @@ struct LogOutcome: Equatable {
 
   /// SF Symbol for the result screen.
   var symbol: String {
-    if reachedGoal { return "trophy.fill" }
+    if reachedGoal {
+      return "trophy.fill"
+    }
     return hitTarget
       ? "hands.clap.fill"
       : "arrow.up.forward.circle.fill"
