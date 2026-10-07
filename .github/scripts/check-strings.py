@@ -58,7 +58,8 @@ def body(src, i, end):
         nxt = src[i + 1]
         if nxt == "(":
             out.append(SLOT)
-            i = skip_interpolation(src, i + 2)
+            i = skip_interpolation(
+                src, i + 2)
         elif nxt == "\n":
             # Line continuation: no newline,
             # and the next line's indent is

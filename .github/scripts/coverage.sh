@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Coverage gate: every line in the app's
-# non-view code (Models/, Support/) must be
-# run by the tests. Views are covered by UI
-# tests and, later, snapshot tests, so their
-# numbers are reported but not gated.
+# Coverage gate: every line of the app runs
+# in the tests (unit, snapshot and UI tests
+# all count). A file with untested lines
+# fails, naming each function and the line
+# it starts on.
 set -euo pipefail
 
 result="$1"
@@ -21,6 +21,22 @@ files=$(jq -r "$pick"' app | .files[]
      .executableLines] | @tsv' \
   <<<"$report")
 
+# Prints each function in file $1 with
+# untested lines.
+gaps() {
+  jq -r --arg path "$1" "$pick"'
+    app | .files[]
+    | select(.path == $path)
+    | (.functions // [])[]
+    | select(.coveredLines
+      < .executableLines)
+    | (.executableLines
+      - .coveredLines) as $n
+    | "\(.name) (line \(.lineNumber)): "
+      + "\($n) untested"' \
+    <<<"$report"
+}
+
 sum_cov=0
 sum_all=0
 failed=0
@@ -30,58 +46,36 @@ while IFS=$'\t' read -r path covered total
 do
   [ -n "$path" ] || continue
   name="${path#*/OneHundo/}"
-  case "$name" in
-    Models/*|Support/*) ;;
-    *) continue ;;
-  esac
   sum_cov=$((sum_cov + covered))
   sum_all=$((sum_all + total))
+  [ "$covered" -lt "$total" ] || continue
+  failed=1
   table+="| $name | $total | $covered |\n"
-  if [ "$covered" -lt "$total" ]; then
-    failed=1
-    # Name each function with untested
-    # lines, and the line it starts on.
-    gaps=$(jq -r --arg path "$path" "$pick"'
-      app | .files[]
-      | select(.path == $path)
-      | (.functions // [])[]
-      | select(.coveredLines
-        < .executableLines)
-      | (.executableLines
-        - .coveredLines) as $n
-      | "\(.name) (line \(.lineNumber)): "
-        + "\($n) untested"' \
-      <<<"$report")
-    untested=$((total - covered))
-    file="OneHundo/$name"
-    echo "::error file=$file::$name" \
-      "has $untested untested lines"
-    while IFS= read -r gap; do
-      [ -n "$gap" ] && echo "  $name: $gap"
-    done <<<"$gaps"
-  fi
+  untested=$((total - covered))
+  echo "::error file=OneHundo/$name::$name" \
+    "has $untested untested lines"
+  while IFS= read -r gap; do
+    [ -n "$gap" ] && echo "  $name: $gap"
+  done < <(gaps "$path")
 done <<<"$files"
-
-whole=$(jq -r "$pick"' app
-  | (.lineCoverage * 100 | floor) as $pct
-  | "\(.coveredLines)/\(.executableLines)"
-    + " lines (\($pct)%)"' <<<"$report")
 
 {
   echo "### Coverage"
-  echo "- Non-view code (gated at 100%):" \
+  echo "- App (gated at 100%):" \
     "$sum_cov/$sum_all lines"
-  echo "- Whole app (report only): $whole"
-  echo
-  printf "%b" "$table"
+  if [ "$failed" -ne 0 ]; then
+    echo
+    echo "Files with untested lines:"
+    echo
+    printf "%b" "$table"
+  fi
 } >> "${GITHUB_STEP_SUMMARY:-/dev/stdout}"
 
-echo "Non-view coverage: $sum_cov/$sum_all;" \
-  "whole app: $whole"
+echo "Coverage: $sum_cov/$sum_all lines"
 if [ "$failed" -ne 0 ] \
   || [ "$sum_all" -eq 0 ]; then
-  echo "::error::Non-view code must be" \
-    "100% covered by tests (see uncovered" \
-    "lines above)."
+  echo "::error::Every line of the app" \
+    "must run in tests (see untested lines" \
+    "above)."
   exit 1
 fi

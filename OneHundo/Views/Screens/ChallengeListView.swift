@@ -2,26 +2,31 @@ import SwiftData
 import SwiftUI
 
 struct ChallengeListView: View {
+  /// A cell in the grid.
+  private enum Tile: Hashable {
+    case card(Challenge)
+    case add
+  }
+
   @Query(sort: \Challenge.createdDate)
   private var challenges: [Challenge]
   @State private var isAdding = false
   @State private var path: [Challenge] = []
-  /// The challenge whose Log attempt sheet is
-  /// open (from a card's long-press menu).
+  /// The challenge whose Log attempt sheet
+  /// is open (from a card's long-press
+  /// menu).
   @State private var logging: Challenge?
   /// The challenge waiting for delete
   /// confirmation.
   @State private var deleting: Challenge?
   @Environment(\.modelContext)
   private var modelContext
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
+  @Environment(\.dynamicTypeSize)
+  private var textSize
   @ScaledMetric(relativeTo: .headline)
   private var tileHeight: CGFloat = 120
-
-  private let columns = [
-    GridItem(.flexible(), spacing: 12),
-    GridItem(.flexible(), spacing: 12),
-  ]
 
   private static let tile = RoundedRectangle(
     cornerRadius: 16
@@ -69,8 +74,9 @@ struct ChallengeListView: View {
         confirmButton(challenge)
       } message: { _ in
         Text("""
-          This deletes the challenge and all \
-          its attempts. You can't undo this.
+          This deletes the challenge and \
+          all its attempts. You can't undo \
+          this.
           """)
       }
   }
@@ -84,12 +90,46 @@ struct ChallengeListView: View {
     }
   }
 
+  /// A `Grid` rather than `LazyVGrid`: its
+  /// cells fill their row, so cards side by
+  /// side match heights.
   private var grid: some View {
-    LazyVGrid(columns: columns, spacing: 12) {
-      ForEach(active) { card($0) }
-      addTile
+    Grid(
+      horizontalSpacing: 12,
+      verticalSpacing: 12
+    ) {
+      ForEach(rows, id: \.self) { row in
+        GridRow {
+          ForEach(row, id: \.self) {
+            tile($0)
+          }
+        }
+      }
     }
     .padding()
+  }
+
+  /// The cards, then Add challenge, in rows.
+  private var rows: [[Tile]] {
+    let tiles = active.map(Tile.card)
+    return GridLayout.rows(
+      tiles + [.add],
+      columns: GridLayout.columns(
+        for: textSize
+      )
+    )
+  }
+
+  @ViewBuilder
+  private func tile(
+    _ tile: Tile
+  ) -> some View {
+    switch tile {
+    case .card(let challenge):
+      card(challenge)
+    case .add:
+      addTile
+    }
   }
 
   /// Logs (or edits) today's attempt.
@@ -102,17 +142,21 @@ struct ChallengeListView: View {
     )
   }
 
-  /// A tap gesture rather than a
-  /// NavigationLink, so the card's texts stay
-  /// separate accessibility elements for UI
-  /// tests.
+  /// A button, so VoiceOver reads the card
+  /// as one tappable item ("Push-ups, Try 11
+  /// today, 10 / 100").
   private func card(
     _ challenge: Challenge
   ) -> some View {
-    ChallengeCard(challenge: challenge)
-      .contentShape(Self.tile)
-      .onTapGesture { path.append(challenge) }
-      .contextMenu { menu(for: challenge) }
+    Button {
+      path.append(challenge)
+    } label: {
+      ChallengeCard(challenge: challenge)
+        .contentShape(Self.tile)
+    }
+    .buttonStyle(.plain)
+    .contextMenu { menu(for: challenge) }
+    .testID("card.\(challenge.kind)")
   }
 
   private var isDeleting: Binding<Bool> {
@@ -147,7 +191,8 @@ struct ChallengeListView: View {
       .padding()
       .frame(
         maxWidth: .infinity,
-        minHeight: tileHeight
+        minHeight: tileHeight,
+        maxHeight: .infinity
       )
       .overlay(
         Self.tile.strokeBorder(
@@ -195,7 +240,6 @@ struct ChallengeListView: View {
   private func delete(
     _ challenge: Challenge
   ) {
-    path.removeAll { $0 == challenge }
     modelContext.delete(challenge)
     try? modelContext.save()
     deleting = nil

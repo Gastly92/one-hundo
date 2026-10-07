@@ -1,13 +1,15 @@
-import XCTest
 @testable import OneHundo
+import XCTest
 
 /// Logging an attempt: the outcome (target
 /// hit, new best, next target), its wording,
 /// and the Log attempt sheet's button title
 /// and replacement note.
-final class LoggingTests: ModelTestCase {
-  func testHittingTargetIsNewBest() {
-    let pushUps = makePushUps()
+@MainActor
+final class LoggingTests: XCTestCase {
+  func testHittingTargetIsNewBest() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     let outcome = pushUps.record(6, day: 2)
     XCTAssertEqual(outcome.target, 6)
@@ -23,8 +25,9 @@ final class LoggingTests: ModelTestCase {
     )
   }
 
-  func testFallingShort() {
-    let pushUps = makePushUps()
+  func testFallingShort() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2)
     let outcome = pushUps.record(4, day: 3)
@@ -41,8 +44,9 @@ final class LoggingTests: ModelTestCase {
       """)
   }
 
-  func testMatchingBestIsNotNewBest() {
-    let pushUps = makePushUps()
+  func testTyingBestIsNotNewBest() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(8, day: 2)
     let same = pushUps.record(8, day: 3)
     XCTAssertFalse(same.isNewBest)
@@ -50,34 +54,41 @@ final class LoggingTests: ModelTestCase {
     XCTAssertTrue(more.isNewBest)
   }
 
-  func testRelogComparesOtherDays() {
-    let pushUps = makePushUps()
+  func testRelogComparesOtherDays() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     pushUps.record(7, day: 2, hour: 9)
     // Re-logging day 2 with 6: still above
-    // the earlier best of 5, and replaces the
-    // 7.
+    // the earlier best of 5, and replaces
+    // the 7.
     let outcome = pushUps.record(
       6, day: 2, hour: 18
     )
     XCTAssertTrue(outcome.isNewBest)
     XCTAssertEqual(outcome.target, 6)
-    XCTAssertEqual(pushUps.attempts?.count, 2)
+    XCTAssertEqual(
+      pushUps.attempts?.count, 2
+    )
     XCTAssertEqual(pushUps.personalBest, 6)
   }
 
-  func testBeatingTestOnStartDay() {
-    let pushUps = makePushUps()
+  func testBeatingTestOnStartDay() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1, hour: 8)
     let outcome = pushUps.record(
       6, day: 1, hour: 18
     )
     XCTAssertTrue(outcome.isNewBest)
-    XCTAssertEqual(pushUps.attempts?.count, 1)
+    XCTAssertEqual(
+      pushUps.attempts?.count, 1
+    )
   }
 
-  func testReachingGoal() {
-    let pushUps = makePushUps(
+  func testReachingGoal() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps(
       start: 98, increase: 5
     )
     let outcome = pushUps.record(100, day: 2)
@@ -92,8 +103,9 @@ final class LoggingTests: ModelTestCase {
     XCTAssertEqual(outcome.nextTarget, 100)
   }
 
-  func testOutcomeMessageUsesUnit() {
-    let plank = makePushUps(start: 45)
+  func testOutcomeMessageUsesUnit() throws {
+    let store = try TestStore()
+    let plank = store.pushUps(start: 45)
     plank.unit = .seconds
     let outcome = plank.record(46, day: 2)
     XCTAssertEqual(outcome.message, """
@@ -102,8 +114,9 @@ final class LoggingTests: ModelTestCase {
       """)
   }
 
-  func testLogButtonTitle() {
-    let pushUps = makePushUps()
+  func testLogButtonTitle() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
     pushUps.log(5, day: 1)
     // The starting test counts as that day's
     // attempt.
@@ -122,11 +135,12 @@ final class LoggingTests: ModelTestCase {
     )
   }
 
-  func testReplacementNote() {
-    let plank = makePushUps(start: 30)
+  func testReplacementNote() throws {
+    let store = try TestStore()
+    let plank = store.pushUps(start: 30)
     plank.unit = .seconds
-    let before = plank.replacementNote(day: 2)
-    XCTAssertNil(before)
+    let first = plank.replacementNote(day: 2)
+    XCTAssertNil(first)
     plank.log(31, day: 2)
     let note = plank.replacementNote(
       day: 2, hour: 20
@@ -137,8 +151,9 @@ final class LoggingTests: ModelTestCase {
       """)
   }
 
-  func testOutcomeSymbols() {
-    let pushUps = makePushUps(
+  func testOutcomeSymbols() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps(
       start: 98, increase: 1
     )
     XCTAssertEqual(

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Every screen must be in the screen list, so
-# the accessibility audit and the localization
-# check (which loop over ScreenID) cover it. A
-# screen is a top-level `struct Name: View` in
+# the accessibility audit and the
+# localization check (which loop over
+# ScreenID) cover it. A screen is a top-level
+# `struct Name: View` in
 # OneHundo/Views/Screens/; ScreenHost must
 # show it.
 set -euo pipefail
@@ -21,9 +22,10 @@ for file in "$screens"/*.swift; do
       continue
     fi
     echo "::error file=$file::$name is a" \
-      "screen but isn't in the screen list." \
-      "Add a ScreenID case for it and" \
-      "show it in ScreenHost (see CLAUDE.md)."
+      "screen but isn't in the screen" \
+      "list. Add a ScreenID case for it" \
+      "and show it in ScreenHost (see" \
+      "CLAUDE.md)."
     missing=1
   done
 done

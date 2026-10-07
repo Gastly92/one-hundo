@@ -4,21 +4,27 @@ import SwiftUI
 /// Shows one screen on its own for UI tests
 /// (`-uiTesting -showScreen <id>`), with the
 /// sample challenges where it needs them
-/// (`AppLaunch.seededScreens`). Every view in
-/// `Views/Screens/` must appear here; CI
+/// (`AppLaunch.seededScreens`). Every view
+/// in `Views/Screens/` must appear here; CI
 /// (`check-screens.sh`) fails otherwise.
 struct ScreenHost: View {
   let screen: ScreenID
 
   @Query(sort: \Challenge.createdDate)
   private var challenges: [Challenge]
-  @Environment(\.now) private var now
+  @Environment(\.now)
+  private var now
 
-  /// The seeded Push-ups challenge: started 3
-  /// days ago, with attempts.
+  /// The seeded Push-ups challenge: started
+  /// 3 days ago, with attempts.
   private var pushUps: Challenge? {
     let id = BuiltIn.pushUps.id
     return challenges.first { $0.kind == id }
+  }
+
+  /// The seeded Plank, counted in seconds.
+  private var plank: Challenge? {
+    challenges.first { $0.unit == .seconds }
   }
 
   private var lastAttempt: Attempt? {
@@ -26,8 +32,11 @@ struct ScreenHost: View {
   }
 
   private static let outcome = LogOutcome(
-    count: 11, target: 11, goal: 100,
-    nextTarget: 12, isNewBest: true,
+    count: 11,
+    target: 11,
+    goal: 100,
+    nextTarget: 12,
+    isNewBest: true,
     unit: .reps
   )
 
@@ -40,10 +49,8 @@ struct ScreenHost: View {
   var body: some View {
     switch screen {
     case .welcome:
-      NavigationStack {
-        WelcomeView(onStart: {})
-          .navigationTitle("Challenges")
-      }
+      // The list with no challenges yet.
+      ChallengeListView()
     case .challengeList:
       ChallengeListView()
     case .calendar:
@@ -80,6 +87,10 @@ struct ScreenHost: View {
           on: now
         )
       }
+    case .logTimed:
+      if let plank {
+        LogAttemptView(plank, on: now)
+      }
     case .logResult:
       if let pushUps {
         LogAttemptView(
@@ -97,9 +108,7 @@ struct ScreenHost: View {
     at step: EnrollFlowView.Step
   ) -> some View {
     NavigationStack {
-      EnrollFlowView(
-        .pushUps, startAt: step
-      ) {}
+      EnrollFlowView(.pushUps, startAt: step)
     }
   }
 }

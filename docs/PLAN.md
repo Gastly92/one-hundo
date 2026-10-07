@@ -1,11 +1,11 @@
 # Implementation plan
 
-How to build what `docs/PRODUCT.md` describes,
-as a series of small PRs. Each PR leaves the
-app working and passes CI, so any merged state
-can go to TestFlight. Check off a PR here (and
-update `PRODUCT.md` if the design changed) as
-each one lands.
+How to build what `docs/PRODUCT.md`
+describes, as a series of small PRs. Each PR
+leaves the app working and passes CI, so any
+merged state can go to TestFlight. Check off
+a PR here (and update `PRODUCT.md` if the
+design changed) as each one lands.
 
 ## Approach
 
@@ -19,11 +19,12 @@ each one lands.
   SwiftLint (strict, 100-character lines),
   warnings as errors with strict concurrency,
   100% line coverage of non-view code
-  (`Models/`, `Support/`), Thread Sanitizer on
-  all tests, and Periphery for unused code.
+  (`Models/`, `Support/`), Thread Sanitizer
+  on all tests, and Periphery for unused
+  code.
 - **Stored data**: before 1.0 the models
-  change freely (a big change may need the app
-  reinstalled). From 1.0 on, schemas are
+  change freely (a big change may need the
+  app reinstalled). From 1.0 on, schemas are
   versioned with migrations, so App Store
   users never lose data.
 - **Testable by design**: views stay thin;
@@ -36,44 +37,48 @@ each one lands.
   target, progress, "days to goal", reminder
   text.
 - **Two test targets**: `OneHundoTests` (unit
-  tests, fast, for the logic) and the existing
-  `OneHundoUITests` (launch the app and tap
-  through each screen).
+  tests, fast, for the logic) and the
+  existing `OneHundoUITests` (launch the app
+  and tap through each screen).
 - **Test launch mode**: UI tests launch the
   app with `-uiTesting`, which uses an
   in-memory store (a clean slate every run)
   and skips the notification prompt.
-- **Accessibility identifiers** on key buttons
-  and labels so UI tests can find them.
+- **Accessibility identifiers** on key
+  buttons and labels so UI tests can find
+  them.
 - **Swift Charts** for the history chart;
   **local notifications**
-  (`UserNotifications`) for reminders. Neither
-  needs an entitlement or signing changes.
+  (`UserNotifications`) for reminders.
+  Neither needs an entitlement or signing
+  changes.
 
 ## Data model
 
 - `Challenge`: id, kind (built-in id or
   custom), name, unit (reps / seconds /
-  minutes), color, starting count, goal, daily
-  increase, reminder on/off and time, created
-  date, completed date (optional), attempts.
-- `Attempt`: date (one per challenge per day),
-  count.
-- `BuiltIn` (static data in code, not stored):
-  id, name, description, form tips, image
-  names.
+  minutes), color, starting count, goal,
+  daily increase, reminder on/off and time,
+  created date, completed date (optional),
+  attempts.
+- `Attempt`: date (one per challenge per
+  day), count.
+- `BuiltIn` (static data in code, not
+  stored): id, name, description, form tips,
+  image names.
 
 Today's target = the latest attempt *before
 today* (or the starting count if there is
 none) + daily increase, capped at the goal.
-Missed days don't change it, and logging today
-doesn't move today's target. The starting test
-is the start day's attempt, so the card says
-"Done: 5" that day and "Try 6 today" the next
-(changed in 0.4.5). Logging again that day
-replaces the test. Reminder time is stored as
-minutes after midnight; color as a palette
-name; unit as a raw string.
+Missed days don't change it, and logging
+today doesn't move today's target. The
+starting test is the start day's attempt, so
+the card says "Done: 5" that day and "Try 6
+today" the next (changed in 0.4.5). Logging
+again that day replaces the test. Reminder
+time is stored as minutes after midnight;
+color as a palette name; unit as a raw
+string.
 
 ## PRs
 
@@ -86,12 +91,12 @@ Each PR bumps the version to `0.<step>.0`
   (Push-ups, Sit-ups, Pull-ups), and the
   target/progress logic.
 - Add the `OneHundoTests` unit test target in
-  `project.yml`, add it to the scheme, and add
-  `OneHundoTests/**` to the CI `changes`
+  `project.yml`, add it to the scheme, and
+  add `OneHundoTests/**` to the CI `changes`
   filter.
-- Unit tests: target after a normal day, after
-  a short day, after missed days, capped at
-  goal, days-to-goal estimate.
+- Unit tests: target after a normal day,
+  after a short day, after missed days,
+  capped at goal, days-to-goal estimate.
 - Models follow CloudKit's rules from the
   start (every property has a default,
   relationships optional, no unique
@@ -133,15 +138,16 @@ Each PR bumps the version to `0.<step>.0`
 Worth a TestFlight build.
 
 ### 4. Challenge screen and logging ✅
-- Challenge screen: header with progress ring,
-  Today section, attempt list.
+- Challenge screen: header with progress
+  ring, Today section, attempt list.
 - Log attempt sheet with the replace-same-day
   rule, plus edit and delete attempts.
 - Small celebration / encouragement after
   logging, with a "New personal best!" badge
   when the count beats every earlier attempt
   (not on the first attempt).
-- Header stats: personal best and days logged.
+- Header stats: personal best and days
+  logged.
 - Unit tests for the personal-best and
   days-logged logic.
 - UI test: log 6, card shows "Done: 6"; log
@@ -157,8 +163,8 @@ Worth a TestFlight build.
   increase), which also reads right when
   logging a past day.
 
-**Milestone:** the core daily loop works. Ship
-to TestFlight and use it daily.
+**Milestone:** the core daily loop works.
+Ship to TestFlight and use it daily.
 
 #### 4.1 UX polish from first use (0.4.1) ✅
 - First screen explains the idea in three
@@ -167,28 +173,29 @@ to TestFlight and use it daily.
   "1 more each day" stepper instead of the
   +1/+2/… picker, and a Today → Tomorrow →
   Goal preview.
-- Long-press a card: Log attempt / Edit today,
-  and Delete challenge (pulled forward from PR
-  5). History rows are tap-to-edit with a
-  hint.
+- Long-press a card: Log attempt / Edit
+  today, and Delete challenge (pulled forward
+  from PR 5). History rows are tap-to-edit
+  with a hint.
 - 0.4.2: both tabs share one title header, so
   the title doesn't jump when switching tabs.
 - 0.4.3: both tabs use the standard iOS large
   title instead of a custom header, which
   still bounced a little when switching tabs.
-  The + becomes an "Add challenge" tile at the
-  end of the grid, so the title bar stays
+  The + becomes an "Add challenge" tile at
+  the end of the grid, so the title bar stays
   plain.
 - 0.4.4: no challenge icons. Apple has no
   push-up, sit-up, or pull-up symbol, so
-  challenges are told apart by name and color.
-  `Challenge.icon` is removed from the stored
-  data, and the pre-1.0 schema versioning from
-  4.2 goes too (see Stored data).
-- 0.4.5: the starting test counts as the start
-  day's attempt: the card says "Done: 5" until
-  the next day, instead of "Try 6 today" right
-  after starting.
+  challenges are told apart by name and
+  color. `Challenge.icon` is removed from the
+  stored data, and the pre-1.0 schema
+  versioning from 4.2 goes too (see Stored
+  data).
+- 0.4.5: the starting test counts as the
+  start day's attempt: the card says "Done:
+  5" until the next day, instead of "Try 6
+  today" right after starting.
 
 #### 4.2 Safety tooling ✅
 - Stored data versioning (dropped in 0.4.4
@@ -200,32 +207,35 @@ to TestFlight and use it daily.
 - No version bump (nothing user-visible).
 
 #### 4.3 CI diagnostics and tidy-up ✅
-- A failed UI test prints its step-by-step log
-  (taps, waits, what it found), and the CI
-  summary shows build and test times.
-- The Release device build runs in its own job
-  alongside the tests; the unused simulator
-  app build and downloadable app files are
-  dropped. Every check still gates PRs.
+- A failed UI test prints its step-by-step
+  log (taps, waits, what it found), and the
+  CI summary shows build and test times.
+- The Release device build runs in its own
+  job alongside the tests; the unused
+  simulator app build and downloadable app
+  files are dropped. Every check still gates
+  PRs.
 - Not a speed-up: runs still take about 13
-  minutes, almost all building and running the
-  tests on one simulator. Two simulators in
-  parallel overloaded the 3-core runner (the
-  second timed out, the first slowed down 4x).
+  minutes, almost all building and running
+  the tests on one simulator. Two simulators
+  in parallel overloaded the 3-core runner
+  (the second timed out, the first slowed
+  down 4x).
 
 #### 4.4 Localization prep ✅
 - All text is translatable, still English
   only: a String Catalog
   (`Localizable.xcstrings`) with plural forms
   ("1 day" / "95 days", seconds, minutes),
-  `String(localized:)` for text built in code,
-  and `LocalizedStringKey` for view helpers.
+  `String(localized:)` for text built in
+  code, and `LocalizedStringKey` for view
+  helpers.
 - Built-in challenges show their name in the
   user's language even if started in another,
   and the "Test yourself" question is a whole
   sentence per challenge.
-- `LocalizationTests` runs the main screens in
-  a pseudo-language that brackets every
+- `LocalizationTests` runs the main screens
+  in a pseudo-language that brackets every
   translatable string, and fails on any
   visible text without brackets.
 - No version bump (nothing visible changes in
@@ -235,10 +245,10 @@ to TestFlight and use it daily.
 - Every screen and screen state is a
   `ScreenID` case, shown on its own by
   `ScreenHost` (`-showScreen <id>`, with
-  sample data where needed). The accessibility
-  audit and the localization check loop over
-  all of them, so new screens are covered
-  automatically.
+  sample data where needed). The
+  accessibility audit and the localization
+  check loop over all of them, so new screens
+  are covered automatically.
 - Screens live in `Views/Screens/`; CI fails
   if one isn't in the list.
 - A SwiftLint rule flags untranslated
@@ -248,11 +258,12 @@ to TestFlight and use it daily.
 - No version bump (nothing visible changes).
 
 #### 4.6 80-character lines ✅
-- SwiftLint's line limit drops from 100 to 80,
-  so diffs wrap less on the phone (a portrait
-  diff fits only about 45 characters, so long
-  lines still wrap there). All Swift code and
-  comments are rewrapped; no text changes.
+- SwiftLint's line limit drops from 100 to
+  80, so diffs wrap less on the phone (a
+  portrait diff fits only about 45
+  characters, so long lines still wrap
+  there). All Swift code and comments are
+  rewrapped; no text changes.
 - No version bump (nothing visible changes).
 
 #### 4.7 60-character lines ✅
@@ -275,17 +286,18 @@ to TestFlight and use it daily.
   `BuiltInChallenge`), `CountUnit` (was
   `ChallengeUnit`); helpers `LeadingStack`,
   `.testID`, `.fullWidth`; UI tests use
-  `App.start` and `app.text(_:)`/`button(_:)`.
-  A few test IDs got shorter (`addTile`,
-  `enrollNext`, `testCount.plus`).
+  `App.start` and
+  `app.text(_:)`/`button(_:)`. A few test IDs
+  got shorter (`addTile`, `enrollNext`,
+  `testCount.plus`).
 - No version bump (nothing visible changes).
 
 #### 4.9 46-character docs and config ✅
 - Docs, YAML and scripts fit in 46 too, and a
   `Line length` CI job (part of the CI Gate)
   checks them. Workflow steps sit at the same
-  indent as `steps:`; the test step moved into
-  `.github/scripts/run-tests.sh`.
+  indent as `steps:`; the test step moved
+  into `.github/scripts/run-tests.sh`.
 - No version bump (nothing visible changes).
 
 #### 4.10 Workflow, script and lint checks ✅
@@ -294,8 +306,9 @@ to TestFlight and use it daily.
   and ShellCheck on the scripts, pinned to
   versions that also run in this container.
 - More SwiftLint rules, including
-  `indentation_width` (2 spaces; wrapped lines
-  go in one level, not aligned by hand).
+  `indentation_width` (2 spaces; wrapped
+  lines go in one level, not aligned by
+  hand).
 - No version bump (nothing visible changes).
 
 #### 4.11 Screen snapshot tests ✅
@@ -303,27 +316,28 @@ Most screens exist by now, and steps 5–9
 change a lot of UI (step 5 reworks shared
 pieces like the number entry), so snapshots
 go in first.
-- Add Point-Free's `swift-snapshot-testing` to
-  the test targets only (SPM via
+- Add Point-Free's `swift-snapshot-testing`
+  to the test targets only (SPM via
   `project.yml`).
 - One snapshot per `ScreenID` (opened with
   `-showScreen`, as the accessibility and
-  localization tests do). Light and dark mode,
-  and one large text size.
+  localization tests do). Light and dark
+  mode, and one large text size.
 - Stable rendering: one fixed simulator model
-  and OS, a fixed "now" for seeded dates (e.g.
-  a `-fixedDate` launch argument), animations
-  off.
+  and OS, a fixed "now" for seeded dates
+  (e.g. a `-fixedDate` launch argument),
+  animations off.
 - Reference images are committed in the repo,
   so PR diffs show before/after images.
-  There's no Mac to record them, so CI records
-  them: a manual workflow (or a PR label)
-  re-records and commits the images to the PR
-  branch. On a mismatch, CI uploads the diff
-  images as an artifact and fails.
+  There's no Mac to record them, so CI
+  records them: a manual workflow (or a PR
+  label) re-records and commits the images to
+  the PR branch. On a mismatch, CI uploads
+  the diff images as an artifact and fails.
 - No version bump (nothing user-visible).
-- Then add a coverage gate for views, set from
-  what the snapshots reach.
+- Then add a coverage gate for views, set
+  from what the snapshots reach (4.13 gates
+  every line at 100%).
 
 #### 4.12 Dark mode and large text audit ✅
 - Run the accessibility audit on every screen
@@ -342,6 +356,53 @@ go in first.
   rows, so "100" fits inside its button.
 - Version 0.4.6 (the card fix shows).
 
+#### 4.13 Swift 6 and 100% coverage ✅
+- Every target builds in Swift 6 language
+  mode, so data races are compile errors
+  (tests included), before step 5 adds
+  settings and step 6 notifications.
+- Every line of the app must run in tests,
+  views included (they were at 97%). To get
+  there:
+  - UI tests now cover the card's long-press
+    Log attempt, editing and deleting history
+    attempts, and Back in the enroll flow.
+  - Logic moved out of views and is unit
+    tested: number field input
+    (`NumberText`), raising the goal past
+    today's test (`Progression.goal`), and
+    reminder times as minutes
+    (`ReminderTime`).
+  - The welcome screen is the real empty
+    list, and the store-error screen opens
+    through the real failure path.
+  - Sample data gains a Plank in seconds,
+    with a `logTimed` screen state.
+  - Dead code went.
+- No version bump (nothing visible changes).
+
+#### 4.14 45-character lines ✅
+- A 46-character line still wraps by one
+  character in the GitHub app on the phone.
+  Lower the limit to 45 everywhere:
+  SwiftLint's `line_length`,
+  `.github/scripts/check-lines.py`, and
+  every mention of 46 in CLAUDE.md and
+  comments; rewrap the ~240 lines at
+  exactly 46.
+- No version bump (nothing visible changes).
+
+#### 4.15 Challenge card layout ✅
+- Found in the snapshots at large text:
+  cards in a row have different heights and
+  aren't top-aligned, and narrow cards break
+  words ("sec-onds", "Push-ups").
+- Cards in a row match heights, top-aligned.
+- At accessibility text sizes the list shows
+  one card per row.
+- Re-record the challenge list snapshots.
+- Version 0.4.7 (visible fix).
+
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
   swatches, counts, reminder (no icon).
@@ -350,9 +411,9 @@ go in first.
   for custom), and Delete challenge with
   confirmation.
 - Goal can be raised or lowered any time.
-  Lowering it to at or below the current count
-  is treated as reaching it (the celebration
-  itself lands in PR 9).
+  Lowering it to at or below the current
+  count is treated as reaching it (the
+  celebration itself lands in PR 9).
 - UI test: create a "Plank" challenge in
   seconds and see its card.
 
@@ -371,8 +432,8 @@ go in first.
   UI tests can't easily verify notifications.
 
 ### 7. Calendar
-- Month calendar with swipe between months and
-  colored dots per day.
+- Month calendar with swipe between months
+  and colored dots per day.
 - Day view listing that day's attempts and
   whether the target was hit; tap through to
   the challenge screen.
@@ -396,8 +457,8 @@ go in first.
 - Completed challenges keep their screen and
   history, with a Continue button that sets a
   new goal and makes them active again. A
-  completed built-in can also be started fresh
-  from Add challenge.
+  completed built-in can also be started
+  fresh from Add challenge.
 - UI test: log the goal count, see the
   celebration, tap Done, card is under
   Completed; Continue moves it back.
@@ -416,14 +477,14 @@ go in first.
 
 ## Later
 
-Not scheduled; each would be its own PR series
-after 1.0.
+Not scheduled; each would be its own PR
+series after 1.0.
 
 - **Apple Health**: needs the HealthKit
   entitlement, a usage string, and signing
   changes in the TestFlight workflow.
-- **iCloud sync** (CloudKit): needs the iCloud
-  entitlement, a CloudKit container, and the
-  same signing changes. The models are already
-  CloudKit-ready (PR 1).
+- **iCloud sync** (CloudKit): needs the
+  iCloud entitlement, a CloudKit container,
+  and the same signing changes. The models
+  are already CloudKit-ready (PR 1).
 - **Ads or monetization**.

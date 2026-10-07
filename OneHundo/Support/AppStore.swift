@@ -21,7 +21,8 @@ enum AppStore {
     _ configuration: ModelConfiguration
   ) throws -> ModelContainer {
     try ModelContainer(
-      for: Challenge.self, Attempt.self,
+      for: Challenge.self,
+      Attempt.self,
       configurations: configuration
     )
   }

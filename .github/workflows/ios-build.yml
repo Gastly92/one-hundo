@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 # Steps sit at the same indent as `steps:`
-# (valid YAML), so lines fit in 46.
+# (valid YAML), so lines fit in 45.
 jobs:
   # Decides whether the PR touches anything
   # that affects the app.
@@ -31,7 +31,8 @@ jobs:
       code: >-
         ${{ github.event_name !=
         'pull_request' ||
-        steps.filter.outputs.code == 'true' }}
+        steps.filter.outputs.code ==
+        'true' }}
     steps:
     - uses: dorny/paths-filter@v4
       id: filter
@@ -48,7 +49,7 @@ jobs:
             - '.github/scripts/**'
             - '.github/workflows/**'
 
-  # Docs, YAML and scripts fit in 46
+  # Docs, YAML and scripts fit in 45
   # characters too (Swift is SwiftLint's).
   # Runs on every PR, docs-only ones too.
   lines:
@@ -112,8 +113,10 @@ jobs:
     - name: Lint
       run: |
         swiftlint version
+        # Plain file:line output: GitHub
+        # shows only 10 annotations per step.
         swiftlint lint --strict \
-          --reporter github-actions-logging
+          --reporter xcode
 
   # Every screen must be in the screen list
   # (ScreenID / ScreenHost), so the
@@ -167,8 +170,8 @@ jobs:
     # again on that commit.
     - name: Save snapshot images
       if: >-
-        always()
-        && github.event_name == 'pull_request'
+        always() && github.event_name
+        == 'pull_request'
       env:
         GH_TOKEN: ${{ github.token }}
         BRANCH: ${{ github.head_ref }}
@@ -196,12 +199,13 @@ jobs:
       run: |
         brew install periphery
         periphery version
+        index=build/test/Index.noindex
         periphery scan \
           --project OneHundo.xcodeproj \
           --schemes OneHundo \
           --skip-build \
           --index-store-path \
-          build/test/Index.noindex/DataStore \
+          "$index/DataStore" \
           --retain-swift-ui-previews \
           --relative-results \
           --format github-actions \
@@ -238,9 +242,9 @@ jobs:
           CODE_SIGNING_ALLOWED=NO \
           | tail -n 20
 
-  # Single pass/fail check for a PR. It always
-  # reports, passing when the build was
-  # skipped (docs-only PR) or succeeded.
+  # Single pass/fail check for a PR. It
+  # always reports, passing when the build
+  # was skipped (docs-only PR) or succeeded.
   gate:
     name: CI Gate
     needs:

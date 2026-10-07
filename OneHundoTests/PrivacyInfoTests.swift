@@ -5,7 +5,7 @@ import XCTest
 /// tracking, collected data, or APIs Apple
 /// lists as needing a reason (e.g.
 /// UserDefaults).
-final class PrivacyManifestTests: XCTestCase {
+final class PrivacyInfoTests: XCTestCase {
   func testManifestShipsInTheApp() throws {
     let url = try XCTUnwrap(
       Bundle.main.url(

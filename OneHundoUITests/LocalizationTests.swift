@@ -4,8 +4,8 @@ import XCTest
 /// pseudo-language, which wraps every
 /// translatable string in "[# ... #]".
 /// Visible text without the brackets would
-/// stay in English after translation, so each
-/// screen fails on any such text.
+/// stay in English after translation, so
+/// each screen fails on any such text.
 final class LocalizationTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = true
@@ -22,13 +22,21 @@ final class LocalizationTests: XCTestCase {
     "errorDetails",
   ]
 
+  /// Text the user typed (the sample custom
+  /// challenge's name), which stays as
+  /// typed.
+  private static let userText: Set = [
+    "Plank",
+  ]
+
   /// Every screen in the app (`ScreenID`),
   /// each opened directly with sample data.
   @MainActor
   func testEveryScreen() {
     for screen in ScreenID.allCases {
       let app = App.start(
-        screen: screen, arguments: Self.pseudo
+        screen: screen,
+        arguments: Self.pseudo
       )
       let text = app.staticTexts.firstMatch
       guard text.appears(within: 10) else {
@@ -58,7 +66,8 @@ final class LocalizationTests: XCTestCase {
       .allElementsBoundByIndex
     let bars = app.navigationBars.buttons
       .allElementsBoundByIndex
-    let system = (bars + pickers).map(\.frame)
+    let system =
+      (bars + pickers).map(\.frame)
     let elements =
       app.staticTexts.allElementsBoundByIndex
       + app.buttons.allElementsBoundByIndex
@@ -73,7 +82,8 @@ final class LocalizationTests: XCTestCase {
         bracketed += 1
         continue
       }
-      if Self.systemIDs.contains(id) {
+      if Self.systemIDs.contains(id)
+        || Self.userText.contains(label) {
         continue
       }
       if system.contains(element.frame) {
@@ -82,15 +92,18 @@ final class LocalizationTests: XCTestCase {
       XCTFail(
         "[\(screen)] Not translatable: "
           + "'\(label)' (id '\(id)')",
-        file: file, line: line
+        file: file,
+        line: line
       )
     }
     // Guards against the pseudo-language not
     // taking effect at all.
     XCTAssertGreaterThan(
-      bracketed, 0,
+      bracketed,
+      0,
       "[\(screen)] No bracketed text",
-      file: file, line: line
+      file: file,
+      line: line
     )
   }
 }

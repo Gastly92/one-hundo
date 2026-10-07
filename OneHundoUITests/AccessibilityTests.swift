@@ -15,10 +15,10 @@ final class AccessibilityTests: XCTestCase {
     continueAfterFailure = true
   }
 
-  /// Standard text styles in the last section
-  /// of a list: at large text sizes they move
-  /// off screen, so the audit can't confirm
-  /// they scale.
+  /// Standard text styles in the last
+  /// section of a list: at large text sizes
+  /// they move off screen, so the audit
+  /// can't confirm they scale.
   private static let offscreen: Set = [
     "History", "Custom challenge",
     "Coming soon",
@@ -94,7 +94,8 @@ final class AccessibilityTests: XCTestCase {
   }
 
   /// Audits the current screen, failing once
-  /// per issue with enough detail to find it.
+  /// per issue with enough detail to find
+  /// it.
   @MainActor
   private func audit(
     _ app: XCUIApplication,
@@ -105,8 +106,11 @@ final class AccessibilityTests: XCTestCase {
   ) throws {
     do {
       try runAudit(
-        app, types, screen,
-        file: file, line: line
+        app,
+        types,
+        screen,
+        file: file,
+        line: line
       )
     } catch {
       // "Audit failed to complete in time":
@@ -114,8 +118,11 @@ final class AccessibilityTests: XCTestCase {
       guard (error as NSError).code == -56
       else { throw error }
       try runAudit(
-        app, types, screen,
-        file: file, line: line
+        app,
+        types,
+        screen,
+        file: file,
+        line: line
       )
     }
   }
@@ -130,21 +137,26 @@ final class AccessibilityTests: XCTestCase {
   ) throws {
     // The navigation bar (title, Close,
     // Cancel, Save) is iOS's own: it doesn't
-    // scale with text size, and its glass can
-    // read as low contrast mid-animation.
+    // scale with text size, and its glass
+    // can read as low contrast
+    // mid-animation.
     let bars = app.navigationBars
       .descendants(matching: .any)
       .allElementsBoundByIndex.map(\.frame)
+    let window = app.windows.firstMatch.frame
     try app.performAccessibilityAudit(
       for: types
     ) {
-      if Self.isExpected($0, bars: bars) {
+      if Self.isExpected(
+        $0, bars: bars, window: window
+      ) {
         return true
       }
       let found = Self.describe($0)
       XCTFail(
         "[\(screen)] \(found)",
-        file: file, line: line
+        file: file,
+        line: line
       )
       return true
     }
@@ -155,7 +167,8 @@ final class AccessibilityTests: XCTestCase {
   @MainActor
   private static func isExpected(
     _ issue: XCUIAccessibilityAuditIssue,
-    bars: [CGRect]
+    bars: [CGRect],
+    window: CGRect
   ) -> Bool {
     let text = issue.compactDescription
     // "Nearly passed" contrast passes at
@@ -165,10 +178,10 @@ final class AccessibilityTests: XCTestCase {
     if text.contains("nearly passed") {
       return true
     }
-    // Text the audit can't tie to any element
-    // comes from a system control (the time
-    // picker draws its own); anything in our
-    // views has an element.
+    // Text the audit can't tie to any
+    // element comes from a system control
+    // (the time picker draws its own);
+    // anything in our views has an element.
     guard let element = issue.element else {
       return text.contains(
         "Potentially inaccessible text"
@@ -177,12 +190,19 @@ final class AccessibilityTests: XCTestCase {
     if bars.contains(element.frame) {
       return true
     }
+    // Text cut off at the screen's edge
+    // (a long list at large text sizes):
+    // the audit measures contrast against
+    // what's past the edge.
+    if !window.contains(element.frame) {
+      return true
+    }
     return issue.auditType == .dynamicType
       && offscreen.contains(element.label)
   }
 
-  /// The issue and its element, to find it on
-  /// screen.
+  /// The issue and its element, to find it
+  /// on screen.
   @MainActor
   private static func describe(
     _ issue: XCUIAccessibilityAuditIssue

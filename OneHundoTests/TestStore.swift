@@ -1,24 +1,27 @@
+@testable import OneHundo
 import SwiftData
 import XCTest
-@testable import OneHundo
 
 /// UTC, so dates don't depend on the test
 /// machine's time zone.
 let utc: Calendar = {
   var cal = Calendar(identifier: .gregorian)
-  cal.timeZone = TimeZone(identifier: "UTC")!
+  cal.timeZone = .gmt
   return cal
 }()
 
 /// Noon (or `hour`) on the given day of
 /// January 2026, UTC.
-func day(_ day: Int, hour: Int = 12) -> Date {
-  utc.date(
-    from: DateComponents(
-      year: 2026, month: 1,
-      day: day, hour: hour
-    )
-  )!
+func day(
+  _ day: Int, hour: Int = 12
+) -> Date {
+  // Jan 1 2026, 00:00 UTC.
+  let start: TimeInterval = 1_767_225_600
+  let hours = (day - 1) * 24 + hour
+  return Date(
+    timeIntervalSince1970:
+      start + TimeInterval(hours * 3600)
+  )
 }
 
 /// Shorthands for tests: the logic on a
@@ -77,36 +80,33 @@ extension Challenge {
   }
 }
 
-/// Shared setup for challenge tests: an
-/// in-memory store and a Push-ups challenge
-/// factory.
+/// An in-memory store for one test, with a
+/// Push-ups challenge factory. Each test
+/// makes its own, so nothing is shared.
 @MainActor
-class ModelTestCase: XCTestCase {
-  var container: ModelContainer!
+struct TestStore {
+  let container: ModelContainer
+
   var context: ModelContext {
     container.mainContext
   }
 
-  override func setUp() async throws {
+  init() throws {
     container = try AppStore.open(
       inMemory: true
     )
   }
 
-  override func tearDown() async throws {
-    container = nil
-  }
-
-  func makePushUps(
+  func pushUps(
     start: Int = 5,
     goal: Int = 100,
     increase: Int = 1
   ) -> Challenge {
     let challenge = Challenge(
-      kind: BuiltIn.pushUps.id,
       name: "Push-ups",
       colorName: BuiltIn.pushUps.colorName,
       startingCount: start,
+      kind: BuiltIn.pushUps.id,
       goal: goal,
       dailyIncrease: increase,
       createdDate: day(1)
