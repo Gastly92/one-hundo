@@ -262,7 +262,7 @@ private struct Screen: Equatable {
   @MainActor
   init(_ app: XCUIApplication) {
     var found: Set<Item> = []
-    var bars: [CGRect] = []
+    var inBars: [CGRect] = []
     func walk(
       _ node: any XCUIElementSnapshot,
       inBar: Bool
@@ -270,7 +270,7 @@ private struct Screen: Equatable {
       let bar = inBar
         || node.elementType == .navigationBar
       if bar {
-        bars.append(node.frame)
+        inBars.append(node.frame)
       }
       found.insert(Self.item(node))
       for child in node.children {
@@ -282,7 +282,7 @@ private struct Screen: Equatable {
       walk(root, inBar: false)
     }
     items = found
-    self.bars = bars
+    bars = inBars
     window = root?.frame ?? .zero
     middle = Int(window.midY)
     end = Int(window.maxY)
