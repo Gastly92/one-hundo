@@ -102,17 +102,17 @@ final class AccessibilityTests: XCTestCase {
     on name: String
   ) throws {
     var bottom: CGFloat?
+    var shown = Self.settled(app)
     for _ in 0..<Self.maxPages {
-      try audit(
-        app, types, on: name, bottom: bottom
-      )
-      let before = Self.settled(app)
+      let page = Page(shown, bottom: bottom)
+      try audit(app, types, on: name, page)
       drag(app)
-      let after = Self.settled(app)
-      if after.texts == before.texts {
+      let next = Self.settled(app)
+      if next.texts == shown.texts {
         return
       }
-      bottom = Self.fixedTop(before, after)
+      bottom = Self.fixedTop(shown, next)
+      shown = next
     }
     XCTFail("[\(name)] kept scrolling")
   }
@@ -177,15 +177,14 @@ final class AccessibilityTests: XCTestCase {
 
   /// Audits the current screen, failing once
   /// per issue with enough detail to find
-  /// it. `bottom` is set on scrolled pages.
+  /// it.
   @MainActor
   private func audit(
     _ app: XCUIApplication,
     _ types: Checks,
     on screen: String,
-    bottom: CGFloat?
+    _ page: Page
   ) throws {
-    let page = Page(app, bottom: bottom)
     do {
       try runAudit(app, types, screen, page)
     } catch {
@@ -249,6 +248,10 @@ private struct Screen: Equatable {
   }
 
   let items: Set<Item>
+  /// The navigation bar and everything in
+  /// it.
+  let bars: [CGRect]
+  let window: CGRect
   let middle: Int
   let end: Int
 
@@ -258,16 +261,37 @@ private struct Screen: Equatable {
 
   @MainActor
   init(_ app: XCUIApplication) {
+    var found: Set<Item> = []
+    var bars: [CGRect] = []
+    func walk(
+      _ node: any XCUIElementSnapshot,
+      inBar: Bool
+    ) {
+      let bar = inBar
+        || node.elementType == .navigationBar
+      if bar {
+        bars.append(node.frame)
+      }
+      found.insert(Self.item(node))
+      for child in node.children {
+        walk(child, inBar: bar)
+      }
+    }
     let root = try? app.snapshot()
-    items = Set(root.map(Self.collect) ?? [])
-    middle = Int(app.frame.midY)
-    end = Int(app.frame.maxY)
+    if let root {
+      walk(root, inBar: false)
+    }
+    items = found
+    self.bars = bars
+    window = root?.frame ?? .zero
+    middle = Int(window.midY)
+    end = Int(window.maxY)
   }
 
   @MainActor
-  private static func collect(
+  private static func item(
     _ node: any XCUIElementSnapshot
-  ) -> [Item] {
+  ) -> Item {
     let box = node.frame
     let type = node.elementType
     let name = [
@@ -277,14 +301,11 @@ private struct Screen: Equatable {
       "\(Int(box.minX)) \(Int(box.width))",
       "\(Int(box.height))",
     ].joined(separator: "|")
-    let own = Item(
+    return Item(
       name: name,
       isText: type == .staticText,
       top: Int(box.minY.rounded())
     )
-    return [own] + node.children.flatMap {
-      collect($0)
-    }
   }
 }
 
@@ -301,18 +322,11 @@ private struct Page {
   /// anything fixed at the bottom.
   let visible: CGRect
 
-  @MainActor
-  init(
-    _ app: XCUIApplication,
-    bottom: CGFloat?
-  ) {
-    bars = app.navigationBars
-      .descendants(matching: .any)
-      .allElementsBoundByIndex.map(\.frame)
-    let window = app.windows.firstMatch.frame
-    let bar = app.navigationBars.firstMatch
-    let top = bar.exists
-      ? bar.frame.maxY : window.minY
+  init(_ shown: Screen, bottom: CGFloat?) {
+    bars = shown.bars
+    let window = shown.window
+    // The bar itself comes first.
+    let top = bars.first?.maxY ?? window.minY
     let end = bottom ?? window.maxY
     visible = CGRect(
       x: window.minX,
