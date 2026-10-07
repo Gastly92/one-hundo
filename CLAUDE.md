@@ -118,8 +118,9 @@ features land.
     line breaks (one key, still one sentence).
   - Otherwise wrap: one argument per line is
     fine.
-- Compiler warnings are errors, and the app
-  target uses strict concurrency checking.
+- Compiler warnings are errors, and every
+  target builds in Swift 6 language mode, so
+  data races are compile errors.
 - Coverage gate
   (`.github/scripts/coverage.sh`): every line
   in `OneHundo/Models/` and
@@ -128,7 +129,11 @@ features land.
   views: put them in those folders and unit
   test them. Pass in outside pieces (store,
   clock, notifications) so tests can fake
-  them. Views are reported, not gated.
+  them. Views (run by UI and snapshot tests)
+  must stay at `VIEW_MIN` (97%) or more;
+  raise it as views gain tests, never lower
+  it. The CI summary lists view files with
+  untested lines.
 - Tests run with Thread Sanitizer: a data race
   stops the app and fails the test. UI tests
   launch the app with `App.start(seeded:)`,

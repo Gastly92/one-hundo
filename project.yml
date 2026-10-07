@@ -13,7 +13,9 @@ settings:
   base:
     MARKETING_VERSION: "0.4.6"
     CURRENT_PROJECT_VERSION: "1"
-    SWIFT_VERSION: "5.0"
+    # Swift 6: data races are compile errors
+    # in every target, tests included.
+    SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: ""
     # Every compiler warning fails the build,
     # so none pile up unread.
@@ -57,9 +59,6 @@ targets:
           AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
-        # Swift 6's data-race checks, in Swift
-        # 5 mode (warnings, so errors above).
-        SWIFT_STRICT_CONCURRENCY: complete
   OneHundoTests:
     type: bundle.unit-test
     platform: iOS

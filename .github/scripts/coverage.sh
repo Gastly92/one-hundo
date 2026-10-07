@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Coverage gate: every line in the app's
 # non-view code (Models/, Support/) must be
-# run by the tests. Views are covered by UI
-# tests and, later, snapshot tests, so their
-# numbers are reported but not gated.
+# run by the tests, and views (run by UI and
+# snapshot tests) must stay at VIEW_MIN% or
+# more. Raise VIEW_MIN as views gain tests;
+# never lower it.
 set -euo pipefail
 
 result="$1"
+VIEW_MIN=97
 # The JSON report lists every file's
 # functions with their line counts.
 report=$(
@@ -23,6 +25,11 @@ files=$(jq -r "$pick"' app | .files[]
 
 sum_cov=0
 sum_all=0
+low_views=0
+view_cov=0
+view_all=0
+views="| View file | Lines | Covered |\n"
+views+="|---|---|---|\n"
 failed=0
 table="| File | Lines | Covered |\n"
 table+="|---|---|---|\n"
@@ -32,7 +39,15 @@ do
   name="${path#*/OneHundo/}"
   case "$name" in
     Models/*|Support/*) ;;
-    *) continue ;;
+    *)
+      view_cov=$((view_cov + covered))
+      view_all=$((view_all + total))
+      if [ "$covered" -lt "$total" ]; then
+        views+="| $name | $total |"
+        views+=" $covered |\n"
+      fi
+      continue
+      ;;
   esac
   sum_cov=$((sum_cov + covered))
   sum_all=$((sum_all + total))
@@ -67,17 +82,37 @@ whole=$(jq -r "$pick"' app
   | "\(.coveredLines)/\(.executableLines)"
     + " lines (\($pct)%)"' <<<"$report")
 
+view_pct=0
+if [ "$view_all" -gt 0 ]; then
+  view_pct=$((view_cov * 100 / view_all))
+fi
+
 {
   echo "### Coverage"
   echo "- Non-view code (gated at 100%):" \
     "$sum_cov/$sum_all lines"
-  echo "- Whole app (report only): $whole"
+  echo "- Views (gated at $VIEW_MIN%):" \
+    "$view_cov/$view_all lines" \
+    "($view_pct%)"
+  echo "- Whole app: $whole"
   echo
   printf "%b" "$table"
+  echo
+  echo "View files with untested lines:"
+  echo
+  printf "%b" "$views"
 } >> "${GITHUB_STEP_SUMMARY:-/dev/stdout}"
 
 echo "Non-view coverage: $sum_cov/$sum_all;" \
-  "whole app: $whole"
+  "views: $view_cov/$view_all" \
+  "($view_pct%); whole app: $whole"
+if [ "$view_pct" -lt "$VIEW_MIN" ]; then
+  echo "::error::View coverage is" \
+    "$view_pct%, below $VIEW_MIN%. Test the" \
+    "new screens or branches (see the CI" \
+    "summary for which files)."
+  low_views=1
+fi
 if [ "$failed" -ne 0 ] \
   || [ "$sum_all" -eq 0 ]; then
   echo "::error::Non-view code must be" \
@@ -85,3 +120,4 @@ if [ "$failed" -ne 0 ] \
     "lines above)."
   exit 1
 fi
+[ "$low_views" -eq 0 ] || exit 1

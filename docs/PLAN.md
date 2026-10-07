@@ -323,7 +323,7 @@ go in first.
   images as an artifact and fails.
 - No version bump (nothing user-visible).
 - Then add a coverage gate for views, set from
-  what the snapshots reach.
+  what the snapshots reach (done in 4.13).
 
 #### 4.12 Dark mode and large text audit ✅
 - Run the accessibility audit on every screen
@@ -341,6 +341,16 @@ go in first.
   goal buttons (50/100/150/200) go in two
   rows, so "100" fits inside its button.
 - Version 0.4.6 (the card fix shows).
+
+#### 4.13 Swift 6 and a view coverage gate ✅
+- Every target builds in Swift 6 language
+  mode, so data races are compile errors
+  (tests included), before step 5 adds
+  settings and step 6 notifications.
+- Views must keep 97% line coverage (today's
+  level); the CI summary lists view files
+  with untested lines.
+- No version bump (nothing visible changes).
 
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
