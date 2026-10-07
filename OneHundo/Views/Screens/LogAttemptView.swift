@@ -20,6 +20,8 @@ struct LogAttemptView: View {
   @State private var date: Date
   @State private var outcome: LogOutcome?
   @State private var bounce = 0
+  @ScaledMetric(relativeTo: .largeTitle)
+  private var iconSize: CGFloat = 72
 
   /// E.g. "Monday, January 5".
   private static let dayFormat =
@@ -159,7 +161,7 @@ struct LogAttemptView: View {
     VStack(spacing: 20) {
       Spacer()
       Image(systemName: outcome.symbol)
-        .font(.system(size: 72))
+        .font(.system(size: iconSize))
         .foregroundStyle(color)
         .symbolEffect(.bounce, value: bounce)
         .accessibilityHidden(true)
