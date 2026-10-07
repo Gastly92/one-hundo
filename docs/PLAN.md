@@ -403,6 +403,24 @@ go in first.
 - Re-record the challenge list snapshots.
 - Version 0.4.7 (visible fix).
 
+#### 4.16 Audit without exemptions ✅
+- No labels are exempt from the
+  accessibility audit any more, and no
+  audit is retried: a failure is real.
+- The audit's Dynamic Type check is off: it
+  enlarges text and fails on whatever that
+  pushes off screen. A `fixed_font_size`
+  lint rule catches the real cause instead;
+  it found a fixed 72pt icon on the log
+  result screen, now scaled.
+- Scrolling each screen to audit text
+  below the fold was tried and dropped:
+  simulated drags made the tests flaky.
+- With one card per row, the done
+  checkmark fits beside "Done: 20" again at
+  accessibility sizes.
+- Version 0.4.8 (visible fix).
+
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
   swatches, counts, reminder (no icon).
@@ -471,6 +489,21 @@ go in first.
   change adds a version, a migration stage,
   and a test that the previous version's data
   opens.
+- Crash and usage telemetry: pick a
+  service (Apple's own crash reports and App
+  Analytics first, a third-party SDK only if
+  they fall short). Update the privacy
+  manifest and the App Store privacy labels
+  to match, and say what's collected in the
+  app.
+- Performance tests (XCTest metrics with
+  baselines in CI): launch time, opening
+  the list and a challenge with a year of
+  attempts, and logging an attempt.
+- App Store listing: screenshots made by a
+  UI test from the sample data (light mode,
+  the required iPhone sizes), plus the
+  description, keywords and support URL.
 - Bump `MARKETING_VERSION` to 1.0.0 when
   you're happy with it: the first App Store
   release.
