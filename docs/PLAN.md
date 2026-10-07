@@ -368,6 +368,28 @@ go in first.
   - Dead code went.
 - No version bump (nothing visible changes).
 
+#### 4.14 45-character lines
+- A 46-character line still wraps by one
+  character in the GitHub app on the phone.
+  Lower the limit to 45 everywhere:
+  SwiftLint's `line_length`,
+  `.github/scripts/check-lines.py`, and
+  every mention of 46 in CLAUDE.md and
+  comments; rewrap the ~240 lines at
+  exactly 46.
+- No version bump (nothing visible changes).
+
+#### 4.15 Challenge card layout
+- Found in the snapshots at large text:
+  cards in a row have different heights and
+  aren't top-aligned, and narrow cards break
+  words ("sec-onds", "Push-ups").
+- Cards in a row match heights, top-aligned.
+- At accessibility text sizes the list shows
+  one card per row.
+- Re-record the challenge list snapshots.
+- Version 0.4.7 (visible fix).
+
 ### 5. Custom challenges and settings
 - Custom challenge form: name, unit, color
   swatches, counts, reminder (no icon).
