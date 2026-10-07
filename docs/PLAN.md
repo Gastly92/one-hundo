@@ -403,17 +403,19 @@ go in first.
 - Re-record the challenge list snapshots.
 - Version 0.4.7 (visible fix).
 
-#### 4.16 Audit every page ✅
-- The accessibility audit only sees what's
-  on screen. It now scrolls each screen and
-  audits every page, so text below the fold
-  is checked too, and no labels are exempt.
+#### 4.16 Audit without exemptions ✅
+- No labels are exempt from the
+  accessibility audit any more, and no
+  audit is retried: a failure is real.
 - The audit's Dynamic Type check is off: it
   enlarges text and fails on whatever that
   pushes off screen. A `fixed_font_size`
   lint rule catches the real cause instead;
   it found a fixed 72pt icon on the log
   result screen, now scaled.
+- Scrolling each screen to audit text
+  below the fold was tried and dropped:
+  simulated drags made the tests flaky.
 - With one card per row, the done
   checkmark fits beside "Done: 20" again at
   accessibility sizes.

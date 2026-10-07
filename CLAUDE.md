@@ -54,15 +54,15 @@ features land.
   `ScreenHost`. Screens that need challenges
   are listed in `AppLaunch.seededScreens`.
 - `AccessibilityTests` runs Xcode's
-  accessibility audit on every `ScreenID`,
-  scrolling to check every page. Use system
-  colors and text styles (or `@ScaledMetric`
-  for big custom sizes) so text scales and
-  both light and dark mode work. The
-  `fixed_font_size` lint rule flags fixed
-  sizes (the audit's own Dynamic Type check
-  can't see text low on a screen, so it's
-  off).
+  accessibility audit on every `ScreenID`
+  (what fits on screen; no retries). Use
+  system colors and text styles (or
+  `@ScaledMetric` for big custom sizes) so
+  text scales and both light and dark mode
+  work. The `fixed_font_size` lint rule
+  flags fixed sizes (the audit's own
+  Dynamic Type check can't see text low on
+  a screen, so it's off).
 - All user-facing text must be translatable
   (English only for now):
   - In views, pass literals to `Text`,
