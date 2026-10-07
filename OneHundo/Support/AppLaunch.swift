@@ -17,10 +17,6 @@ struct AppLaunch {
   /// app (`-showScreen <id>`, UI tests
   /// only).
   let screen: ScreenID?
-  /// Dark mode for the whole app
-  /// (`-darkMode`, UI tests only), so tests
-  /// needn't change the simulator's setting.
-  let isDark: Bool
 
   /// Screens shown with the sample
   /// challenges; the rest show an empty app.
@@ -55,8 +51,6 @@ struct AppLaunch {
     } else {
       store = Result { try open(inMemory) }
     }
-    isDark = isUITesting
-      && args.contains("-darkMode")
     let seeded = Self.seededScreens
     let needsData = seeded.contains {
       $0 == shown

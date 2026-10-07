@@ -1,8 +1,8 @@
 /// Every screen (and screen state) in the
 /// app. UI tests open each one directly with
 /// `-uiTesting -showScreen <rawValue>` and
-/// run the accessibility audit and the
-/// localization check on all of them.
+/// run the localization check on all of
+/// them; snapshot tests show each one.
 /// `ScreenHost` shows each case.
 ///
 /// Also compiled into the UI test target

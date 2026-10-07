@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Every screen must be in the screen list, so
-# the accessibility audit and the
-# localization check (which loop over
-# ScreenID) cover it. A screen is a top-level
-# `struct Name: View` in
-# OneHundo/Views/Screens/; ScreenHost must
-# show it.
+# the snapshot and localization tests
+# (which loop over ScreenID) cover it. A
+# screen is a top-level `struct Name: View`
+# in OneHundo/Views/Screens/; ScreenHost
+# must show it.
 set -euo pipefail
 
 host=OneHundo/Views/ScreenHost.swift

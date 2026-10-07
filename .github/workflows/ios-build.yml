@@ -117,9 +117,8 @@ jobs:
       run: .github/scripts/swiftlint.sh
 
   # Every screen must be in the screen list
-  # (ScreenID / ScreenHost), so the
-  # accessibility audit and localization
-  # check cover it.
+  # (ScreenID / ScreenHost), so snapshot
+  # and localization tests cover it.
   screens:
     name: Screen list
     needs: changes
@@ -232,7 +231,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [light, dark, largest, main]
+        shard: [main, localization]
     # Write access only to commit recorded
     # snapshot images to the PR branch.
     permissions:

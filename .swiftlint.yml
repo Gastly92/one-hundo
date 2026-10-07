@@ -121,9 +121,7 @@ custom_rules:
   # A fixed font size doesn't grow with the
   # user's text size. Use a text style, or a
   # @ScaledMetric size for big icons and
-  # numbers. (Replaces the accessibility
-  # audit's Dynamic Type check, which can't
-  # see text low on a screen.)
+  # numbers.
   fixed_font_size:
     name: "Fixed font size"
     message: >-

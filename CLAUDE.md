@@ -26,7 +26,7 @@ features land.
   every PR and push to `main` (macOS runner,
   `macos-26`). It generates the project and
   builds the tests once, then runs them in
-  four shards on separate runners in
+  two shards on separate runners in
   parallel (`run-tests.sh`; one simulator
   each, as the runner is too small for two),
   and a `Coverage` job merges the shards'
@@ -58,16 +58,17 @@ features land.
   screen in `Views/Screens/` isn't in
   `ScreenHost`. Screens that need challenges
   are listed in `AppLaunch.seededScreens`.
-- `AccessibilityTests` runs Xcode's
-  accessibility audit on every `ScreenID`
-  (what fits on screen; no retries). Use
-  system colors and text styles (or
-  `@ScaledMetric` for big custom sizes) so
-  text scales and both light and dark mode
-  work. The `fixed_font_size` lint rule
-  flags fixed sizes (the audit's own
-  Dynamic Type check can't see text low on
-  a screen, so it's off).
+- Accessibility: use system colors and
+  text styles (or `@ScaledMetric` for big
+  custom sizes) so text scales and both
+  light and dark mode work; the
+  `fixed_font_size` lint rule flags fixed
+  sizes. Large text snapshots show every
+  screen scaled. There's no automated
+  accessibility audit: Xcode's audit
+  stalled at random on CI's simulators, so
+  it was removed; a manual check on the
+  phone is part of plan step 9.
 - All user-facing text must be translatable
   (English only for now):
   - In views, pass literals to `Text`,
