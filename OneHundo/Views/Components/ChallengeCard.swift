@@ -7,8 +7,6 @@ struct ChallengeCard: View {
 
   @Environment(\.now)
   private var now
-  @Environment(\.dynamicTypeSize)
-  private var textSize
 
   private var color: Color {
     challenge.color
@@ -56,16 +54,11 @@ struct ChallengeCard: View {
   }
 
   /// "Try 6 today", or a checkmark and
-  /// "Done: 6". At the largest text sizes
-  /// the checkmark goes above, so the text
-  /// isn't squeezed into breaking mid-word.
+  /// "Done: 6". (At accessibility sizes the
+  /// card has the full width, so the
+  /// checkmark fits beside the text.)
   private var today: some View {
-    let stack = textSize.isAccessibilitySize
-      ? AnyLayout(VStackLayout(
-        alignment: .leading, spacing: 4
-      ))
-      : AnyLayout(HStackLayout(spacing: 4))
-    return stack {
+    HStack(spacing: 4) {
       if isDoneToday { DoneMark() }
       Text(challenge.todayText(on: now))
         .wrapsText()

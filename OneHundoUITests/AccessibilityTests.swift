@@ -15,18 +15,9 @@ final class AccessibilityTests: XCTestCase {
     continueAfterFailure = true
   }
 
-  /// Standard text styles in the last
-  /// section of a list: at large text sizes
-  /// they move off screen, so the audit
-  /// can't confirm they scale.
-  private static let offscreen: Set = [
-    "History", "Custom challenge",
-    "Coming soon",
-    """
-    Tap an attempt to change it, or swipe \
-    left to delete.
-    """,
-  ]
+  /// A stop for screens that keep moving
+  /// when swiped.
+  private static let maxPages = 12
 
   /// Every check, in light mode.
   @MainActor
@@ -85,12 +76,60 @@ final class AccessibilityTests: XCTestCase {
         continue
       }
       do {
-        try audit(app, types, on: name)
+        try auditPages(app, types, on: name)
       } catch {
         XCTFail("[\(name)] audit: \(error)")
       }
       app.terminate()
     }
+  }
+
+  /// The audit only sees what's on screen,
+  /// so each screen is audited, scrolled
+  /// down, and audited again until nothing
+  /// moves.
+  @MainActor
+  private func auditPages(
+    _ app: XCUIApplication,
+    _ types: Checks,
+    on name: String
+  ) throws {
+    for _ in 0..<Self.maxPages {
+      try audit(app, types, on: name)
+      if !scrollDown(app) {
+        return
+      }
+    }
+    XCTFail("[\(name)] kept scrolling")
+  }
+
+  /// Drags up half a screen near the leading
+  /// edge, clear of pickers. False if no
+  /// text moved.
+  @MainActor
+  private func scrollDown(
+    _ app: XCUIApplication
+  ) -> Bool {
+    let texts = app.staticTexts
+    let before = texts
+      .allElementsBoundByIndex.map(\.frame)
+    let window = app.windows.firstMatch
+    let start = window.coordinate(
+      withNormalizedOffset: CGVector(
+        dx: 0.04, dy: 0.75
+      )
+    )
+    let end = window.coordinate(
+      withNormalizedOffset: CGVector(
+        dx: 0.04, dy: 0.25
+      )
+    )
+    start.press(
+      forDuration: 0.05, thenDragTo: end
+    )
+    let after = texts
+      .allElementsBoundByIndex.map(\.frame)
+    return after != before
   }
 
   /// Audits the current screen, failing once
@@ -190,15 +229,11 @@ final class AccessibilityTests: XCTestCase {
     if bars.contains(element.frame) {
       return true
     }
-    // Text cut off at the screen's edge
-    // (a long list at large text sizes):
-    // the audit measures contrast against
-    // what's past the edge.
-    if !window.contains(element.frame) {
-      return true
-    }
-    return issue.auditType == .dynamicType
-      && offscreen.contains(element.label)
+    // Text cut off at the screen's edge:
+    // the audit measures it against what's
+    // past the edge. It's audited in full
+    // on the next page.
+    return !window.contains(element.frame)
   }
 
   /// The issue and its element, to find it
