@@ -110,12 +110,12 @@ struct ChallengeListView: View {
   private func card(
     _ challenge: Challenge
   ) -> some View {
+    // A button trait would turn each text
+    // into a button for UI tests; see the
+    // note above.
+    // swiftlint:disable:next accessibility_trait_for_button
     ChallengeCard(challenge: challenge)
       .contentShape(Self.tile)
-      // A button trait would turn each text
-      // into a button for UI tests; see the
-      // note above.
-      // swiftlint:disable:next accessibility_trait_for_button
       .onTapGesture { path.append(challenge) }
       .contextMenu { menu(for: challenge) }
   }

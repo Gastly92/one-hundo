@@ -1,6 +1,11 @@
 import Foundation
 import SwiftData
 
+// SwiftData's @Model reads each stored
+// property's type from its annotation, so
+// they stay written out.
+// swiftlint:disable redundant_type_annotation
+
 /// A challenge the user has started, e.g.
 /// Push-ups from 5 to 100.
 ///
@@ -9,10 +14,6 @@ import SwiftData
 /// every property has a default,
 /// relationships are optional, and nothing is
 /// unique.
-// SwiftData's @Model reads each stored
-// property's type from its annotation, so
-// they stay written out.
-// swiftlint:disable redundant_type_annotation
 @Model
 final class Challenge {
   var id: UUID = UUID()

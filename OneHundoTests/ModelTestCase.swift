@@ -78,13 +78,14 @@ extension Challenge {
   }
 }
 
-/// Shared setup for challenge tests: an
-/// in-memory store and a Push-ups challenge
-/// factory.
 // A base class: its setup is shared by
 // subclasses, so it isn't final or private.
 // swiftlint:disable final_test_case
 // swiftlint:disable test_case_accessibility
+
+/// Shared setup for challenge tests: an
+/// in-memory store and a Push-ups challenge
+/// factory.
 @MainActor
 class ModelTestCase: XCTestCase {
   // Set in setUp, as XCTest expects.
