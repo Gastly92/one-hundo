@@ -112,6 +112,13 @@ extension XCUIApplication {
     XCTAssertTrue(tapped.opens.disappears())
     element.press(forDuration: 1.5)
     XCTAssertTrue(item.appears())
+    // One retry only: a second tap would
+    // otherwise pass on the tap screen's own
+    // button of the same name.
+    XCTAssertFalse(
+      tapped.opens.exists,
+      "Read as a tap again"
+    )
     return item
   }
 
