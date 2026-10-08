@@ -14,6 +14,7 @@ struct BuiltIn: Identifiable, Hashable {
   /// languages can't build it from the name.
   let testQuestion: String
   let colorName: String
+  let marker: Marker
   let tips: [String]
 
   static let all = [pushUps, sitUps, pullUps]
@@ -34,6 +35,7 @@ struct BuiltIn: Identifiable, Hashable {
       go?
       """),
     colorName: "orange",
+    marker: .circle,
     tips: [
       String(localized: """
         Hands just wider than your \
@@ -60,6 +62,7 @@ struct BuiltIn: Identifiable, Hashable {
       How many sit-ups can you do in one go?
       """),
     colorName: "blue",
+    marker: .square,
     tips: [
       String(localized: """
         Bend your knees and keep your feet \
@@ -87,6 +90,7 @@ struct BuiltIn: Identifiable, Hashable {
       go?
       """),
     colorName: "green",
+    marker: .triangle,
     tips: [
       String(localized: """
         Start from a full hang with \

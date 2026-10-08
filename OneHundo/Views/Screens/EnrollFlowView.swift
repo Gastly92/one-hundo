@@ -165,6 +165,7 @@ struct EnrollFlowView: View {
       colorName: builtIn.colorName,
       startingCount: count,
       kind: builtIn.id,
+      marker: builtIn.marker,
       goal: goal,
       dailyIncrease: increase,
       reminderEnabled: remind,

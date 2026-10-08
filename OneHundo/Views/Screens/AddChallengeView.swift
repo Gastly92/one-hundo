@@ -2,8 +2,7 @@ import SwiftData
 import SwiftUI
 
 /// The first step of starting a challenge:
-/// pick a built-in (or, later, a custom
-/// one).
+/// pick a built-in, or make a custom one.
 struct AddChallengeView: View {
   @Environment(\.dismiss)
   private var dismiss
@@ -62,14 +61,14 @@ struct AddChallengeView: View {
 
   private var custom: some View {
     Section {
-      // The custom challenge form lands in
-      // plan step 5.
       NavigationLink {
-        CustomChallengeComingSoonView()
+        CustomChallengeView { dismiss() }
       } label: {
         ChoiceRow(
           title: Text("Custom challenge"),
-          subtitle: Text("Coming soon")
+          subtitle: Text("""
+            Track anything else, like planks.
+            """)
         )
       }
       .testID("customChallenge")

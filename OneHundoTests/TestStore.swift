@@ -107,6 +107,7 @@ struct TestStore {
       colorName: BuiltIn.pushUps.colorName,
       startingCount: start,
       kind: BuiltIn.pushUps.id,
+      marker: BuiltIn.pushUps.marker,
       goal: goal,
       dailyIncrease: increase,
       createdDate: day(1)

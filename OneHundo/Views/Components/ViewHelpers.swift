@@ -51,3 +51,22 @@ struct LeadingStack<Content: View>: View {
     }
   }
 }
+
+/// A list section's title in a standard
+/// text style, so it scales and reads
+/// clearly (the default is small grey
+/// capitals).
+struct SectionTitle: View {
+  let title: LocalizedStringKey
+
+  init(_ title: LocalizedStringKey) {
+    self.title = title
+  }
+
+  var body: some View {
+    Text(title)
+      .font(.headline)
+      .foregroundStyle(.primary)
+      .textCase(nil)
+  }
+}

@@ -35,6 +35,44 @@ final class DisplayTextTests: XCTestCase {
     )
   }
 
+  func testMarkerLabels() {
+    let labels = Marker.allCases.map(\.label)
+    XCTAssertEqual(labels, [
+      "Circle", "Square", "Triangle",
+      "Diamond", "Star", "Hexagon",
+    ])
+    XCTAssertEqual(
+      Marker.star.symbol, "star.fill"
+    )
+  }
+
+  func testMarkerFallsBackToCircle() {
+    let plank = Challenge(
+      name: "Plank",
+      colorName: "teal",
+      startingCount: 30,
+      marker: .star
+    )
+    XCTAssertEqual(plank.marker, .star)
+    plank.markerName = "blob"
+    XCTAssertEqual(plank.marker, .circle)
+  }
+
+  func testBuiltInsHaveOwnShapes() {
+    let shapes = BuiltIn.all.map(\.marker)
+    XCTAssertEqual(
+      Set(shapes).count, shapes.count
+    )
+  }
+
+  func testUnitTitles() {
+    let titles =
+      CountUnit.allCases.map(\.title)
+    XCTAssertEqual(
+      titles, ["Reps", "Seconds", "Minutes"]
+    )
+  }
+
   func testBuiltInTestQuestions() {
     for builtIn in BuiltIn.all {
       let what = builtIn.name.lowercased()

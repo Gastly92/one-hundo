@@ -29,6 +29,7 @@ enum SampleData {
         colorName: builtIn.colorName,
         startingCount: first.count,
         kind: builtIn.id,
+        marker: builtIn.marker,
         createdDate: ago(first.days)
       )
       context.insert(challenge)
@@ -61,6 +62,7 @@ enum SampleData {
       colorName: "teal",
       startingCount: 30,
       unit: .seconds,
+      marker: .diamond,
       goal: 120,
       dailyIncrease: 5,
       createdDate: ago(4)

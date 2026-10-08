@@ -10,6 +10,13 @@ extension Challenge {
     set { unitRaw = newValue.rawValue }
   }
 
+  var marker: Marker {
+    get {
+      Marker(rawValue: markerName) ?? .circle
+    }
+    set { markerName = newValue.rawValue }
+  }
+
   var isCustom: Bool {
     kind == Self.customKind
   }

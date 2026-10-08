@@ -4,7 +4,7 @@ import SwiftUI
 /// One challenge: progress ring and stats,
 /// today's target with Log attempt, and the
 /// attempt history (swipe to edit or
-/// delete).
+/// delete). The gear opens its settings.
 struct ChallengeDetailView: View {
   let challenge: Challenge
 
@@ -12,11 +12,18 @@ struct ChallengeDetailView: View {
     self.challenge = challenge
   }
 
+  @Environment(\.dismiss)
+  private var dismiss
   @Environment(\.modelContext)
   private var modelContext
   @Environment(\.now)
   private var now
   @State private var sheet: LogSheet?
+  @State private var isEditing = false
+  /// Set when Delete is confirmed in
+  /// settings; the challenge goes once
+  /// settings close.
+  @State private var isDeleting = false
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
   @ScaledMetric(relativeTo: .largeTitle)
@@ -61,6 +68,7 @@ struct ChallengeDetailView: View {
     // A detail screen: no tab bar, which
     // would also fade the bottom rows.
     .toolbar(.hidden, for: .tabBar)
+    .toolbar { gear }
     .sheet(item: $sheet) {
       LogAttemptView(
         challenge,
@@ -68,21 +76,43 @@ struct ChallengeDetailView: View {
         on: now
       )
     }
+    .sheet(
+      isPresented: $isEditing,
+      onDismiss: deleteIfAsked
+    ) {
+      ChallengeSettingsView(challenge) {
+        isDeleting = true
+      }
+    }
+  }
+
+  /// Opens settings.
+  private var gear: some ToolbarContent {
+    ToolbarItem(placement: .primaryAction) {
+      Button {
+        isEditing = true
+      } label: {
+        Label(
+          "Settings",
+          systemImage: "gearshape"
+        )
+      }
+    }
+  }
+
+  /// Leaves this screen first, then deletes
+  /// the challenge.
+  private func deleteIfAsked() {
+    guard isDeleting else {
+      return
+    }
+    dismiss()
+    modelContext.delete(challenge)
+    try? modelContext.save()
   }
 
   private func openLog(_ attempt: Attempt?) {
     sheet = LogSheet(attempt: attempt)
-  }
-
-  /// Section titles in a standard text
-  /// style, so they scale and read clearly.
-  private func sectionHeader(
-    _ title: LocalizedStringKey
-  ) -> some View {
-    Text(title)
-      .font(.headline)
-      .foregroundStyle(.primary)
-      .textCase(nil)
   }
 
   private var header: some View {
@@ -176,7 +206,7 @@ struct ChallengeDetailView: View {
       .font(.title2.bold())
       logButton(done)
     } header: {
-      sectionHeader("Today")
+      SectionTitle("Today")
     }
   }
 
@@ -194,7 +224,11 @@ struct ChallengeDetailView: View {
     .listRowSeparator(.hidden)
     .testID("logAttemptButton")
   }
+}
 
+// The history list, kept apart so the main
+// type stays short.
+extension ChallengeDetailView {
   private var history: some View {
     let attempts = challenge.sortedAttempts
     return Section {
@@ -215,7 +249,7 @@ struct ChallengeDetailView: View {
           .listRowSeparator(.hidden)
       }
     } header: {
-      sectionHeader("History")
+      SectionTitle("History")
     }
   }
 
