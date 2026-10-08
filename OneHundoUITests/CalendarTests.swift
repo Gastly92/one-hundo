@@ -39,7 +39,7 @@ final class CalendarTests: XCTestCase {
     )
     XCTAssertTrue(
       pullUps.label.contains(
-        "Starting test"
+        "Started this challenge"
       ),
       pullUps.label
     )

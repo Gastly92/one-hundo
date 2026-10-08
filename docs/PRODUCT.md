@@ -120,8 +120,8 @@ Picking a built-in goes to the enroll flow.
 A short step-by-step flow (a few pages in the
 same sheet, with Back/Next):
 
-1. **Intro**: the challenge name, its form
-   tips, and an image where available, so you
+1. **Intro**: the challenge name and its
+   form tips (open; images to come), so you
    warm up with good form before testing
    yourself.
 2. **Test yourself**: "How many push-ups can
@@ -182,13 +182,15 @@ Opened from a card or from the calendar.
   attempt** button. If already logged today,
   it shows your count and the button becomes
   **Edit today**.
-- **History**: a line chart of your counts
-  over time, and a list of attempts (date and
+- **History**: a list of attempts (date and
   count), newest first. Tap an attempt to
   edit it; swipe left or long-press to delete
   it.
-- **Form tips** (built-ins only): the tips
-  and images, collapsible.
+- **Progress**: a line chart of your counts
+  over time, below the history.
+- **Form tips** (built-ins only): "Good
+  form", closed until tapped (images to
+  come).
 - **Settings** (the gear in the top bar, a
   sheet with Cancel and Save): edit goal,
   daily increase, reminder, and for custom
@@ -255,7 +257,7 @@ success haptic, then two choices:
   its count, and whether you hit that
   day's target ("Hit the target of 6." /
   "The target was 7."). A challenge's
-  first day shows "Starting test".
+  first day shows "Started this challenge".
 - Tap a challenge in the day view to open its
   challenge screen.
 

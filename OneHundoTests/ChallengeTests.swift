@@ -99,6 +99,10 @@ final class ChallengeTests: XCTestCase {
     let counts = pushUps.sortedAttempts
       .map(\.count)
     XCTAssertEqual(counts, [6, 5])
+    // The chart reads left to right.
+    let chart = pushUps.oldestFirst
+      .map(\.count)
+    XCTAssertEqual(chart, [5, 6])
   }
 
   func testCardTextTryAndDone() throws {
