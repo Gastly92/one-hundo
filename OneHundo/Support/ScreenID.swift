@@ -13,7 +13,8 @@
 /// fails if a view in `Views/Screens/` isn't
 /// shown there.
 enum ScreenID: String, CaseIterable {
-  case welcome, challengeList, calendar
+  case welcome, challengeList
+  case calendar, calendarDay
   case addChallenge, customChallenge
   case enrollIntro, enrollTest
   case enrollGoal, enrollReminder

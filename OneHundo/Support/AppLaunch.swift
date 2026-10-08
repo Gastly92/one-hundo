@@ -26,6 +26,7 @@ struct AppLaunch {
   /// challenges; the rest show an empty app.
   static let seededScreens: Set<ScreenID> = [
     .challengeList, .challengeDetail,
+    .calendar, .calendarDay,
     .logAttempt, .editAttempt, .logTimed,
     .logResult, .challengeSettings,
     .customSettings,

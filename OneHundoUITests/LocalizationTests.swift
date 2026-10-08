@@ -15,12 +15,19 @@ final class LocalizationTests: XCTestCase {
     "-NSSurroundLocalizedStrings", "YES",
   ]
 
-  /// System-formatted text: dates, and the
-  /// system's own error description.
+  /// System-formatted text: dates, weekday
+  /// letters, and the system's own error
+  /// description.
   private static let systemIDs: Set = [
     "attemptRow", "attemptDate",
-    "errorDetails",
+    "errorDetails", "monthTitle",
+    "weekday", "dayTitle",
   ]
+
+  /// Calendar days ("day.5"): a date, and
+  /// the names of challenges logged then
+  /// (the sample Plank's stays as typed).
+  private static let dayPrefix = "day."
 
   /// Text the user typed (the sample custom
   /// challenge's name), which stays as
@@ -83,6 +90,7 @@ final class LocalizationTests: XCTestCase {
         continue
       }
       if Self.systemIDs.contains(id)
+        || id.hasPrefix(Self.dayPrefix)
         || Self.userText.contains(label) {
         continue
       }

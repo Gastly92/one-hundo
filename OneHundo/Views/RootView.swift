@@ -35,7 +35,7 @@ struct RootView: View {
     TabView {
       ChallengeListView()
         .tabItem { challengesTab }
-      CalendarPlaceholderView()
+      CalendarView()
         .tabItem { calendarTab }
     }
     .task(id: plan) {
