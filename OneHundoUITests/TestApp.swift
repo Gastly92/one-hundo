@@ -101,10 +101,12 @@ extension XCUIApplication {
       tapped.opens.appears(),
       "No menu, and no sign of a tap"
     )
+    // Not `element`'s name: it's off screen
+    // now, and reading it would fail.
     print("""
       Long-press read as a tap (app \
       stalled): closing what it opened and \
-      pressing \(element.identifier) again.
+      pressing again.
       """)
     tapped.close()
     XCTAssertTrue(tapped.opens.disappears())
