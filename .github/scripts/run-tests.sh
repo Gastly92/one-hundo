@@ -117,9 +117,12 @@ xcodebuild test-without-building \
   -resultBundlePath build/test.xcresult \
   > build/test.log 2>&1 || status=$?
 
-# Each test's result and errors.
+# Each test's result and errors, and any
+# long-press retried after a stall (see
+# `menuItem` in OneHundoUITests).
 shown='Test Case .*(passed|failed)'
 shown+='|error:|\*\* TEST'
+shown+='|Long-press read as a tap'
 grep -E "($shown)" build/test.log || true
 
 echo "Tests ($shard):" \

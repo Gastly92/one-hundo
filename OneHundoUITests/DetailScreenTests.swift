@@ -132,7 +132,9 @@ final class DetailScreenTests: XCTestCase {
     on row: XCUIElement,
     _ app: XCUIApplication
   ) {
-    let item = app.menuItem(label, on: row)
+    let item = app.menuItem(
+      label, on: row, ifTapped: app.editSheet
+    )
     item.tap()
     // Wait for the menu to close, so the
     // next pick doesn't find this one.

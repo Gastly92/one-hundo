@@ -101,7 +101,9 @@ final class ChallengeListTests: XCTestCase {
     )
 
     let item = app.menuItem(
-      "Delete challenge", on: pullUps
+      "Delete challenge",
+      on: pullUps,
+      ifTapped: app.screen("Pull-ups")
     )
     let edit = app.button("Edit today")
     XCTAssertTrue(edit.exists)
@@ -132,7 +134,15 @@ final class ChallengeListTests: XCTestCase {
     )
 
     // Not logged today yet: "Log attempt".
-    app.menuItem("Log attempt", on: pushUps)
+    // The first press is a tap on purpose,
+    // as on a stalled CI runner: it opens
+    // Push-ups, and the helper goes back and
+    // presses again (its one retry).
+    app.menuItem(
+      "Log attempt",
+      on: pushUps,
+      ifTapped: app.screen("Push-ups")
+    ) { $0.tap() }
       .tap()
     let sheet = app.bar("Log attempt")
     XCTAssertTrue(sheet.appears())

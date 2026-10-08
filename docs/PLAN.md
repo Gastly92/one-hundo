@@ -541,6 +541,27 @@ go in first.
   Settings, reminders silently don't come;
   a hint for that could come in step 9.
 
+#### 6.1 Long-press after a CI stall
+- CI's free macOS runners (3 cores, no
+  GPU) stall for seconds now and then. A
+  long-press held during a stall reaches
+  the app as a tap, so the card or history
+  menu never opens (seen in a screen
+  recording; the same failure hit before
+  step 6). Slow spells hit a random test
+  each run; long-presses are the only step
+  they break.
+- `menuItem` presses once more only on
+  that sign: no menu, and what a tap opens
+  (the challenge screen, or the Edit sheet)
+  is showing. It closes that first and logs
+  "Long-press read as a tap" in the CI log.
+  Any other miss still fails.
+- `testLongPressLogsToday` makes its first
+  press a tap, so the retry path runs on
+  every CI run.
+- No version bump (tests only).
+
 ### 7. Calendar
 - Month calendar with swipe between months
   and a shape marker per challenge per day
