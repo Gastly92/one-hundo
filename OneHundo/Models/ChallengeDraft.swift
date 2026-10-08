@@ -124,6 +124,11 @@ struct ChallengeDraft {
     challenge.dailyIncrease = increase
     challenge.reminderEnabled = remind
     challenge.reminderMinutes = minutes
+    // A goal at or below the current count
+    // counts as reached.
+    if challenge.isGoalReached {
+      challenge.complete()
+    }
   }
 }
 

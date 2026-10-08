@@ -28,8 +28,8 @@ struct AppLaunch {
     .challengeList, .challengeDetail,
     .calendar, .calendarDay,
     .logAttempt, .editAttempt, .logTimed,
-    .logResult, .challengeSettings,
-    .customSettings,
+    .logResult, .goalReached, .newGoal,
+    .challengeSettings, .customSettings,
   ]
 
   /// Opens the store, in memory or on disk.

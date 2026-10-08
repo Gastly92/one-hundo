@@ -22,6 +22,9 @@ struct ChallengeDetailView: View {
   private var now
   @State private var sheet: LogSheet?
   @State private var isEditing = false
+  /// The new goal sheet, for a completed
+  /// challenge.
+  @State private var isContinuing = false
   /// Set when Delete is confirmed in
   /// settings; the challenge goes once
   /// settings close.
@@ -95,6 +98,13 @@ struct ChallengeDetailView: View {
         editing: $0.attempt,
         on: now
       )
+    }
+    .sheet(isPresented: $isContinuing) {
+      NavigationStack {
+        NewGoalView(challenge) {
+          isContinuing = false
+        }
+      }
     }
     .sheet(
       isPresented: $isEditing,
@@ -213,8 +223,9 @@ struct ChallengeDetailView: View {
   }
 
   /// Today's target and the Log attempt
-  /// button. Reads today's attempt once so
-  /// both agree.
+  /// button (or Continue, once completed).
+  /// Reads today's attempt once so both
+  /// agree.
   private var today: some View {
     let done = challenge.attempt(on: now)
     return Section {
@@ -224,10 +235,28 @@ struct ChallengeDetailView: View {
           .testID("todayText")
       }
       .font(.title2.bold())
-      logButton(done)
+      if challenge.isCompleted {
+        continueButton
+      } else {
+        logButton(done)
+      }
     } header: {
       SectionTitle("Today")
     }
+  }
+
+  /// A completed challenge: pick a new goal
+  /// to continue it.
+  private var continueButton: some View {
+    Button {
+      isContinuing = true
+    } label: {
+      Text("Continue").fullWidth()
+    }
+    .buttonStyle(.borderedProminent)
+    .controlSize(.large)
+    .listRowSeparator(.hidden)
+    .testID("continueButton")
   }
 
   private func logButton(

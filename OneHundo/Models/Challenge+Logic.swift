@@ -68,12 +68,38 @@ extension Challenge {
     }
   }
 
-  /// Card text for `day`: "Try 6 today", or
-  /// "Done: 6" once logged.
+  /// Whether the goal was reached and the
+  /// challenge set aside, until a new goal
+  /// continues it. It keeps its history.
+  var isCompleted: Bool {
+    completedDate != nil
+  }
+
+  /// Sets the challenge aside as completed.
+  func complete() {
+    completedDate = Date()
+  }
+
+  /// Continues a challenge with a new goal,
+  /// active again.
+  func keepGoing(to goal: Int) {
+    self.goal = goal
+    completedDate = nil
+  }
+
+  /// Card text for `day`: "Try 6 today",
+  /// "Done: 6" once logged, or "Reached 100"
+  /// once completed.
   func todayText(
     on day: Date = Date(),
     in cal: Calendar = .current
   ) -> String {
+    if isCompleted {
+      let text = unit.format(goal)
+      return String(
+        localized: "Reached \(text)"
+      )
+    }
     if let done = attempt(on: day, in: cal) {
       let text = unit.format(done.count)
       return String(
@@ -219,6 +245,8 @@ extension Challenge {
   /// and says how it went: whether it hit
   /// that day's target, whether it's a new
   /// personal best, and the next target.
+  /// Reaching the goal completes the
+  /// challenge (a new goal continues it).
   @discardableResult
   func recordAttempt(
     count: Int,
@@ -232,6 +260,7 @@ extension Challenge {
     logAttempt(
       count: count, on: date, in: cal
     )
+    if count >= goal { complete() }
     return LogOutcome(
       count: count,
       target: dayTarget,

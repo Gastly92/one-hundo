@@ -165,9 +165,11 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(plank.reminderMinutes, 60)
     // Lowered to the current count: reached.
     XCTAssertFalse(plank.isGoalReached)
+    XCTAssertFalse(plank.isCompleted)
     draft.goal = 30
     draft.apply(to: plank)
     XCTAssertTrue(plank.isGoalReached)
+    XCTAssertTrue(plank.isCompleted)
   }
 
   func testApplyKeepsBuiltInLook() throws {

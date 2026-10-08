@@ -238,8 +238,8 @@ success haptic, then two choices:
   100). The challenge keeps going from your
   current count.
 - **Done**: the card moves to a "Completed"
-  section at the bottom of the list, showing
-  the date you finished. Its challenge screen
+  section at the bottom of the list, saying
+  e.g. "Reached 100". Its challenge screen
   stays viewable (history, chart) and has a
   **Continue** button, which works like Set a
   new goal and moves it back to the active

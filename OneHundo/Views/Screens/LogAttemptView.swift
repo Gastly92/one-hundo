@@ -4,7 +4,8 @@ import SwiftUI
 /// Log a new attempt (today by default, or a
 /// past day), or edit an existing one. After
 /// saving, shows a small celebration or an
-/// encouraging message.
+/// encouraging message; reaching the goal
+/// gets confetti and a new goal to pick.
 struct LogAttemptView: View {
   let challenge: Challenge
   /// The attempt being edited, or nil to log
@@ -175,17 +176,41 @@ struct LogAttemptView: View {
         .foregroundStyle(.secondary)
       if outcome.isNewBest { newBest }
       Spacer()
-      Button {
-        dismiss()
-      } label: {
-        Text("Done").fullWidth()
+      if outcome.reachedGoal {
+        newGoalLink
+        doneButton.buttonStyle(.bordered)
+      } else {
+        doneButton
+          .buttonStyle(.borderedProminent)
       }
-      .buttonStyle(.borderedProminent)
-      .controlSize(.large)
-      .testID("logDoneButton")
     }
+    .controlSize(.large)
     .padding()
+    .overlay {
+      if outcome.reachedGoal { Confetti() }
+    }
     .onAppear { bounce += 1 }
+  }
+
+  /// Done leaves a reached goal completed;
+  /// a new goal continues it.
+  private var doneButton: some View {
+    Button {
+      dismiss()
+    } label: {
+      Text("Done").fullWidth()
+    }
+    .testID("logDoneButton")
+  }
+
+  private var newGoalLink: some View {
+    NavigationLink {
+      NewGoalView(challenge) { dismiss() }
+    } label: {
+      Text("Set a new goal").fullWidth()
+    }
+    .buttonStyle(.borderedProminent)
+    .testID("setNewGoal")
   }
 
   private var newBest: some View {

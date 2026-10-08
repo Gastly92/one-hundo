@@ -66,6 +66,13 @@ final class ProgressionTests: XCTestCase {
     XCTAssertEqual(progress(5, goal: 0), 0)
   }
 
+  func testNextGoal() {
+    let next = [100, 50, 20, 5].map {
+      Progression.nextGoal(after: $0)
+    }
+    XCTAssertEqual(next, [150, 80, 30, 15])
+  }
+
   // Shorthands, with a goal of 100.
 
   private func target(

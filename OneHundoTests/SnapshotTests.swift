@@ -92,8 +92,12 @@ final class SnapshotTests: XCTestCase {
         now: Self.now
       )
     }
+    // No animations (the goal's confetti
+    // falls on appear), so every picture
+    // shows where they end.
     return ScreenHost(screen: screen)
       .modelContainer(store)
       .environment(\.now, Self.now)
+      .transaction { $0.animation = nil }
   }
 }

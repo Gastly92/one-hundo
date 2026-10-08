@@ -630,6 +630,12 @@ go in first.
   come later.
 
 ### 9. Goal reached and polish
+Split into four PRs: 9a goal reached, 9b
+polish, 9c release safety (schema V1,
+performance, telemetry), 9d App Store
+listing and 1.0.0.
+
+#### 9a. Goal reached ✅
 - Goal-reached celebration (full screen,
   confetti, success haptic), Set a new goal
   (defaults higher, e.g. 150 after 100) /
@@ -642,6 +648,27 @@ go in first.
 - UI test: log the goal count, see the
   celebration, tap Done, card is under
   Completed; Continue moves it back.
+- As built (0.9.0): logging the goal (or
+  lowering it to the current count in
+  settings) completes the challenge right
+  away, so swiping the sheet away counts
+  as Done. The result screen adds
+  confetti and Set a new goal, which opens
+  `NewGoalView` (suggests half as much
+  again, to the nearest 10:
+  `Progression.nextGoal`); Keep going
+  sets the goal and makes it active
+  again. Completed cards say "Reached
+  100" under a Completed heading; the
+  challenge screen swaps Log for Continue
+  (the same new goal screen). Reminders
+  stop while completed. `GoalTests` runs
+  both paths; screens `goalReached` and
+  `newGoal`.
+- Day view fix: each count is centered in
+  its row, in line with the chevron.
+
+#### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass
   on empty and error states.
 - Manual accessibility check on the phone:

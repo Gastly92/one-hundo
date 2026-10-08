@@ -46,24 +46,39 @@ struct DayView: View {
     let count = challenge.unit.format(
       entry.count
     )
+    // The count is centered in the row, in
+    // line with the chevron.
     return NavigationLink(value: challenge) {
-      HStack(alignment: .firstTextBaseline) {
-        let shape = challenge.marker.symbol
-        Image(systemName: shape)
-          .foregroundStyle(challenge.color)
-          .accessibilityHidden(true)
-        LeadingStack(spacing: 2) {
-          Text(challenge.displayName)
-            .font(.headline)
-          status(entry)
-        }
-        .fullWidth(.leading)
+      HStack {
+        label(entry)
         Text(count)
           .font(.title3.bold())
           .monospacedDigit()
       }
     }
     .testID("dayEntry.\(challenge.kind)")
+  }
+
+  /// The shape, in line with the name, and
+  /// the status below.
+  private func label(
+    _ entry: DayEntry
+  ) -> some View {
+    let challenge = entry.challenge
+    let shape = challenge.marker.symbol
+    return HStack(
+      alignment: .firstTextBaseline
+    ) {
+      Image(systemName: shape)
+        .foregroundStyle(challenge.color)
+        .accessibilityHidden(true)
+      LeadingStack(spacing: 2) {
+        Text(challenge.displayName)
+          .font(.headline)
+        status(entry)
+      }
+    }
+    .fullWidth(.leading)
   }
 
   /// "Hit the target of 6." with a check,

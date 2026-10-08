@@ -40,6 +40,16 @@ struct ScreenHost: View {
     unit: .reps
   )
 
+  /// Push-ups reaches its goal of 100.
+  private static let reached = LogOutcome(
+    count: 100,
+    target: 11,
+    goal: 100,
+    nextTarget: 100,
+    isNewBest: true,
+    unit: .reps
+  )
+
   private static let error = """
     The file couldn't be saved because the \
     disk is full.
@@ -102,6 +112,20 @@ struct ScreenHost: View {
           on: now,
           outcome: Self.outcome
         )
+      }
+    case .goalReached:
+      if let pushUps {
+        LogAttemptView(
+          pushUps,
+          on: now,
+          outcome: Self.reached
+        )
+      }
+    case .newGoal:
+      if let pushUps {
+        NavigationStack {
+          NewGoalView(pushUps)
+        }
       }
     case .challengeSettings:
       if let pushUps {

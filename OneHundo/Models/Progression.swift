@@ -21,6 +21,17 @@ enum Progression {
     goal > count ? goal : count + 10
   }
 
+  /// The suggested goal once `goal` is
+  /// reached: half as much again, to the
+  /// nearest 10, and at least 10 more (100
+  /// leads to 150, 50 to 80).
+  static func nextGoal(
+    after goal: Int
+  ) -> Int {
+    let half = (goal + 10) / 20 * 10
+    return goal + max(half, 10)
+  }
+
   /// Days needed to go from `count` to
   /// `goal`, e.g. 5 to 100 at +1 a day is 95
   /// days.

@@ -91,8 +91,14 @@ final class LoggingTests: XCTestCase {
     let pushUps = store.pushUps(
       start: 98, increase: 5
     )
+    XCTAssertFalse(
+      pushUps.record(99, day: 2).reachedGoal
+    )
+    XCTAssertFalse(pushUps.isCompleted)
     let outcome = pushUps.record(100, day: 2)
     XCTAssertTrue(outcome.reachedGoal)
+    // Reaching it completes the challenge.
+    XCTAssertTrue(pushUps.isCompleted)
     XCTAssertEqual(
       outcome.title, "Goal reached!"
     )

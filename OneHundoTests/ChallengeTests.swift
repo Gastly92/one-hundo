@@ -122,6 +122,24 @@ final class ChallengeTests: XCTestCase {
     )
   }
 
+  func testCompleteAndKeepGoing() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    XCTAssertFalse(pushUps.isCompleted)
+    pushUps.complete()
+    XCTAssertTrue(pushUps.isCompleted)
+    XCTAssertEqual(
+      pushUps.todayText(day: 2),
+      "Reached 100"
+    )
+    pushUps.keepGoing(to: 150)
+    XCTAssertFalse(pushUps.isCompleted)
+    XCTAssertEqual(pushUps.goal, 150)
+    XCTAssertEqual(
+      pushUps.progressText, "5 / 150"
+    )
+  }
+
   func testStartDayIsDone() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
