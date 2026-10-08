@@ -21,6 +21,14 @@ final class CalendarMonthTests: XCTestCase {
     )
     // Jan 1 2026 is a Thursday: 4 blanks.
     XCTAssertEqual(january.leadingBlanks, 4)
+    // Blanks, then days, each its own cell.
+    let slots = january.slots
+    XCTAssertEqual(slots.count, 35)
+    XCTAssertEqual(slots[3], .blank(3))
+    XCTAssertEqual(
+      slots[4], .day(day(1, hour: 0))
+    )
+    XCTAssertEqual(Set(slots).count, 35)
     XCTAssertEqual(
       january.adding(1).days.count, 28
     )

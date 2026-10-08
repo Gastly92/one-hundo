@@ -17,9 +17,13 @@ struct CalendarView: View {
   /// the current one.
   @State private var shown: CalendarMonth?
 
+  /// Between columns, in the grid and the
+  /// weekday row alike.
+  private static let spacing: CGFloat = 4
+
   private static let columns = Array(
     repeating: GridItem(
-      .flexible(), spacing: 4
+      .flexible(), spacing: spacing
     ),
     count: 7
   )
@@ -35,7 +39,10 @@ struct CalendarView: View {
       ScrollView {
         VStack(spacing: 16) {
           header
-          grid
+          VStack(spacing: 8) {
+            weekdays
+            grid
+          }
         }
         .padding()
       }
@@ -84,33 +91,41 @@ struct CalendarView: View {
     .font(.title3)
   }
 
+  /// The weekday letters, one per column.
+  private var weekdays: some View {
+    HStack(spacing: Self.spacing) {
+      let names = month.weekdays.enumerated()
+      ForEach(Array(names), id: \.offset) {
+        Text($0.element)
+          .font(.caption.bold())
+          .foregroundStyle(.secondary)
+          .fullWidth()
+          .testID("weekday")
+      }
+    }
+    .accessibilityHidden(true)
+  }
+
   private var grid: some View {
     LazyVGrid(
       columns: Self.columns, spacing: 8
     ) {
-      let names = month.weekdays.enumerated()
-      ForEach(Array(names), id: \.offset) {
-        weekday($0.element)
-      }
-      ForEach(
-        0..<month.leadingBlanks, id: \.self
-      ) { _ in
-        Color.clear
-      }
-      ForEach(month.days, id: \.self) {
-        cell($0)
+      ForEach(month.slots, id: \.self) {
+        slot($0)
       }
     }
   }
 
-  private func weekday(
-    _ name: String
+  @ViewBuilder
+  private func slot(
+    _ slot: CalendarMonth.Slot
   ) -> some View {
-    Text(name)
-      .font(.caption.bold())
-      .foregroundStyle(.secondary)
-      .accessibilityHidden(true)
-      .testID("weekday")
+    switch slot {
+    case .blank:
+      Color.clear
+    case .day(let day):
+      cell(day)
+    }
   }
 
   /// A day; one with attempts opens them.
