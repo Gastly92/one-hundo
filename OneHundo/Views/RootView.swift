@@ -15,21 +15,19 @@ struct RootView: View {
     self.notifier = notifier
   }
 
-  /// What the reminders depend on. Any
-  /// change (a log, an edit, new settings,
-  /// the app coming back) schedules them
-  /// again.
-  private struct Sync: Equatable {
-    let reminders: [Reminder]
-    let phase: ScenePhase
-  }
-
-  private var sync: Sync {
-    Sync(
-      reminders: ReminderPlan.reminders(
-        for: challenges, now: now
-      ),
-      phase: phase
+  /// The reminders to schedule, or nil while
+  /// the app isn't in front (in the
+  /// background, or behind the permission
+  /// prompt). Any change (a log, an edit,
+  /// new settings, the app coming back)
+  /// schedules them again, so the 14 days
+  /// move on.
+  private var plan: [Reminder]? {
+    guard phase == .active else {
+      return nil
+    }
+    return ReminderPlan.reminders(
+      for: challenges, now: now
     )
   }
 
@@ -40,10 +38,12 @@ struct RootView: View {
       CalendarPlaceholderView()
         .tabItem { calendarTab }
     }
-    .task(id: sync) {
-      await ReminderSync.update(
-        sync.reminders, with: notifier
-      )
+    .task(id: plan) {
+      if let plan {
+        await ReminderSync.update(
+          plan, with: notifier
+        )
+      }
     }
   }
 
