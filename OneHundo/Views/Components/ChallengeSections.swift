@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// A custom challenge's name, unit and
-/// color, in the custom challenge form and
-/// its settings.
+/// A custom challenge's name and unit, in
+/// the custom challenge form and its
+/// settings.
 struct CustomSections: View {
   @Binding var draft: ChallengeDraft
 
@@ -29,6 +29,25 @@ struct CustomSections: View {
       .pickerStyle(.segmented)
     } header: {
       SectionTitle("Unit")
+    }
+  }
+}
+
+/// A custom challenge's shape and color,
+/// which tell it apart from the others.
+struct LookSections: View {
+  @Binding var draft: ChallengeDraft
+
+  var body: some View {
+    Section {
+      MarkerPicker(
+        marker: $draft.marker,
+        color: Color(
+          paletteName: draft.colorName
+        )
+      )
+    } header: {
+      SectionTitle("Shape")
     }
     Section {
       ColorSwatches(

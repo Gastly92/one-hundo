@@ -57,8 +57,9 @@ design changed) as each one lands.
 
 - `Challenge`: id, kind (built-in id or
   custom), name, unit (reps / seconds /
-  minutes), color, starting count, goal,
-  daily increase, reminder on/off and time,
+  minutes), color, shape, starting count,
+  goal, daily increase, reminder on/off and
+  time,
   created date, completed date (optional),
   attempts.
 - `Attempt`: date (one per challenge per
@@ -77,8 +78,8 @@ the card says "Done: 5" that day and "Try 6
 today" the next (changed in 0.4.5). Logging
 again that day replaces the test. Reminder
 time is stored as minutes after midnight;
-color as a palette name; unit as a raw
-string.
+color as a palette name; unit and shape
+(`Marker`) as raw strings.
 
 ## PRs
 
@@ -475,10 +476,18 @@ go in first.
   them, starts a custom challenge, and
   saves settings, so the logic is unit
   tested. They share `CustomSections`
-  (name, unit, color) and `PlanSections`
-  (goal, daily step, reminder). Settings
-  is a sheet with Cancel / Save; a built-in
-  keeps its name, unit and color. Deleting
+  (name, unit), `LookSections` (shape,
+  color) and `PlanSections` (goal, daily
+  step, reminder). Settings is a sheet
+  with Cancel / Save; a built-in keeps its
+  name, unit, shape and color.
+- Shapes, so color is never the only way
+  to tell challenges apart: each challenge
+  has a `Marker` (circle, square, triangle,
+  diamond, star, hexagon), shown before its
+  name on the card. New stored field
+  `markerName`; SwiftData adds it with no
+  reinstall. Deleting
   there closes settings and the challenge
   screen first, then deletes. A goal at or
   below the current count says "this goal
@@ -500,7 +509,8 @@ go in first.
 
 ### 7. Calendar
 - Month calendar with swipe between months
-  and colored dots per day.
+  and a shape marker per challenge per day
+  (in its color, but never color alone).
 - Day view listing that day's attempts and
   whether the target was hit; tap through to
   the challenge screen.

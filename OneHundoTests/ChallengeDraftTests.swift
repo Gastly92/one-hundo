@@ -84,6 +84,7 @@ final class ChallengeDraftTests: XCTestCase {
     draft.name = " Plank "
     draft.unit = .seconds
     draft.colorName = "teal"
+    draft.marker = .hexagon
     draft.startingCount = 30
     draft.goal = 120
     draft.increase = 5
@@ -98,6 +99,7 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(plank.name, "Plank")
     XCTAssertEqual(plank.unit, .seconds)
     XCTAssertEqual(plank.colorName, "teal")
+    XCTAssertEqual(plank.marker, .hexagon)
     XCTAssertEqual(plank.goal, 120)
     XCTAssertEqual(plank.dailyIncrease, 5)
     XCTAssertFalse(plank.reminderEnabled)
@@ -129,6 +131,7 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(draft.name, "Push-ups")
     XCTAssertEqual(draft.unit, .reps)
     XCTAssertEqual(draft.colorName, "orange")
+    XCTAssertEqual(draft.marker, .circle)
     XCTAssertEqual(draft.startingCount, 8)
     XCTAssertEqual(draft.goal, 150)
     XCTAssertEqual(draft.increase, 2)
@@ -146,6 +149,7 @@ final class ChallengeDraftTests: XCTestCase {
     draft.name = "Side plank "
     draft.unit = .minutes
     draft.colorName = "red"
+    draft.marker = .triangle
     draft.goal = 100
     draft.increase = 3
     draft.remind = false
@@ -154,6 +158,7 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(plank.name, "Side plank")
     XCTAssertEqual(plank.unit, .minutes)
     XCTAssertEqual(plank.colorName, "red")
+    XCTAssertEqual(plank.marker, .triangle)
     XCTAssertEqual(plank.goal, 100)
     XCTAssertEqual(plank.dailyIncrease, 3)
     XCTAssertFalse(plank.reminderEnabled)
@@ -172,6 +177,7 @@ final class ChallengeDraftTests: XCTestCase {
     draft.name = "Press-ups"
     draft.unit = .seconds
     draft.colorName = "red"
+    draft.marker = .star
     draft.goal = 150
     draft.apply(to: pushUps)
     XCTAssertEqual(pushUps.name, "Push-ups")
@@ -179,6 +185,7 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(
       pushUps.colorName, "orange"
     )
+    XCTAssertEqual(pushUps.marker, .circle)
     XCTAssertEqual(pushUps.goal, 150)
   }
 }

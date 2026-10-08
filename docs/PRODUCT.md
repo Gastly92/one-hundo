@@ -77,9 +77,13 @@ The app has two tabs at the bottom:
 
 ### Challenge card
 
-- The name, e.g. "Push-ups". No icons:
-  challenges are told apart by name and
-  color.
+- The challenge's shape, then its name,
+  e.g. "● Push-ups". Challenges are told
+  apart by name and shape, never by color
+  alone (color-blind friendly); color is an
+  extra cue. Built-ins have fixed shapes:
+  Push-ups a circle, Sit-ups a square,
+  Pull-ups a triangle.
 - Today's target, large: "Try 6 today", or
   "Done: 6" with a checkmark once logged
   today. On the day you start, your test
@@ -151,10 +155,14 @@ form:
   minutes (default reps). The unit is used in
   labels, e.g. "Try 46 seconds today". Higher
   is always better.
+- **Test yourself**: the starting count
+  (today's test, default 1).
+- **Shape**: circle, square, triangle,
+  diamond, star or hexagon (star by
+  default), drawn in the chosen color.
 - **Color**: color swatches for the card
   (orange by default).
 - Then the same fields as the enroll flow:
-  starting count (today's test, default 1),
   goal (default 100, with quick buttons),
   daily step (default 1), and reminder.
 - **Start** button at the bottom, enabled
@@ -183,7 +191,8 @@ Opened from a card or from the calendar.
 - **Settings** (the gear in the top bar, a
   sheet with Cancel and Save): edit goal,
   daily increase, reminder, and for custom
-  challenges name, unit, and color. Under
+  challenges name, unit, shape and color.
+  Under
   the goal, the pace ("At this pace you'd
   hit 150 in about 140 days"). A red
   **Delete challenge** button at the
@@ -237,8 +246,8 @@ success haptic, then two choices:
 
 - A month calendar you can swipe between
   months; days with logged attempts show a
-  dot (one per challenge, in the challenge's
-  color, up to 3).
+  marker (one per challenge, its shape in
+  its color, up to 3).
 - Tap a day to open the day view: each
   challenge you logged that day with its
   count, and whether you hit that day's

@@ -21,6 +21,9 @@ final class Challenge {
   var unitRaw: String = "reps"
   /// Name of a color in the app's palette.
   var colorName: String = "orange"
+  /// Raw value of `Marker`; use `marker`
+  /// instead.
+  var markerName: String = "circle"
   var startingCount: Int = 0
   var goal: Int = 100
   var dailyIncrease: Int = 1
@@ -42,6 +45,7 @@ final class Challenge {
     startingCount: Int,
     kind: String = "custom",
     unit: CountUnit = .reps,
+    marker: Marker = .circle,
     goal: Int = 100,
     dailyIncrease: Int = 1,
     reminderEnabled: Bool = true,
@@ -52,6 +56,7 @@ final class Challenge {
     self.name = name
     self.unitRaw = unit.rawValue
     self.colorName = colorName
+    self.markerName = marker.rawValue
     self.startingCount = startingCount
     self.goal = goal
     self.dailyIncrease = dailyIncrease

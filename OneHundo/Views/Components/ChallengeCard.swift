@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// A challenge in the list grid: name,
-/// today's target, and progress.
+/// A challenge in the list grid: shape and
+/// name, today's target, and progress.
 struct ChallengeCard: View {
   let challenge: Challenge
 
@@ -11,15 +11,16 @@ struct ChallengeCard: View {
   private var color: Color {
     challenge.color
   }
+  private var symbol: String {
+    challenge.marker.symbol
+  }
   private var isDoneToday: Bool {
     challenge.attempt(on: now) != nil
   }
 
   var body: some View {
     LeadingStack(spacing: 10) {
-      Text(challenge.displayName)
-        .font(.headline)
-        .wrapsText()
+      name
       today
       LeadingStack(spacing: 4) {
         Text(challenge.progressText)
@@ -51,6 +52,19 @@ struct ChallengeCard: View {
       RoundedRectangle(cornerRadius: 16)
         .strokeBorder(color.opacity(0.3))
     )
+  }
+
+  /// The name after its shape, which tells
+  /// challenges apart without color.
+  private var name: some View {
+    HStack(alignment: .firstTextBaseline) {
+      Image(systemName: symbol)
+        .foregroundStyle(color)
+        .accessibilityHidden(true)
+      Text(challenge.displayName)
+        .wrapsText()
+    }
+    .font(.headline)
   }
 
   /// "Try 6 today", or a checkmark and

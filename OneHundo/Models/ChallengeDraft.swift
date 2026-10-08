@@ -11,6 +11,7 @@ struct ChallengeDraft {
   var name = ""
   var unit = CountUnit.reps
   var colorName = "orange"
+  var marker = Marker.star
   /// Today's test (new challenges only).
   var startingCount = 1
   var goal = 100
@@ -95,6 +96,7 @@ struct ChallengeDraft {
       colorName: colorName,
       startingCount: startingCount,
       unit: unit,
+      marker: marker,
       goal: goal,
       dailyIncrease: increase,
       reminderEnabled: remind,
@@ -108,13 +110,15 @@ struct ChallengeDraft {
     return challenge
   }
 
-  /// Saves settings. Name, unit and color
-  /// only change on custom challenges.
+  /// Saves settings. Name, unit, shape and
+  /// color only change on custom
+  /// challenges.
   func apply(to challenge: Challenge) {
     if challenge.isCustom {
       challenge.name = cleanName
       challenge.unit = unit
       challenge.colorName = colorName
+      challenge.marker = marker
     }
     challenge.goal = goal
     challenge.dailyIncrease = increase
@@ -132,6 +136,7 @@ extension ChallengeDraft {
     name = challenge.name
     unit = challenge.unit
     colorName = challenge.colorName
+    marker = challenge.marker
     startingCount = challenge.startingCount
     goal = challenge.goal
     increase = challenge.dailyIncrease

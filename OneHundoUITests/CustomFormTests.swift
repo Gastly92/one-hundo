@@ -21,8 +21,11 @@ final class CustomFormTests: XCTestCase {
     XCTAssertTrue(start.appears())
     XCTAssertFalse(start.isEnabled)
 
+    // Shape and color first: Seconds adds
+    // a row, pushing them lower.
+    app.button("shape.hexagon").tap()
+    app.button("color.blue").tap()
     app.button("Seconds").tap()
-    app.button("color.teal").tap()
     // Test yourself: 1 + 4 = 5 seconds.
     let plus = app.button("testCount.plus")
     for _ in 0..<4 { plus.tap() }

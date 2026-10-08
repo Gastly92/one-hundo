@@ -2,8 +2,8 @@ import SwiftData
 import SwiftUI
 
 /// Starting a custom challenge, on one form:
-/// name, unit, color, today's test, goal,
-/// daily step and reminder.
+/// name, unit, today's test, shape, color,
+/// goal, daily step and reminder.
 struct CustomChallengeView: View {
   /// Called after the challenge is saved, to
   /// close the Add challenge sheet.
@@ -21,6 +21,7 @@ struct CustomChallengeView: View {
     Form {
       CustomSections(draft: $draft)
       test
+      LookSections(draft: $draft)
       PlanSections(
         draft: $draft,
         goals: draft.quickGoals,
