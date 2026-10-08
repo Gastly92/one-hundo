@@ -36,12 +36,13 @@ struct ChallengeListView: View {
     lineWidth: 1.5, dash: [6, 4]
   )
 
-  /// Completed challenges get their own
-  /// section later (plan step 9).
   private var active: [Challenge] {
-    challenges.filter {
-      $0.completedDate == nil
-    }
+    challenges.filter { !$0.isCompleted }
+  }
+
+  /// Reached goals, below the active ones.
+  private var completed: [Challenge] {
+    challenges.filter(\.isCompleted)
   }
 
   var body: some View {
@@ -83,41 +84,53 @@ struct ChallengeListView: View {
 
   @ViewBuilder
   private var content: some View {
-    if active.isEmpty {
+    if challenges.isEmpty {
       WelcomeView { isAdding = true }
     } else {
       ScrollView { grid }
     }
   }
 
-  /// A `Grid` rather than `LazyVGrid`: its
-  /// cells fill their row, so cards side by
-  /// side match heights.
+  /// Active cards and Add challenge, then
+  /// any completed ones. One `Grid` rather
+  /// than `LazyVGrid`: its cells fill their
+  /// row, so cards side by side match
+  /// heights, and both parts share columns.
   private var grid: some View {
     Grid(
       horizontalSpacing: 12,
       verticalSpacing: 12
     ) {
-      ForEach(rows, id: \.self) { row in
-        GridRow {
-          ForEach(row, id: \.self) {
-            tile($0)
-          }
-        }
+      rows(active.map(Tile.card) + [.add])
+      if !completed.isEmpty {
+        Text("Completed")
+          .font(.title2.bold())
+          .accessibilityAddTraits(.isHeader)
+          .fullWidth(.leading)
+          .padding(.top, 8)
+        rows(completed.map(Tile.card))
       }
     }
     .padding()
   }
 
-  /// The cards, then Add challenge, in rows.
-  private var rows: [[Tile]] {
-    let tiles = active.map(Tile.card)
-    return GridLayout.rows(
-      tiles + [.add],
+  /// `tiles` in rows.
+  private func rows(
+    _ tiles: [Tile]
+  ) -> some View {
+    let all = GridLayout.rows(
+      tiles,
       columns: GridLayout.columns(
         for: textSize
       )
     )
+    return ForEach(all, id: \.self) { row in
+      GridRow {
+        ForEach(row, id: \.self) {
+          tile($0)
+        }
+      }
+    }
   }
 
   @ViewBuilder

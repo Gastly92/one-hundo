@@ -15,7 +15,7 @@ struct AddChallengeView: View {
   ) -> Bool {
     challenges.contains {
       $0.kind == builtIn.id
-        && $0.completedDate == nil
+        && !$0.isCompleted
     }
   }
 

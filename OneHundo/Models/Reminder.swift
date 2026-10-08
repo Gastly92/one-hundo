@@ -21,7 +21,7 @@ extension Challenge {
   /// Whether it sends reminders: turned on,
   /// and not completed.
   var remindsDaily: Bool {
-    reminderEnabled && completedDate == nil
+    reminderEnabled && !isCompleted
   }
 
   /// The reminder text for `day`, e.g. "Try
