@@ -95,7 +95,7 @@ final class CalendarMonthTests: XCTestCase {
     XCTAssertTrue(start.isTest)
     XCTAssertFalse(start.hitTarget)
     XCTAssertEqual(
-      start.status, "Starting test"
+      start.status, "Started this challenge"
     )
 
     let hit = try XCTUnwrap(

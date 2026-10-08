@@ -257,7 +257,7 @@ success haptic, then two choices:
   its count, and whether you hit that
   day's target ("Hit the target of 6." /
   "The target was 7."). A challenge's
-  first day shows "Starting test".
+  first day shows "Started this challenge".
 - Tap a challenge in the day view to open its
   challenge screen.
 

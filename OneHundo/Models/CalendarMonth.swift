@@ -126,7 +126,7 @@ struct DayEntry: Identifiable {
   var status: String {
     guard !isTest else {
       return String(
-        localized: "Starting test"
+        localized: "Started this challenge"
       )
     }
     let goal = challenge.unit.format(target)

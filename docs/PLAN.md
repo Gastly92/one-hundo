@@ -579,8 +579,10 @@ go in first.
   the arrows and swipes; it stops at the
   current month. `DayEntry` says how each
   day went: "Hit the target of 6.", "The
-  target was 7.", or "Starting test" on a
-  challenge's first day. Only days with
+  target was 7.", or "Started this
+  challenge" on its first day (was
+  "Starting test", unclear on the phone).
+  Only days with
   attempts open a day view. Up to 3
   markers a day; VoiceOver reads a day as
   its number and the challenges' names.
