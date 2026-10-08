@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
 @main
 struct OneHundoApp: App {
@@ -10,6 +11,13 @@ struct OneHundoApp: App {
     launch = AppLaunch(
       arguments: info.arguments
     )
+    if launch.isUITesting {
+      // No UIKit animations (screen pushes,
+      // sheets, menus): a long-press that
+      // lands while a screen is still
+      // sliding in turns into a tap.
+      UIView.setAnimationsEnabled(false)
+    }
   }
 
   var body: some Scene {

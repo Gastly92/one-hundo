@@ -164,7 +164,11 @@ features land.
   `@preconcurrency`); if one is ever needed,
   add `-enableThreadSanitizer YES` back to
   `run-tests.sh`. UI tests launch the app
-  with `App.start(seeded:)`.
+  with `App.start(seeded:)`; `-uiTesting`
+  turns off UIKit animations, so a
+  long-press never lands on a screen still
+  sliding in (it turns into a tap). No
+  retries or longer waits in UI tests.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
   dark and large text, on a fixed day
