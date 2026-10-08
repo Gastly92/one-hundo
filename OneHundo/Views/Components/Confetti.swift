@@ -36,7 +36,8 @@ struct Confetti: View {
       / 100
     let start = Double((index * 53) % 40)
       / 100
-    let fall = falling ? size.height : 0
+    // Past the bottom edge, out of sight.
+    let fall = falling ? size.height + 40 : 0
     return RoundedRectangle(cornerRadius: 2)
       .fill(Self.colors[index % count])
       .frame(width: 8, height: 14)
