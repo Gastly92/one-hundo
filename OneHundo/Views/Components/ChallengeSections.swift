@@ -119,9 +119,9 @@ struct PlanSections: View {
         .environment(\.timeZone, .gmt)
       }
       Text("""
-        Your reminder time is saved now; \
-        notifications arrive in a later \
-        update.
+        On days you haven't logged yet, a \
+        notification reminds you at this \
+        time.
         """)
         .font(.footnote)
     } header: {

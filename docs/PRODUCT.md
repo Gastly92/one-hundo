@@ -36,7 +36,8 @@ The app can send a phone notification each
 day to remind you to try your challenges,
 e.g. "Push-ups: try for 6 today." You choose
 the time, and can turn reminders off per
-challenge.
+challenge. Once you've logged a day, that
+day's reminder doesn't come.
 
 ## Challenges
 
@@ -137,9 +138,9 @@ same sheet, with Back/Next):
      Goal" and "At this pace you'd hit 100 in
      about 95 days."
 4. **Reminder**: a toggle (on by default) and
-   a time picker (default 6:00 PM). Turning
-   it on asks for notification permission the
-   first time.
+   a time picker (default 6:00 PM). Starting
+   a challenge with a reminder on asks for
+   notification permission the first time.
 5. **Start** button: saves the challenge with
    today's test as its first attempt, and
    returns to the list with the new card.

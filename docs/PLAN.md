@@ -494,7 +494,7 @@ go in first.
   below the current count says "this goal
   counts as reached".
 
-#### 5.1 UI tests without animations
+#### 5.1 UI tests without animations ✅
 - A long-press in a UI test sometimes
   opened the Edit sheet instead of its
   menu: the screen recording showed it
@@ -504,7 +504,7 @@ go in first.
   retries or longer waits.
 - No version bump (nothing user-visible).
 
-### 6. Daily reminders
+### 6. Daily reminders ✅
 - Ask notification permission when a reminder
   is first turned on.
 - Schedule one repeating local notification
@@ -517,6 +517,29 @@ go in first.
 - Unit test the notification text and
   schedule; check on the phone by hand, since
   UI tests can't easily verify notifications.
+- As built (0.6.0): not one repeating
+  notification but one per day for the next
+  14 days (`ReminderPlan`), since a repeating
+  one can't skip a logged day or change its
+  text. Title is the name, text "Try for 6
+  today." iOS keeps 64 at most, so the
+  soonest 64 are kept.
+- `RootView` schedules them again whenever
+  they'd change (a log, edit, delete, new
+  challenge or settings) and each time the
+  app comes back, so the 14 days move on.
+  It asks for permission first if any
+  challenge has a reminder on; iOS shows the
+  prompt only once.
+- Outside pieces go through `Notifier`:
+  `PhoneNotifier` on the phone,
+  `SilentNotifier` in UI tests (no prompt),
+  a fake in unit tests. One UI test
+  (`-notifications`) taps Allow on the real
+  prompt.
+- If notifications are turned off in iOS
+  Settings, reminders silently don't come;
+  a hint for that could come in step 9.
 
 ### 7. Calendar
 - Month calendar with swipe between months
