@@ -23,7 +23,8 @@ struct AppLaunch {
   static let seededScreens: Set<ScreenID> = [
     .challengeList, .challengeDetail,
     .logAttempt, .editAttempt, .logTimed,
-    .logResult,
+    .logResult, .challengeSettings,
+    .customSettings,
   ]
 
   /// Opens the store, in memory or on disk.

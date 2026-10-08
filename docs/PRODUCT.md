@@ -151,13 +151,16 @@ form:
   minutes (default reps). The unit is used in
   labels, e.g. "Try 46 seconds today". Higher
   is always better.
-- **Color**: a row of color swatches for the
-  card.
+- **Color**: color swatches for the card
+  (orange by default).
 - Then the same fields as the enroll flow:
-  starting count, goal (default 100), daily
-  increase (default 1), and reminder.
-- **Start** button, enabled once the name is
-  filled in.
+  starting count (today's test, default 1),
+  goal (default 100, with quick buttons),
+  daily step (default 1), and reminder.
+- **Start** button at the bottom, enabled
+  once the name is filled in and the goal is
+  above the starting count. Like the enroll
+  flow, the test is the first attempt.
 
 ### Challenge screen
 
@@ -177,11 +180,14 @@ Opened from a card or from the calendar.
   it.
 - **Form tips** (built-ins only): the tips
   and images, collapsible.
-- **Settings** (the gear in the top bar):
-  edit goal, daily increase, reminder, and
-  for custom challenges name, unit, and
-  color. A red **Delete challenge** button at
-  the bottom, with a confirmation.
+- **Settings** (the gear in the top bar, a
+  sheet with Cancel and Save): edit goal,
+  daily increase, reminder, and for custom
+  challenges name, unit, and color. Under
+  the goal, the pace ("At this pace you'd
+  hit 150 in about 140 days"). A red
+  **Delete challenge** button at the
+  bottom, with a confirmation.
   - The goal can be raised or lowered at any
     time. Lowering it to at or below your
     current count counts as reaching it: you

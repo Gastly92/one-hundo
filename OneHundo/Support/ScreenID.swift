@@ -14,11 +14,11 @@
 /// shown there.
 enum ScreenID: String, CaseIterable {
   case welcome, challengeList, calendar
-  case addChallenge
-  case customChallengeComingSoon
+  case addChallenge, customChallenge
   case enrollIntro, enrollTest
   case enrollGoal, enrollReminder
   case challengeDetail, logAttempt
   case editAttempt, logTimed, logResult
+  case challengeSettings, customSettings
   case storeError
 }

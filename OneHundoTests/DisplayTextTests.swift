@@ -35,6 +35,14 @@ final class DisplayTextTests: XCTestCase {
     )
   }
 
+  func testUnitTitles() {
+    let titles =
+      CountUnit.allCases.map(\.title)
+    XCTAssertEqual(
+      titles, ["Reps", "Seconds", "Minutes"]
+    )
+  }
+
   func testBuiltInTestQuestions() {
     for builtIn in BuiltIn.all {
       let what = builtIn.name.lowercased()

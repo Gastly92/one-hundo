@@ -57,9 +57,9 @@ struct ScreenHost: View {
       CalendarPlaceholderView()
     case .addChallenge:
       AddChallengeView()
-    case .customChallengeComingSoon:
+    case .customChallenge:
       NavigationStack {
-        CustomChallengeComingSoonView()
+        CustomChallengeView()
       }
     case .enrollIntro:
       enroll(at: .intro)
@@ -98,6 +98,14 @@ struct ScreenHost: View {
           on: now,
           outcome: Self.outcome
         )
+      }
+    case .challengeSettings:
+      if let pushUps {
+        ChallengeSettingsView(pushUps)
+      }
+    case .customSettings:
+      if let plank {
+        ChallengeSettingsView(plank)
       }
     case .storeError:
       StoreErrorView(details: Self.error)

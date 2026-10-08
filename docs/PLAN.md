@@ -457,7 +457,7 @@ go in first.
   `.xctestrun`, without XcodeGen.
 - No version bump (nothing user-visible).
 
-### 5. Custom challenges and settings
+### 5. Custom challenges and settings ✅
 - Custom challenge form: name, unit, color
   swatches, counts, reminder (no icon).
 - Settings screen for any challenge (goal,
@@ -470,6 +470,19 @@ go in first.
   celebration itself lands in PR 9).
 - UI test: create a "Plank" challenge in
   seconds and see its card.
+- As built (0.5.0): both forms edit a
+  `ChallengeDraft` (Models), which checks
+  them, starts a custom challenge, and
+  saves settings, so the logic is unit
+  tested. They share `CustomSections`
+  (name, unit, color) and `PlanSections`
+  (goal, daily step, reminder). Settings
+  is a sheet with Cancel / Save; a built-in
+  keeps its name, unit and color. Deleting
+  there closes settings and the challenge
+  screen first, then deletes. A goal at or
+  below the current count says "this goal
+  counts as reached".
 
 ### 6. Daily reminders
 - Ask notification permission when a reminder

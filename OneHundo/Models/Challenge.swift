@@ -107,4 +107,17 @@ enum CountUnit: String, CaseIterable {
       String(localized: "minutes")
     }
   }
+
+  /// The unit's name as a choice in the
+  /// custom challenge form.
+  var title: String {
+    switch self {
+    case .reps:
+      String(localized: "Reps")
+    case .seconds:
+      String(localized: "Seconds")
+    case .minutes:
+      String(localized: "Minutes")
+    }
+  }
 }
