@@ -587,6 +587,19 @@ go in first.
 - Completed challenges still show their
   days (step 9 adds completing).
 
+#### 7.1 Restart a stuck UI test runner
+- On CI's simulators the UI test runner
+  sometimes fails to start ("Timed out
+  while loading Accessibility") before any
+  UI test runs. `run-tests.sh` runs the
+  shard once more on exactly that sign,
+  with a warning; any other failure stands.
+- Not retried: a job GitHub never starts
+  (no free macOS runner). It's re-run by
+  hand; a watcher workflow can come if it
+  gets common.
+- No version bump (CI only).
+
 ### 8. Form tips, images, and history chart
 - Write tips for each built-in; add form
   images to the asset catalog (illustrations
