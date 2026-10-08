@@ -21,10 +21,9 @@ final class CustomFormTests: XCTestCase {
     XCTAssertTrue(start.appears())
     XCTAssertFalse(start.isEnabled)
 
-    // Shape and color first: Seconds adds
-    // a row, pushing them lower.
-    app.button("shape.hexagon").tap()
-    app.button("color.blue").tap()
+    // Top of the form first: tapping a
+    // shape or color scrolls down, and rows
+    // scrolled away can't be found.
     app.button("Seconds").tap()
     // Test yourself: 1 + 4 = 5 seconds.
     let plus = app.button("testCount.plus")
@@ -33,10 +32,11 @@ final class CustomFormTests: XCTestCase {
     XCTAssertEqual(count.textValue, "5")
     XCTAssertTrue(app.text("seconds").exists)
 
-    // Last, as the keyboard covers the form.
     let name = app.field("customName")
     name.tap()
     name.typeText("Plank")
+    app.button("shape.hexagon").tap()
+    app.button("color.blue").tap()
     XCTAssertTrue(start.isEnabled)
     start.tap()
 
