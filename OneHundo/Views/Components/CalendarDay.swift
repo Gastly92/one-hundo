@@ -14,8 +14,15 @@ struct CalendarDay: View {
     return Array(entries.prefix(most))
   }
 
+  /// How far today's circle reaches past its
+  /// number on each side.
+  private static let ring: CGFloat = 6
+
   var body: some View {
-    VStack(spacing: 2) {
+    // More room than the circle reaches, so
+    // it clears the markers below. Every day
+    // has it, so the numbers stay in line.
+    VStack(spacing: Self.ring + 2) {
       // Shrinks rather than breaking "26"
       // over two lines at large text. Every
       // day has the same weight, so they
@@ -43,7 +50,7 @@ struct CalendarDay: View {
     if isToday {
       Circle()
         .fill(Color.accentColor)
-        .padding(-6)
+        .padding(-Self.ring)
     }
   }
 
