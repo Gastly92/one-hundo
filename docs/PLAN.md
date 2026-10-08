@@ -600,7 +600,7 @@ go in first.
   gets common.
 - No version bump (CI only).
 
-### 8. Form tips, images, and history chart
+### 8. Form tips, images, and history chart ✅
 - Write tips for each built-in; add form
   images to the asset catalog (illustrations
   or SF Symbols to start, real images later).
@@ -608,6 +608,19 @@ go in first.
   screen and in the enroll intro.
 - Swift Charts line chart of counts over time
   on the challenge screen.
+- As built (0.8.0): tips are a shared
+  `FormTips` ("Good form", opens and
+  closes): open in the enroll intro,
+  closed on the challenge screen.
+  `HistoryChart` draws each attempt's
+  count by day (line and points) in the
+  challenge's color. Both sit below the
+  history on the challenge screen, so its
+  rows stay on screen first.
+- No images yet: Apple has no push-up,
+  sit-up or pull-up symbol (see 0.4.4), so
+  real form images need artwork; they can
+  come later.
 
 ### 9. Goal reached and polish
 - Goal-reached celebration (full screen,

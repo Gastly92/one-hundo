@@ -2,9 +2,11 @@ import SwiftData
 import SwiftUI
 
 /// One challenge: progress ring and stats,
-/// today's target with Log attempt, and the
+/// today's target with Log attempt, the
 /// attempt history (swipe to edit or
-/// delete). The gear opens its settings.
+/// delete), a chart of counts over time,
+/// and form tips for a built-in. The gear
+/// opens its settings.
 struct ChallengeDetailView: View {
   let challenge: Challenge
 
@@ -24,6 +26,9 @@ struct ChallengeDetailView: View {
   /// settings; the challenge goes once
   /// settings close.
   @State private var isDeleting = false
+  /// Form tips start closed here; they're
+  /// open in the enroll intro.
+  @State private var showsTips = false
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
   @ScaledMetric(relativeTo: .largeTitle)
@@ -61,6 +66,21 @@ struct ChallengeDetailView: View {
         .listRowBackground(Color.clear)
       today
       history
+      // Below the history, so its rows stay
+      // on screen first.
+      Section {
+        HistoryChart(challenge)
+      } header: {
+        SectionTitle("Progress")
+      }
+      if let builtIn = challenge.builtIn {
+        Section {
+          FormTips(
+            tips: builtIn.tips,
+            isOpen: $showsTips
+          )
+        }
+      }
     }
     .navigationTitle(challenge.displayName)
     .navigationBarTitleDisplayMode(.inline)

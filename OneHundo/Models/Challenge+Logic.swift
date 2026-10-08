@@ -49,6 +49,12 @@ extension Challenge {
     allAttempts.sorted { $0.date > $1.date }
   }
 
+  /// Attempts, oldest first (the history
+  /// chart, left to right).
+  var oldestFirst: [Attempt] {
+    sortedAttempts.reversed()
+  }
+
   /// The attempt logged on the same calendar
   /// day as `day`, if any. That day counts
   /// as done, including the start day: the

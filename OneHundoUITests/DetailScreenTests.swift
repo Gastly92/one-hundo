@@ -124,6 +124,34 @@ final class DetailScreenTests: XCTestCase {
     XCTAssertTrue(empty.appears())
   }
 
+  /// Below the history: the chart, and the
+  /// form tips, closed until tapped.
+  @MainActor
+  func testChartAndTips() {
+    let app = App.start(seeded: true)
+    let pushUps = app.card("pushups")
+    XCTAssertTrue(
+      pushUps.appears(within: 10)
+    )
+    pushUps.tap()
+    let tips = app.button("Good form")
+    let log = app.button("logAttemptButton")
+    XCTAssertTrue(log.appears())
+    app.swipeUp()
+    XCTAssertTrue(tips.appears())
+    let chart = app
+      .descendants(matching: .any)
+      .matching(identifier: "historyChart")
+      .firstMatch
+    XCTAssertTrue(chart.exists)
+    let tip = app.text("""
+      Hands just wider than your shoulders.
+      """)
+    XCTAssertFalse(tip.exists)
+    tips.tap()
+    XCTAssertTrue(tip.appears())
+  }
+
   /// Long-presses `row`, then taps `label`
   /// in its menu.
   @MainActor

@@ -55,6 +55,28 @@ final class LocalizationTests: XCTestCase {
     }
   }
 
+  /// Where system text sits, which isn't
+  /// the app's to translate: navigation bar
+  /// buttons (e.g. Back), date pickers, and
+  /// the history chart's axis labels
+  /// (system-formatted dates and numbers).
+  @MainActor
+  private func systemAreas(
+    _ app: XCUIApplication
+  ) -> [CGRect] {
+    let pickers = app.datePickers
+      .descendants(matching: .any)
+      .allElementsBoundByIndex
+    let bars = app.navigationBars.buttons
+      .allElementsBoundByIndex
+    let charts = app
+      .descendants(matching: .any)
+      .matching(identifier: "historyChart")
+      .allElementsBoundByIndex
+    return (bars + pickers + charts)
+      .map(\.frame)
+  }
+
   /// Fails for each visible text or button
   /// label that has letters but no brackets.
   @MainActor
@@ -64,17 +86,7 @@ final class LocalizationTests: XCTestCase {
     file: StaticString = #filePath,
     line: UInt = #line
   ) {
-    // System chrome and system-formatted
-    // values aren't the app's strings:
-    // navigation bar buttons (e.g. Back) and
-    // date pickers.
-    let pickers = app.datePickers
-      .descendants(matching: .any)
-      .allElementsBoundByIndex
-    let bars = app.navigationBars.buttons
-      .allElementsBoundByIndex
-    let system =
-      (bars + pickers).map(\.frame)
+    let system = systemAreas(app)
     let elements =
       app.staticTexts.allElementsBoundByIndex
       + app.buttons.allElementsBoundByIndex
@@ -94,7 +106,10 @@ final class LocalizationTests: XCTestCase {
         || Self.userText.contains(label) {
         continue
       }
-      if system.contains(element.frame) {
+      let frame = element.frame
+      if system.contains(where: {
+        $0.contains(frame)
+      }) {
         continue
       }
       XCTFail(
