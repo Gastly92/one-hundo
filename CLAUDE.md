@@ -183,6 +183,11 @@ features land.
   The owner wants 100% coverage kept and
   accepts retries like this one: tied to
   a detected stall sign, never blind.
+  Likewise `run-tests.sh` runs a shard once
+  more only when the UI test runner failed
+  to start ("failed to initialize for UI
+  testing") and no UI test ran; it adds a
+  warning and a summary line.
   `testLongPressLogsToday` taps first on
   purpose, so this path runs every time.
 - Snapshot tests (`SnapshotTests`) take a

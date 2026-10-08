@@ -109,13 +109,36 @@ export \
 # a shard needs no Xcode project.
 plan=$(find build/test/Build/Products \
   -name '*.xctestrun' | head -1)
-xcodebuild test-without-building \
-  -xctestrun "$plan" \
-  -destination "id=$device" \
-  -enableCodeCoverage YES \
-  "${only[@]}" \
-  -resultBundlePath build/test.xcresult \
-  > build/test.log 2>&1 || status=$?
+run() {
+  rm -rf build/test.xcresult
+  status=0
+  xcodebuild test-without-building \
+    -xctestrun "$plan" \
+    -destination "id=$device" \
+    -enableCodeCoverage YES \
+    "${only[@]}" \
+    -resultBundlePath build/test.xcresult \
+    > build/test.log 2>&1 || status=$?
+}
+run
+
+# On CI's simulators the UI test runner
+# sometimes fails to start ("Timed out while
+# loading Accessibility") before any UI test
+# runs. Only then, run the shard once more.
+# Any other failure stands.
+stuck='failed to initialize for UI testing'
+ui="Test Case '-[OneHundoUITests."
+if [ "$status" -ne 0 ] \
+  && grep -qF "$stuck" build/test.log \
+  && ! grep -qF "$ui" build/test.log; then
+  echo "::warning::The UI test runner" \
+    "didn't start; running the $shard" \
+    "tests once more."
+  echo "UI test runner restarted" \
+    "($shard)" >> "$summary"
+  run
+fi
 
 # Each test's result and errors, and any
 # long-press retried after a stall (see
