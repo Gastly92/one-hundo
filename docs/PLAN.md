@@ -665,6 +665,8 @@ listing and 1.0.0.
   stop while completed. `GoalTests` runs
   both paths; screens `goalReached` and
   `newGoal`.
+- Day view fix: each count is centered in
+  its row, in line with the chevron.
 
 #### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass
