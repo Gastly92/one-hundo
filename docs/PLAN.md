@@ -617,6 +617,11 @@ go in first.
   challenge's color. Both sit below the
   history on the challenge screen, so its
   rows stay on screen first.
+- Calendar fixes from first use: every
+  day's number lines up (a day without
+  markers keeps an empty marker row), and
+  today is a filled accent circle instead
+  of bold, which had shrunk it.
 - No images yet: Apple has no push-up,
   sit-up or pull-up symbol (see 0.4.4), so
   real form images need artwork; they can

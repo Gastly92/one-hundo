@@ -14,37 +14,58 @@ struct CalendarDay: View {
     return Array(entries.prefix(most))
   }
 
-  private var color: Color {
-    isToday ? .accentColor : .primary
-  }
-
   var body: some View {
     VStack(spacing: 2) {
       // Shrinks rather than breaking "26"
-      // over two lines at large text.
+      // over two lines at large text. Every
+      // day has the same weight, so they
+      // shrink alike.
       Text(day, format: .dateTime.day())
-        .fontWeight(
-          isToday ? .bold : .regular
-        )
-        .foregroundStyle(color)
         .lineLimit(1)
         .minimumScaleFactor(0.5)
-      // Markers are shapes, not text
-      // (VoiceOver reads their names), so
-      // they stop growing where three still
-      // fit a cell.
-      HStack(spacing: 1) {
-        ForEach(shown) { marker($0) }
-      }
-      .font(.caption2)
-      .dynamicTypeSize(
-        ...DynamicTypeSize.large
-      )
+        .foregroundStyle(
+          isToday ? Color.white : .primary
+        )
+        .background { todayMark }
+      markers
     }
     .frame(
       maxWidth: .infinity, minHeight: 44
     )
     .contentShape(Rectangle())
+  }
+
+  /// Today: a filled circle behind the
+  /// number. Outside the layout, so the
+  /// number lines up with the other days.
+  @ViewBuilder
+  private var todayMark: some View {
+    if isToday {
+      Circle()
+        .fill(Color.accentColor)
+        .padding(-6)
+    }
+  }
+
+  /// Markers are shapes, not text
+  /// (VoiceOver reads their names), so they
+  /// stop growing where three still fit a
+  /// cell. A day without any keeps an empty
+  /// row of the same height, so every
+  /// day's number lines up.
+  private var markers: some View {
+    HStack(spacing: 1) {
+      if shown.isEmpty {
+        Image(systemName: "circle.fill")
+          .hidden()
+          .accessibilityHidden(true)
+      }
+      ForEach(shown) { marker($0) }
+    }
+    .font(.caption2)
+    .dynamicTypeSize(
+      ...DynamicTypeSize.large
+    )
   }
 
   /// Named for VoiceOver, so a day reads as
