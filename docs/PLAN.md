@@ -42,8 +42,9 @@ design changed) as each one lands.
   and tap through each screen).
 - **Test launch mode**: UI tests launch the
   app with `-uiTesting`, which uses an
-  in-memory store (a clean slate every run)
-  and skips the notification prompt.
+  in-memory store (a clean slate every run),
+  skips the notification prompt, and turns
+  off UIKit animations.
 - **Accessibility identifiers** on key
   buttons and labels so UI tests can find
   them.
@@ -492,6 +493,16 @@ go in first.
   screen first, then deletes. A goal at or
   below the current count says "this goal
   counts as reached".
+
+#### 5.1 UI tests without animations
+- A long-press in a UI test sometimes
+  opened the Edit sheet instead of its
+  menu: the screen recording showed it
+  landed while the screen was still sliding
+  in, so iOS read it as a tap. `-uiTesting`
+  now turns off UIKit animations. No
+  retries or longer waits.
+- No version bump (nothing user-visible).
 
 ### 6. Daily reminders
 - Ask notification permission when a reminder
