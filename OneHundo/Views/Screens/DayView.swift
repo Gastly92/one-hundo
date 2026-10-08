@@ -57,7 +57,7 @@ struct DayView: View {
             .font(.headline)
           status(entry)
         }
-        Spacer()
+        .fullWidth(.leading)
         Text(count)
           .font(.title3.bold())
           .monospacedDigit()
@@ -71,7 +71,10 @@ struct DayView: View {
   private func status(
     _ entry: DayEntry
   ) -> some View {
-    HStack(spacing: 4) {
+    HStack(
+      alignment: .firstTextBaseline,
+      spacing: 4
+    ) {
       if entry.hitTarget { DoneMark() }
       Text(entry.status)
         .wrapsText()

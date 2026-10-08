@@ -20,15 +20,26 @@ struct CalendarDay: View {
 
   var body: some View {
     VStack(spacing: 2) {
+      // Shrinks rather than breaking "26"
+      // over two lines at large text.
       Text(day, format: .dateTime.day())
         .fontWeight(
           isToday ? .bold : .regular
         )
         .foregroundStyle(color)
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
+      // Markers are shapes, not text
+      // (VoiceOver reads their names), so
+      // they stop growing where three still
+      // fit a cell.
       HStack(spacing: 1) {
         ForEach(shown) { marker($0) }
       }
       .font(.caption2)
+      .dynamicTypeSize(
+        ...DynamicTypeSize.large
+      )
     }
     .frame(
       maxWidth: .infinity, minHeight: 44
