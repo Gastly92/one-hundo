@@ -62,17 +62,22 @@ final class LocalizationTests: XCTestCase {
   /// (system-formatted dates and numbers).
   @MainActor
   private func systemAreas(
-    _ app: XCUIApplication
+    _ app: XCUIApplication,
+    on screen: ScreenID
   ) -> [CGRect] {
     let pickers = app.datePickers
       .descendants(matching: .any)
       .allElementsBoundByIndex
     let bars = app.navigationBars.buttons
       .allElementsBoundByIndex
-    let charts = app
-      .descendants(matching: .any)
-      .matching(identifier: "historyChart")
-      .allElementsBoundByIndex
+    // Searching every element is slow on
+    // CI's simulators (it timed out once),
+    // so only where the chart is.
+    let charts = screen == .challengeDetail
+      ? app.descendants(matching: .any)
+        .matching(identifier: "historyChart")
+        .allElementsBoundByIndex
+      : []
     return (bars + pickers + charts)
       .map(\.frame)
   }
@@ -86,7 +91,7 @@ final class LocalizationTests: XCTestCase {
     file: StaticString = #filePath,
     line: UInt = #line
   ) {
-    let system = systemAreas(app)
+    let system = systemAreas(app, on: screen)
     let elements =
       app.staticTexts.allElementsBoundByIndex
       + app.buttons.allElementsBoundByIndex
