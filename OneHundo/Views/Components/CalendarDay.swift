@@ -36,8 +36,14 @@ struct CalendarDay: View {
         .background { todayMark }
       markers
     }
+    // From the top, so every number in a
+    // row lines up whatever shapes sit
+    // below it (a triangle is taller than a
+    // circle).
     .frame(
-      maxWidth: .infinity, minHeight: 44
+      maxWidth: .infinity,
+      minHeight: 44,
+      alignment: .top
     )
     .contentShape(Rectangle())
   }
