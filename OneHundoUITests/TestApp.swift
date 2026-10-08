@@ -66,6 +66,11 @@ extension XCUIApplication {
     navigationBars[id]
   }
 
+  /// Presses after the first, at most, each
+  /// only when the one before was read as a
+  /// tap.
+  static let stallRetries = 2
+
   /// Long-presses `element` and returns its
   /// menu's `label` item, which must appear.
   ///
@@ -75,7 +80,8 @@ extension XCUIApplication {
   /// app as a tap: no menu, and the tap's
   /// own screen opens. Only that case, the
   /// menu missing and `tapped.opens` shown,
-  /// gets one more press, after closing it.
+  /// gets another press (up to
+  /// `stallRetries`), after closing it.
   /// Anything else is a real failure.
   /// `press` lets a test make the first
   /// press a tap, to check this path.
@@ -90,36 +96,45 @@ extension XCUIApplication {
   ) -> XCUIElement {
     let item = buttons[label].firstMatch
     press(element)
-    // The screen a tap opens can have a
-    // button with the same label (the
-    // challenge screen's Log attempt), so
-    // the menu counts only without it.
-    if item.appears(), !tapped.opens.exists {
-      return item
+    for _ in 0..<Self.stallRetries {
+      if isMenu(item, not: tapped) {
+        return item
+      }
+      XCTAssertTrue(
+        tapped.opens.appears(),
+        "No menu, and no sign of a tap"
+      )
+      // Not `element`'s name: it's off
+      // screen now, and reading it would
+      // fail.
+      print("""
+        Long-press read as a tap (app \
+        stalled): closing what it opened \
+        and pressing again.
+        """)
+      tapped.close()
+      let closed = tapped.opens.disappears()
+      XCTAssertTrue(closed)
+      element.press(forDuration: 1.5)
     }
     XCTAssertTrue(
-      tapped.opens.appears(),
-      "No menu, and no sign of a tap"
-    )
-    // Not `element`'s name: it's off screen
-    // now, and reading it would fail.
-    print("""
-      Long-press read as a tap (app \
-      stalled): closing what it opened and \
-      pressing again.
-      """)
-    tapped.close()
-    XCTAssertTrue(tapped.opens.disappears())
-    element.press(forDuration: 1.5)
-    XCTAssertTrue(item.appears())
-    // One retry only: a second tap would
-    // otherwise pass on the tap screen's own
-    // button of the same name.
-    XCTAssertFalse(
-      tapped.opens.exists,
-      "Read as a tap again"
+      isMenu(item, not: tapped),
+      "Every press was read as a tap"
     )
     return item
+  }
+
+  /// Whether `item` is in the menu. The
+  /// screen a tap opens can have a button
+  /// with the same label (the challenge
+  /// screen's Log attempt), so it counts
+  /// only while that screen isn't open.
+  @MainActor
+  private func isMenu(
+    _ item: XCUIElement,
+    not tapped: Tapped
+  ) -> Bool {
+    item.appears() && !tapped.opens.exists
   }
 
   /// A card read as a tap: its challenge

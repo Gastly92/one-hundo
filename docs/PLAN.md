@@ -551,10 +551,12 @@ go in first.
   step 6). Slow spells hit a random test
   each run; long-presses are the only step
   they break.
-- `menuItem` presses once more only on
-  that sign: no menu, and what a tap opens
-  (the challenge screen, or the Edit sheet)
-  is showing. It closes that first and logs
+- `menuItem` presses again (up to twice,
+  as of step 7, after one run stalled
+  twice in a row) only on that sign: no
+  menu, and what a tap opens (the
+  challenge screen, or the Edit sheet) is
+  showing. It closes that first and logs
   "Long-press read as a tap" in the CI log.
   Any other miss still fails.
 - `testLongPressLogsToday` makes its first
