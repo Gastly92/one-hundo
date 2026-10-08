@@ -66,20 +66,85 @@ extension XCUIApplication {
     navigationBars[id]
   }
 
-  /// Long-presses `element` once and returns
-  /// its menu's `label` item, which must
-  /// appear. No second press: a missed one
-  /// is a real failure.
+  /// Long-presses `element` and returns its
+  /// menu's `label` item, which must appear.
+  ///
+  /// CI's free runners (3 cores, no GPU)
+  /// sometimes stall for a few seconds, and
+  /// a press held during a stall reaches the
+  /// app as a tap: no menu, and the tap's
+  /// own screen opens. Only that case, the
+  /// menu missing and `tapped.opens` shown,
+  /// gets one more press, after closing it.
+  /// Anything else is a real failure.
+  /// `press` lets a test make the first
+  /// press a tap, to check this path.
   @MainActor
   func menuItem(
     _ label: String,
-    on element: XCUIElement
+    on element: XCUIElement,
+    ifTapped tapped: Tapped,
+    press: Press = {
+      $0.press(forDuration: 1.5)
+    }
   ) -> XCUIElement {
-    element.press(forDuration: 1.5)
     let item = buttons[label].firstMatch
+    press(element)
+    // The screen a tap opens can have a
+    // button with the same label (the
+    // challenge screen's Log attempt), so
+    // the menu counts only without it.
+    if item.appears(), !tapped.opens.exists {
+      return item
+    }
+    XCTAssertTrue(
+      tapped.opens.appears(),
+      "No menu, and no sign of a tap"
+    )
+    print("""
+      Long-press read as a tap (app \
+      stalled): closing what it opened and \
+      pressing \(element.identifier) again.
+      """)
+    tapped.close()
+    XCTAssertTrue(tapped.opens.disappears())
+    element.press(forDuration: 1.5)
     XCTAssertTrue(item.appears())
     return item
   }
+
+  /// A card read as a tap: its challenge
+  /// screen, closed with Back.
+  @MainActor
+  func screen(_ title: String) -> Tapped {
+    let back = navigationBars.buttons
+      .element(boundBy: 0)
+    return Tapped(opens: bar(title)) {
+      back.tap()
+    }
+  }
+
+  /// A history row read as a tap: the Edit
+  /// attempt sheet, closed with Cancel.
+  @MainActor
+  var editSheet: Tapped {
+    let cancel = button("Cancel")
+    let sheet = bar("Edit attempt")
+    return Tapped(opens: sheet) {
+      cancel.tap()
+    }
+  }
+}
+
+/// How a test presses an element.
+typealias Press = @MainActor (XCUIElement)
+  -> Void
+
+/// What a press opens if the app reads it as
+/// a tap, and how to close it again.
+struct Tapped {
+  let opens: XCUIElement
+  let close: @MainActor () -> Void
 }
 
 extension XCUIElement {

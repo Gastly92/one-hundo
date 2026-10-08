@@ -129,8 +129,9 @@ features land.
     (`Views/Components/ViewHelpers.swift`);
     in UI tests `App.start`,
     `app.text/button/field/bar(_:)`,
-    `app.menuItem(_:on:)` (one long-press,
-    no retries), `element.appears()`.
+    `app.menuItem(_:on:ifTapped:)`
+    (long-press; see below),
+    `element.appears()`.
   - Long text uses a `"""` literal with `\`
     line breaks (one key, still one
     sentence).
@@ -168,7 +169,18 @@ features land.
   turns off UIKit animations, so a
   long-press never lands on a screen still
   sliding in (it turns into a tap). No
-  retries or longer waits in UI tests.
+  retries or longer waits in UI tests, with
+  one exception: CI's free runners (3
+  cores, no GPU) stall now and then, and a
+  long-press held during a stall reaches
+  the app as a tap. `menuItem` presses
+  once more only on that sign (menu
+  missing and the tap's own screen open,
+  given by `ifTapped`), after closing it,
+  and logs "Long-press read as a tap" in
+  the CI log. Any other miss fails.
+  `testLongPressLogsToday` taps first on
+  purpose, so this path runs every time.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
   dark and large text, on a fixed day
