@@ -54,7 +54,11 @@ struct ScreenHost: View {
     case .challengeList:
       ChallengeListView()
     case .calendar:
-      CalendarPlaceholderView()
+      CalendarView()
+    case .calendarDay:
+      // Today: Sit-ups (target hit) and
+      // Pull-ups (started today).
+      NavigationStack { DayView(now) }
     case .addChallenge:
       AddChallengeView()
     case .customChallenge:

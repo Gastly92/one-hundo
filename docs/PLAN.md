@@ -551,10 +551,12 @@ go in first.
   step 6). Slow spells hit a random test
   each run; long-presses are the only step
   they break.
-- `menuItem` presses once more only on
-  that sign: no menu, and what a tap opens
-  (the challenge screen, or the Edit sheet)
-  is showing. It closes that first and logs
+- `menuItem` presses again (up to twice,
+  as of step 7, after one run stalled
+  twice in a row) only on that sign: no
+  menu, and what a tap opens (the
+  challenge screen, or the Edit sheet) is
+  showing. It closes that first and logs
   "Long-press read as a tap" in the CI log.
   Any other miss still fails.
 - `testLongPressLogsToday` makes its first
@@ -562,7 +564,7 @@ go in first.
   every CI run.
 - No version bump (tests only).
 
-### 7. Calendar
+### 7. Calendar ✅
 - Month calendar with swipe between months
   and a shape marker per challenge per day
   (in its color, but never color alone).
@@ -571,6 +573,19 @@ go in first.
   the challenge screen.
 - UI test: seeded data shows dots; tapping a
   day lists its challenges.
+- As built (0.7.0): `CalendarMonth`
+  (Models) lays out a month (weeks start on
+  the phone's first weekday) and handles
+  the arrows and swipes; it stops at the
+  current month. `DayEntry` says how each
+  day went: "Hit the target of 6.", "The
+  target was 7.", or "Starting test" on a
+  challenge's first day. Only days with
+  attempts open a day view. Up to 3
+  markers a day; VoiceOver reads a day as
+  its number and the challenges' names.
+- Completed challenges still show their
+  days (step 9 adds completing).
 
 ### 8. Form tips, images, and history chart
 - Write tips for each built-in; add form

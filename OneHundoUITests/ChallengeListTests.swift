@@ -79,20 +79,6 @@ final class ChallengeListTests: XCTestCase {
   }
 
   @MainActor
-  func testCalendarTabShowsPlaceholder() {
-    let app = App.start()
-    let tabs = app.tabBars.buttons
-    tabs["Calendar"].tap()
-    let soon = app.text("""
-      Coming soon: your attempts, day by day.
-      """)
-    XCTAssertTrue(soon.appears())
-    tabs["Challenges"].tap()
-    let title = app.text("welcomeTitle")
-    XCTAssertTrue(title.appears())
-  }
-
-  @MainActor
   func testLongPressDeletesChallenge() {
     let app = App.start(seeded: true)
     let pullUps = app.card("pullups")

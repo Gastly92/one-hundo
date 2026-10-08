@@ -246,13 +246,16 @@ success haptic, then two choices:
 ### Calendar (Calendar tab)
 
 - A month calendar you can swipe between
-  months; days with logged attempts show a
-  marker (one per challenge, its shape in
-  its color, up to 3).
-- Tap a day to open the day view: each
-  challenge you logged that day with its
-  count, and whether you hit that day's
-  target.
+  months (or use the arrows), up to the
+  current month; days with logged attempts
+  show a marker (one per challenge, its
+  shape in its color, up to 3).
+- Tap a marked day to open the day view:
+  each challenge you logged that day with
+  its count, and whether you hit that
+  day's target ("Hit the target of 6." /
+  "The target was 7."). A challenge's
+  first day shows "Starting test".
 - Tap a challenge in the day view to open its
   challenge screen.
 

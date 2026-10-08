@@ -174,11 +174,15 @@ features land.
   cores, no GPU) stall now and then, and a
   long-press held during a stall reaches
   the app as a tap. `menuItem` presses
-  once more only on that sign (menu
-  missing and the tap's own screen open,
-  given by `ifTapped`), after closing it,
-  and logs "Long-press read as a tap" in
-  the CI log. Any other miss fails.
+  again only on that sign (menu missing
+  and the tap's own screen open, given by
+  `ifTapped`), after closing it, up to
+  twice (`stallRetries`), and logs
+  "Long-press read as a tap" in the CI
+  log each time. Any other miss fails.
+  The owner wants 100% coverage kept and
+  accepts retries like this one: tied to
+  a detected stall sign, never blind.
   `testLongPressLogsToday` taps first on
   purpose, so this path runs every time.
 - Snapshot tests (`SnapshotTests`) take a
