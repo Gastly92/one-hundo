@@ -34,7 +34,7 @@ struct OneHundoApp: App {
         if let screen = launch.screen {
           ScreenHost(screen: screen)
         } else {
-          RootView()
+          RootView(notifier: launch.notifier)
         }
       }
       .modelContainer(container)

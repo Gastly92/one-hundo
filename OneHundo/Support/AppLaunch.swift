@@ -17,6 +17,10 @@ struct AppLaunch {
   /// app (`-showScreen <id>`, UI tests
   /// only).
   let screen: ScreenID?
+  /// Where reminders go. UI tests get none
+  /// (no permission prompt), unless they
+  /// launch with -notifications.
+  let notifier: any Notifier
 
   /// Screens shown with the sample
   /// challenges; the rest show an empty app.
@@ -40,6 +44,13 @@ struct AppLaunch {
     // clean.
     isUITesting = args.contains("-uiTesting")
     let inMemory = isUITesting
+    let real = !isUITesting
+      || args.contains("-notifications")
+    if real {
+      notifier = PhoneNotifier()
+    } else {
+      notifier = SilentNotifier()
+    }
     let shown = isUITesting
       ? Self.screen(in: args) : nil
     screen = shown

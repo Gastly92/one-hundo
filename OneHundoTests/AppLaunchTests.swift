@@ -126,6 +126,25 @@ final class AppLaunchTests: XCTestCase {
     }
   }
 
+  func testNotifierOnlyRealOutsideTests() {
+    XCTAssertTrue(
+      start(["OneHundo"]).notifier
+        is PhoneNotifier
+    )
+    // UI tests get no permission prompt,
+    // unless they ask for one.
+    XCTAssertTrue(
+      start(["-uiTesting"]).notifier
+        is SilentNotifier
+    )
+    let real = start(
+      ["-uiTesting", "-notifications"]
+    )
+    XCTAssertTrue(
+      real.notifier is PhoneNotifier
+    )
+  }
+
   func testDefaultStoreOpens() throws {
     XCTAssertNoThrow(
       try AppStore.open(inMemory: true)
