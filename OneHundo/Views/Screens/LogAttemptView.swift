@@ -176,13 +176,9 @@ struct LogAttemptView: View {
         .foregroundStyle(.secondary)
       if outcome.isNewBest { newBest }
       Spacer()
-      if outcome.reachedGoal {
-        newGoalLink
-        doneButton.buttonStyle(.bordered)
-      } else {
-        doneButton
-          .buttonStyle(.borderedProminent)
-      }
+      if outcome.reachedGoal { newGoalLink }
+      doneButton
+        .buttonStyle(.borderedProminent)
     }
     .controlSize(.large)
     .padding()
@@ -209,7 +205,10 @@ struct LogAttemptView: View {
     } label: {
       Text("Set a new goal").fullWidth()
     }
-    .buttonStyle(.borderedProminent)
+    // Secondary to Done; primary-colored
+    // text stays easy to read in dark mode.
+    .buttonStyle(.bordered)
+    .tint(.primary)
     .testID("setNewGoal")
   }
 

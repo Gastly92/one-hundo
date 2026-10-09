@@ -667,6 +667,9 @@ listing and 1.0.0.
   `newGoal`.
 - Day view fix: each count is centered in
   its row, in line with the chevron.
+- 0.9.1: Done is the main button after
+  reaching a goal; Set a new goal is the
+  secondary one above it.
 
 #### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass
