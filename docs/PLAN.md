@@ -687,7 +687,11 @@ listing and 1.0.0.
   target in the day view (`dayMissed`), a
   challenge logged today (`detailToday`),
   and the reminder off
-  (`settingsNoReminder`). Cancel
+  (`settingsNoReminder`). A CI gate keeps
+  the list complete: view code the
+  localization shard (every ScreenID) never
+  draws must be listed in
+  `.github/unpictured.txt`. Cancel
   moved into `NewGoalView`, so `newGoal`
   shows it. Fix: the suggested new goal
   builds on the count when it went past

@@ -1,0 +1,7 @@
+# View lines no screen draws, checked by
+# .github/scripts/unpictured.sh. Each
+# ScreenID is opened on its own, so only
+# what a screen shows runs; lines here are
+# expected not to. A file name, then its
+# lines (indented, as trimmed text), with
+# a # comment saying why.

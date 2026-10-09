@@ -57,7 +57,17 @@ features land.
   <id>`. CI's `Screen list` job fails if a
   screen in `Views/Screens/` isn't in
   `ScreenHost`. Screens that need challenges
-  are listed in `AppLaunch.seededScreens`.
+  are listed in `AppLaunch.seededScreens`
+  (`AppLaunch.sample(for:)` picks a variant
+  of the sample data for other states).
+  The Coverage job's `Screen list gate`
+  (`.github/scripts/unpictured.sh`) fails
+  on view code no ScreenID draws (from the
+  localization shard's coverage), so every
+  state gets a snapshot. Lines that are
+  never drawn (what a tap does, a sheet's
+  contents) go in `.github/unpictured.txt`
+  with why.
 - Accessibility: use system colors and
   text styles (or `@ScaledMetric` for big
   custom sizes) so text scales and both
