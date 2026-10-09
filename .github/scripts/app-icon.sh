@@ -20,7 +20,8 @@ mid=512
 # stroke) and width.
 radius=336
 width=64
-circle="circle $mid,$mid $mid,$((mid - radius))"
+top=$((mid - radius))
+circle="circle $mid,$mid $mid,$top"
 
 # A ring in a gradient of $1 (two colors,
 # e.g. "#000-#fff"), saved as $2.
