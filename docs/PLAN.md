@@ -641,13 +641,13 @@ listing and 1.0.0.
   (defaults higher, e.g. 150 after 100) /
   Done, and the Completed section.
 - Completed challenges keep their screen and
-  history, with a Continue button that sets a
-  new goal and makes them active again. A
+  history, with a Set a new goal button that
+  makes them active again. A
   completed built-in can also be started
   fresh from Add challenge.
 - UI test: log the goal count, see the
   celebration, tap Done, card is under
-  Completed; Continue moves it back.
+  Completed; Set a new goal moves it back.
 - As built (0.9.0): logging the goal (or
   lowering it to the current count in
   settings) completes the challenge right
@@ -670,6 +670,10 @@ listing and 1.0.0.
 - 0.9.1: Done is the main button after
   reaching a goal; Set a new goal is the
   secondary one above it.
+- 0.9.2: on a completed challenge,
+  Continue is now "Set a new goal" (it
+  read as moving on), and its sheet has
+  Cancel.
 
 #### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass

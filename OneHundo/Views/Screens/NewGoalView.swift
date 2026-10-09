@@ -1,7 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// After reaching a goal (or Continue on a
+/// After reaching a goal (or Set a new
+/// goal on a
 /// completed challenge): pick a new, higher
 /// goal and keep going. Suggests half as
 /// much again.
