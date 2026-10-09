@@ -2,7 +2,8 @@ import XCTest
 
 /// Reaching a goal: the celebration, a new
 /// goal right away, or Done and later
-/// Continue from the Completed section.
+/// Set a new goal from the Completed
+/// section.
 final class GoalTests: XCTestCase {
   override func setUp() {
     continueAfterFailure = false
@@ -45,7 +46,7 @@ final class GoalTests: XCTestCase {
     let done = app.button("logDoneButton")
     XCTAssertTrue(done.appears())
     done.tap()
-    let more = app.button("continueButton")
+    let more = app.button("newGoalButton")
     XCTAssertTrue(more.appears())
     XCTAssertEqual(
       today.label, "Reached 150"
@@ -62,13 +63,33 @@ final class GoalTests: XCTestCase {
       pushUps.label.contains("Reached 150")
     )
 
-    // Continue: 150 leads to 230.
     pushUps.tap()
+    newGoalFromCompleted(app)
+  }
+
+  /// On a completed challenge (reached 150):
+  /// Set a new goal, where Cancel keeps it
+  /// completed; then 150 leads to 230.
+  @MainActor
+  private func newGoalFromCompleted(
+    _ app: XCUIApplication
+  ) {
+    let more = app.button("newGoalButton")
+    let goal = app.field("newGoal.field")
+    let today = app.text("todayText")
     XCTAssertTrue(more.appears())
+    more.tap()
+    XCTAssertTrue(goal.appears())
+    app.button("Cancel").tap()
+    XCTAssertTrue(goal.disappears())
+    XCTAssertEqual(
+      today.label, "Reached 150"
+    )
     more.tap()
     XCTAssertTrue(goal.appears())
     XCTAssertEqual(goal.textValue, "230")
     app.button("keepGoing").tap()
+    let log = app.button("logAttemptButton")
     XCTAssertTrue(log.appears())
     XCTAssertEqual(today.label, "Done: 150")
   }

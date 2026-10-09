@@ -89,6 +89,15 @@ struct ScreenHost: View {
           ChallengeDetailView(pushUps)
         }
       }
+    case .completedList:
+      // Push-ups under Completed.
+      ChallengeListView()
+    case .completedDetail:
+      if let pushUps {
+        NavigationStack {
+          ChallengeDetailView(pushUps)
+        }
+      }
     case .logAttempt:
       if let pushUps {
         LogAttemptView(pushUps, on: now)

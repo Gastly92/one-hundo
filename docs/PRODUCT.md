@@ -241,9 +241,9 @@ success haptic, then two choices:
   section at the bottom of the list, saying
   e.g. "Reached 100". Its challenge screen
   stays viewable (history, chart) and has a
-  **Continue** button, which works like Set a
-  new goal and moves it back to the active
-  list.
+  **Set a new goal** button (Cancel leaves
+  it completed), which moves it back to the
+  active list.
 
 ### Calendar (Calendar tab)
 

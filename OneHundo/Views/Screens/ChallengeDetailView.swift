@@ -104,6 +104,7 @@ struct ChallengeDetailView: View {
         NewGoalView(challenge) {
           isContinuing = false
         }
+        .toolbar { cancel }
       }
     }
     .sheet(
@@ -112,6 +113,18 @@ struct ChallengeDetailView: View {
     ) {
       ChallengeSettingsView(challenge) {
         isDeleting = true
+      }
+    }
+  }
+
+  /// Closes the new goal sheet, leaving
+  /// the challenge completed.
+  private var cancel: some ToolbarContent {
+    ToolbarItem(
+      placement: .cancellationAction
+    ) {
+      Button("Cancel") {
+        isContinuing = false
       }
     }
   }
@@ -223,7 +236,8 @@ struct ChallengeDetailView: View {
   }
 
   /// Today's target and the Log attempt
-  /// button (or Continue, once completed).
+  /// button (or Set a new goal, once
+  /// completed).
   /// Reads today's attempt once so both
   /// agree.
   private var today: some View {
@@ -236,7 +250,7 @@ struct ChallengeDetailView: View {
       }
       .font(.title2.bold())
       if challenge.isCompleted {
-        continueButton
+        newGoalButton
       } else {
         logButton(done)
       }
@@ -247,16 +261,16 @@ struct ChallengeDetailView: View {
 
   /// A completed challenge: pick a new goal
   /// to continue it.
-  private var continueButton: some View {
+  private var newGoalButton: some View {
     Button {
       isContinuing = true
     } label: {
-      Text("Continue").fullWidth()
+      Text("Set a new goal").fullWidth()
     }
     .buttonStyle(.borderedProminent)
     .controlSize(.large)
     .listRowSeparator(.hidden)
-    .testID("continueButton")
+    .testID("newGoalButton")
   }
 
   private func logButton(
