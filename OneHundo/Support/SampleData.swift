@@ -13,6 +13,11 @@ enum SampleData {
     case completed
     /// Its attempts deleted.
     case noHistory
+    /// 5 logged today, short of its target
+    /// of 11.
+    case loggedToday
+    /// Its daily reminder turned off.
+    case noReminder
   }
 
   @MainActor
@@ -61,7 +66,15 @@ enum SampleData {
     let pushUps = add(
       .pushUps, [(3, 8), (1, 10)]
     )
-    apply(variant, to: pushUps, in: context)
+    apply(
+      variant, to: pushUps, on: now, in: cal
+    )
+    if variant == .noHistory {
+      for attempt in pushUps.allAttempts {
+        context.delete(attempt)
+      }
+      pushUps.attempts = []
+    }
     // Logged today: "Done: 20", "20 / 100".
     add(.sitUps, [(2, 15), (0, 20)])
     // Started today with a test of 3:
@@ -90,19 +103,21 @@ enum SampleData {
   private static func apply(
     _ variant: Variant,
     to pushUps: Challenge,
-    in context: ModelContext
+    on now: Date,
+    in cal: Calendar
   ) {
     switch variant {
-    case .standard:
+    case .standard, .noHistory:
       break
     case .completed:
       pushUps.goal = 10
       pushUps.complete()
-    case .noHistory:
-      for attempt in pushUps.allAttempts {
-        context.delete(attempt)
-      }
-      pushUps.attempts = []
+    case .loggedToday:
+      pushUps.logAttempt(
+        count: 5, on: now, in: cal
+      )
+    case .noReminder:
+      pushUps.reminderEnabled = false
     }
   }
 

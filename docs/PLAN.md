@@ -682,7 +682,12 @@ listing and 1.0.0.
   logging a day already logged
   (`logReplace`), a challenge with no
   attempts (`noHistory`), and a new goal
-  that's too low (`newGoalLow`). Cancel
+  that's too low (`newGoalLow`), built-ins
+  in progress (`addInProgress`), a missed
+  target in the day view (`dayMissed`), a
+  challenge logged today (`detailToday`),
+  and the reminder off
+  (`settingsNoReminder`). Cancel
   moved into `NewGoalView`, so `newGoal`
   shows it. Fix: the suggested new goal
   builds on the count when it went past

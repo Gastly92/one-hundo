@@ -81,11 +81,14 @@ struct ScreenHost: View {
       ChallengeListView()
     case .calendar:
       CalendarView()
-    case .calendarDay:
+    case .calendarDay, .dayMissed:
       // Today: Sit-ups (target hit) and
-      // Pull-ups (started today).
+      // Pull-ups (started today); with
+      // Push-ups short of its target.
       NavigationStack { DayView(now) }
-    case .addChallenge:
+    case .addChallenge, .addInProgress:
+      // In progress: the sample built-ins
+      // are dimmed.
       AddChallengeView()
     case .customChallenge:
       NavigationStack {
@@ -108,8 +111,10 @@ struct ScreenHost: View {
     case .completedList:
       // Push-ups under Completed.
       ChallengeListView()
-    case .completedDetail, .noHistory:
-      // Reached 10, or no attempts left.
+    case .completedDetail, .noHistory,
+      .detailToday:
+      // Reached 10, no attempts left, or
+      // logged today.
       if let pushUps {
         NavigationStack {
           ChallengeDetailView(pushUps)
@@ -175,7 +180,8 @@ struct ScreenHost: View {
           )
         }
       }
-    case .challengeSettings:
+    case .challengeSettings,
+      .settingsNoReminder:
       if let pushUps {
         ChallengeSettingsView(pushUps)
       }

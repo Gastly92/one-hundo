@@ -32,7 +32,8 @@ struct AppLaunch {
     .challengeSettings, .customSettings,
     .completedList, .completedDetail,
     .noHistory, .logMissed, .logReplace,
-    .newGoalLow,
+    .newGoalLow, .addInProgress, .dayMissed,
+    .detailToday, .settingsNoReminder,
   ]
 
   /// How the sample data differs for
@@ -45,6 +46,10 @@ struct AppLaunch {
       .completed
     case .noHistory:
       .noHistory
+    case .dayMissed, .detailToday:
+      .loggedToday
+    case .settingsNoReminder:
+      .noReminder
     default:
       .standard
     }
