@@ -43,6 +43,11 @@ struct CalendarView: View {
             weekdays
             grid
           }
+          if CalendarLog.isEmpty(
+            month, for: challenges, in: cal
+          ) {
+            hint
+          }
         }
         .padding()
       }
@@ -89,6 +94,19 @@ struct CalendarView: View {
     }
     .labelStyle(.iconOnly)
     .font(.title3)
+  }
+
+  /// Under an empty month: what the
+  /// calendar shows.
+  private var hint: some View {
+    Text("""
+      Nothing logged this month. Each day \
+      you log shows your challenges' shapes.
+      """)
+      .font(.footnote)
+      .foregroundStyle(.secondary)
+      .multilineTextAlignment(.center)
+      .testID("calendarHint")
   }
 
   /// The weekday letters, one per column.

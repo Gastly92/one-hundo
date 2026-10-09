@@ -79,7 +79,8 @@ struct ScreenHost: View {
       ChallengeListView()
     case .challengeList:
       ChallengeListView()
-    case .calendar:
+    case .calendar, .calendarEmpty:
+      // Empty: no challenges yet.
       CalendarView()
     case .calendarDay, .dayMissed:
       // Today: Sit-ups (target hit) and

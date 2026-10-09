@@ -729,6 +729,11 @@ listing and 1.0.0.
   the bottom, and what was below (the
   Completed section, the progress chart)
   was never pictured.
+- Empty calendar (0.9.6): a month with
+  nothing logged says so under the grid,
+  and that each day you log shows your
+  challenges' shapes (screen
+  `calendarEmpty`).
 
 #### 9c–9d. Release
 

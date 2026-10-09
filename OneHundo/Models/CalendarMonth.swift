@@ -177,3 +177,19 @@ enum CalendarLog {
     }
   }
 }
+
+extension CalendarLog {
+  /// Whether nothing was logged in `month`,
+  /// so the calendar explains its markers.
+  static func isEmpty(
+    _ month: CalendarMonth,
+    for challenges: [Challenge],
+    in cal: Calendar = .current
+  ) -> Bool {
+    month.days.allSatisfy {
+      entries(
+        for: challenges, on: $0, in: cal
+      ).isEmpty
+    }
+  }
+}

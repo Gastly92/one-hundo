@@ -142,4 +142,27 @@ final class CalendarMonthTests: XCTestCase {
         """
     )
   }
+
+  func testEmptyMonth() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    XCTAssertTrue(
+      CalendarLog.isEmpty(
+        january, for: [], in: utc
+      )
+    )
+    pushUps.log(5, day: 1)
+    XCTAssertFalse(
+      CalendarLog.isEmpty(
+        january, for: [pushUps], in: utc
+      )
+    )
+    XCTAssertTrue(
+      CalendarLog.isEmpty(
+        january.adding(1),
+        for: [pushUps],
+        in: utc
+      )
+    )
+  }
 }
