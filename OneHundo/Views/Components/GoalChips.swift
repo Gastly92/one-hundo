@@ -17,6 +17,9 @@ struct GoalChips: View {
         chip($0)
       }
     }
+    .sensoryFeedback(
+      .selection, trigger: goal
+    )
   }
 
   private var columns: [GridItem] {

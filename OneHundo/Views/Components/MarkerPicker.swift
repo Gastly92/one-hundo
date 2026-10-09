@@ -23,6 +23,9 @@ struct MarkerPicker: View {
       }
     }
     .padding(.vertical, 4)
+    .sensoryFeedback(
+      .selection, trigger: marker
+    )
   }
 
   private func choice(

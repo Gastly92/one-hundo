@@ -152,6 +152,16 @@ final class ChallengeTests: XCTestCase {
     XCTAssertEqual(past, 300)
   }
 
+  func testChartNeedsTwoAttempts() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    XCTAssertFalse(pushUps.hasChart)
+    pushUps.log(5, day: 1)
+    XCTAssertFalse(pushUps.hasChart)
+    pushUps.log(6, day: 2)
+    XCTAssertTrue(pushUps.hasChart)
+  }
+
   func testStartDayIsDone() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()

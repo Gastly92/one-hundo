@@ -713,8 +713,17 @@ listing and 1.0.0.
   new Violet swatch (the accent); built-ins
   always show their built-in color, so an
   existing Push-ups turns violet too.
-- Haptics, and a pass on empty and error
-  states.
+- Haptics and empty states (0.9.5): a
+  light tap when picking a goal, shape or
+  color and on − / +, on top of the
+  success tap after logging. The progress
+  chart says "Log a couple of days to see
+  your progress here." until there are two
+  attempts (it was a blank box). CI: only
+  the run that adding `record-snapshots`
+  starts records everything, so a later
+  run while the label is still on (the
+  bot's commit) doesn't record again.
 
 #### 9c–9d. Release
 

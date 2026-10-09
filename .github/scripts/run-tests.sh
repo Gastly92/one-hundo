@@ -90,12 +90,12 @@ case "$shard" in
 esac
 
 # Snapshot tests record any missing images
-# (all of them when the PR has the
-# `record-snapshots` label), and save the
-# images of a failed comparison.
+# (all of them in the run that adding the
+# `record-snapshots` label started:
+# RECORD_ALL), and save the images of a
+# failed comparison.
 record=missing
-if grep -q '"record-snapshots"' \
-  <<<"${LABELS:-}"; then
+if [ "${RECORD_ALL:-false}" = true ]; then
   record=all
 fi
 echo "Snapshot record mode: $record"
