@@ -29,12 +29,38 @@ final class SnapshotTests: XCTestCase {
       config: .iPhone13
     )
 
-  /// Each look's name and traits. 2x scale
-  /// keeps the images small but readable.
+  /// The same width, three times as tall:
+  /// large text runs long, and a phone-sized
+  /// picture cut off whatever scrolled past
+  /// the bottom.
+  private static let tall = {
+    let base = ViewImageConfig.iPhone13
+    let size = base.size.map {
+      CGSize(
+        width: $0.width,
+        height: $0.height * 3
+      )
+    }
+    return SwiftUISnapshotLayout.device(
+      config: ViewImageConfig(
+        safeArea: base.safeArea,
+        size: size,
+        traits: base.traits
+      )
+    )
+  }()
+
+  /// Each look's name, traits and screen.
+  /// 2x scale keeps the images small but
+  /// readable.
   private static let looks = [
-    ("light", traits(.light)),
-    ("dark", traits(.dark)),
-    ("large", traits(.light, large: true)),
+    ("light", traits(.light), phone),
+    ("dark", traits(.dark), phone),
+    (
+      "large",
+      traits(.light, large: true),
+      tall
+    ),
   ]
 
   /// sRGB color: in the app's window images
@@ -60,14 +86,15 @@ final class SnapshotTests: XCTestCase {
   func testEveryScreen() throws {
     for screen in ScreenID.allCases {
       let view = try page(screen)
-      for (look, traits) in Self.looks {
+      for (look, traits, layout)
+        in Self.looks {
         assertSnapshot(
           of: view,
           as: .image(
             drawHierarchyInKeyWindow: true,
             precision: 0.99,
             perceptualPrecision: 0.98,
-            layout: Self.phone,
+            layout: layout,
             traits: traits
           ),
           named: "\(screen.rawValue)-\(look)"

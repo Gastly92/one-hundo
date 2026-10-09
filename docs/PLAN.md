@@ -724,6 +724,11 @@ listing and 1.0.0.
   starts records everything, so a later
   run while the label is still on (the
   bot's commit) doesn't record again.
+- Large-text snapshots are three phones
+  tall: at that size most screens ran past
+  the bottom, and what was below (the
+  Completed section, the progress chart)
+  was never pictured.
 
 #### 9c–9d. Release
 

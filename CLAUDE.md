@@ -202,7 +202,9 @@ features land.
   purpose, so this path runs every time.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
-  dark and large text, on a fixed day
+  dark and large text (on a screen three
+  phones tall, so long screens show in
+  full), on a fixed day
   (`\.now` environment value; views read
   "today" from it, not `Date()`). Images live
   in `OneHundoTests/__Snapshots__/`. CI
