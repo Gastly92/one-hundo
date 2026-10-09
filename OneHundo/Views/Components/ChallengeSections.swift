@@ -117,13 +117,15 @@ struct PlanSections: View {
         // Times are moments on a fixed day
         // in GMT (see `ReminderTime`).
         .environment(\.timeZone, .gmt)
+        // Only with the reminder on: "this
+        // time" means the time above.
+        Text("""
+          On days you haven't logged yet, a \
+          notification reminds you at this \
+          time.
+          """)
+          .font(.footnote)
       }
-      Text("""
-        On days you haven't logged yet, a \
-        notification reminds you at this \
-        time.
-        """)
-        .font(.footnote)
     } header: {
       SectionTitle("Daily reminder")
     }
