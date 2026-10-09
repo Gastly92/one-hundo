@@ -4,34 +4,28 @@
 # what a screen shows runs; lines here are
 # expected not to. A file name, then its
 # lines (indented, as trimmed text), with
-# a # comment saying why. Brackets and
-# argument lines belong to the code
-# around them.
+# a # comment saying why. Lines of only
+# brackets or quotes are skipped.
 
 # Pushed on tap; the enroll
 # steps are screens of their own.
 AddChallengeView.swift
   EnrollFlowView(builtIn) { dismiss() }
-  }
 
 # Arrows and swipes change
 # the month.
 CalendarView.swift
-  )
   by: drag.translation.width,
   now: now
   shown = month.adding(-1)
   shown = month.adding(1)
   shown = month.swiped(
-  }
 
 # Taps: open the log, settings
 # and new goal sheets (each pictured as its
 # own screen), edit and delete attempts.
 ChallengeDetailView.swift
   $0 == attempt
-  )
-  ) {
   ChallengeSettingsView(challenge) {
   LogAttemptView(
   NavigationStack {
@@ -60,18 +54,14 @@ ChallengeDetailView.swift
   self.attempt = attempt
   sheet = LogSheet(attempt: attempt)
   try? modelContext.save()
-  }
 
 # Taps: open a challenge, Add
 # challenge and Log attempt sheets (own
 # screens), and the delete dialog, which
 # iOS draws; UI tests open it.
 ChallengeListView.swift
-  """)
   "Delete challenge", role: .destructive
-  )
   ) -> some View {
-  ) {
   AddChallengeView()
   Button(
   Text("""
@@ -90,7 +80,6 @@ ChallengeListView.swift
   return LogAttemptView(
   this.
   try? modelContext.save()
-  }
   } message: { _ in
 
 # Taps: Save, Delete and its
@@ -103,7 +92,6 @@ ChallengeSettingsView.swift
   private func delete() {
   private func save() {
   try? modelContext.save()
-  }
 
 # Tap: picks a color.
 ColorSwatches.swift
@@ -116,12 +104,10 @@ CustomChallengeView.swift
   private func start() {
   start()
   try? modelContext.save()
-  }
 
 # Taps: Next, Back and Start
 # (each step is pictured).
 EnrollFlowView.swift
-  )
   // Today's test is the first attempt.
   advance()
   challenge.logAttempt(count: count)
@@ -152,7 +138,6 @@ EnrollFlowView.swift
   startingCount: count,
   try? modelContext.save()
   withAnimation { step = next }
-  }
 
 # Tap: picks a goal.
 GoalChips.swift
@@ -161,14 +146,12 @@ GoalChips.swift
 # Taps: Save and Cancel (the
 # result is pictured).
 LogAttemptView.swift
-  )
   count: count, on: attempt?.date ?? date
   dismiss()
   let result = challenge.recordAttempt(
   private func save() {
   try? modelContext.save()
   withAnimation { outcome = result }
-  }
 
 # Tap: picks a shape.
 MarkerPicker.swift
@@ -181,7 +164,6 @@ NewGoalView.swift
   onDone?()
   private func keepGoing() {
   try? modelContext.save()
-  }
 
 # Set only by snapshot tests,
 # which fix the day.
@@ -190,12 +172,10 @@ Now.swift
 
 # Taps on − and +, and typing.
 NumberEntry.swift
-  )
   if Int(text) != newValue {
   text = String(newValue)
   value + delta, to: range
   value = NumberText.clamp(
-  }
 
 # UI tests open the store
 # error through the real failure

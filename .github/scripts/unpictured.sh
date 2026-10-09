@@ -25,7 +25,8 @@ paths=$(jq -r '.targets[]
   <<<"$report")
 
 # "File.swift<TAB>text" for each undrawn
-# line, text trimmed.
+# line with any letter or digit, text
+# trimmed.
 found() {
   local path rel name
   while IFS= read -r path; do
@@ -41,6 +42,10 @@ found() {
       | while IFS= read -r line; do
         text=$(sed -n "${line}p" "$rel" \
           | sed -e 's/^ *//' -e 's/ *$//')
+        # Brackets and quotes alone follow
+        # the code around them.
+        grep -q '[[:alnum:]]' <<<"$text" \
+          || continue
         printf '%s\t%s\n' "$name" "$text"
       done
   done <<<"$paths"
