@@ -687,7 +687,9 @@ listing and 1.0.0.
   target in the day view (`dayMissed`), a
   challenge logged today (`detailToday`),
   and the reminder off
-  (`settingsNoReminder`). A CI gate keeps
+  (`settingsNoReminder`), the app with its
+  tab bar (`tabs`), and the custom form in
+  seconds (`customTimed`). A CI gate keeps
   the list complete: view code the
   localization shard (every ScreenID) never
   draws must be listed in

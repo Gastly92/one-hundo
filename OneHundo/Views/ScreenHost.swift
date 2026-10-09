@@ -94,6 +94,15 @@ struct ScreenHost: View {
       NavigationStack {
         CustomChallengeView()
       }
+    case .customTimed:
+      // Seconds: the unit under the count.
+      NavigationStack {
+        CustomChallengeView(unit: .seconds)
+      }
+    case .tabs:
+      // The app as it opens, with its tab
+      // bar.
+      RootView(notifier: SilentNotifier())
     case .enrollIntro:
       enroll(at: .intro)
     case .enrollTest:
