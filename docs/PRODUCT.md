@@ -58,6 +58,18 @@ seconds, or minutes) and a color, give it a
 starting count and a goal, and it works like
 the built-in ones (no form tips).
 
+## Look
+
+- App icon: a neon ring, light blue into
+  purple, with "100" inside. It glows on
+  black in dark mode, sits on near-white
+  in light mode, and has a gray tinted
+  version that iOS colors.
+- Accent (buttons, today in the calendar):
+  a neon violet, deeper in light mode so
+  white text on it stays readable.
+- Each challenge keeps its own color.
+
 ## Screens
 
 The app has two tabs at the bottom:
