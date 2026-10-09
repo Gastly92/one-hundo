@@ -8,7 +8,8 @@ enum SampleData {
   static func insert(
     into context: ModelContext,
     now: Date = Date(),
-    calendar cal: Calendar = .current
+    calendar cal: Calendar = .current,
+    completes: Bool = false
   ) {
     // 24-hour steps: always an earlier
     // calendar day for sample data.
@@ -19,10 +20,11 @@ enum SampleData {
     // Starts `builtIn` with the first log's
     // count, then logs each (days ago,
     // count).
+    @discardableResult
     func add(
       _ builtIn: BuiltIn,
       _ logs: [(days: Int, count: Int)]
-    ) {
+    ) -> Challenge {
       let first = logs[0]
       let challenge = Challenge(
         name: builtIn.name,
@@ -40,11 +42,20 @@ enum SampleData {
           in: cal
         )
       }
+      return challenge
     }
 
     // Logged yesterday: "Try 11 today",
     // "10 / 100".
-    add(.pushUps, [(3, 8), (1, 10)])
+    let pushUps = add(
+      .pushUps, [(3, 8), (1, 10)]
+    )
+    // Completed screens: its goal lowered
+    // to 10 and reached ("Reached 10").
+    if completes {
+      pushUps.goal = 10
+      pushUps.complete()
+    }
     // Logged today: "Done: 20", "20 / 100".
     add(.sitUps, [(2, 15), (0, 20)])
     // Started today with a test of 3:
@@ -57,16 +68,7 @@ enum SampleData {
     // that day, so the list order is fixed):
     // logged 40 yesterday, so
     // "Try 45 seconds today", "40 / 120".
-    let plank = Challenge(
-      name: "Plank",
-      colorName: "teal",
-      startingCount: 30,
-      unit: .seconds,
-      marker: .diamond,
-      goal: 120,
-      dailyIncrease: 5,
-      createdDate: ago(4)
-    )
+    let plank = Self.plank(started: ago(4))
     context.insert(plank)
     plank.logAttempt(
       count: 30, on: ago(4), in: cal
@@ -76,5 +78,22 @@ enum SampleData {
     )
 
     try? context.save()
+  }
+
+  /// The sample custom challenge: Plank, in
+  /// seconds, from 30 up 5 a day to 120.
+  private static func plank(
+    started: Date
+  ) -> Challenge {
+    Challenge(
+      name: "Plank",
+      colorName: "teal",
+      startingCount: 30,
+      unit: .seconds,
+      marker: .diamond,
+      goal: 120,
+      dailyIncrease: 5,
+      createdDate: started
+    )
   }
 }

@@ -30,7 +30,13 @@ struct AppLaunch {
     .logAttempt, .editAttempt, .logTimed,
     .logResult, .goalReached, .newGoal,
     .challengeSettings, .customSettings,
+    .completedList, .completedDetail,
   ]
+
+  /// Seeded screens where Push-ups has
+  /// reached its goal.
+  static let completedScreens: Set<ScreenID>
+    = [.completedList, .completedDetail]
 
   /// Opens the store, in memory or on disk.
   typealias Opener = (_ inMemory: Bool)
@@ -75,7 +81,11 @@ struct AppLaunch {
       case .success(let container) = store
     else { return }
     let context = container.mainContext
-    SampleData.insert(into: context)
+    let done = Self.completedScreens
+      .contains { $0 == shown }
+    SampleData.insert(
+      into: context, completes: done
+    )
   }
 
   /// The screen named after `-showScreen`,

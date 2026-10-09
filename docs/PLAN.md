@@ -673,7 +673,10 @@ listing and 1.0.0.
 - 0.9.2: on a completed challenge,
   Continue is now "Set a new goal" (it
   read as moving on), and its sheet has
-  Cancel.
+  Cancel. Screens `completedList` and
+  `completedDetail` (sample Push-ups
+  reached a goal of 10) give completed
+  challenges snapshots too.
 
 #### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass
