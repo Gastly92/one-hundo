@@ -22,6 +22,12 @@ struct ScreenHost: View {
     return challenges.first { $0.kind == id }
   }
 
+  /// The seeded Sit-ups, logged today.
+  private var sitUps: Challenge? {
+    let id = BuiltIn.sitUps.id
+    return challenges.first { $0.kind == id }
+  }
+
   /// The seeded Plank, counted in seconds.
   private var plank: Challenge? {
     challenges.first { $0.unit == .seconds }
@@ -37,6 +43,16 @@ struct ScreenHost: View {
     goal: 100,
     nextTarget: 12,
     isNewBest: true,
+    unit: .reps
+  )
+
+  /// Push-ups misses its target of 11.
+  private static let missed = LogOutcome(
+    count: 8,
+    target: 11,
+    goal: 100,
+    nextTarget: 9,
+    isNewBest: false,
     unit: .reps
   )
 
@@ -92,11 +108,25 @@ struct ScreenHost: View {
     case .completedList:
       // Push-ups under Completed.
       ChallengeListView()
-    case .completedDetail:
+    case .completedDetail, .noHistory:
+      // Reached 10, or no attempts left.
       if let pushUps {
         NavigationStack {
           ChallengeDetailView(pushUps)
         }
+      }
+    case .logMissed:
+      if let pushUps {
+        LogAttemptView(
+          pushUps,
+          on: now,
+          outcome: Self.missed
+        )
+      }
+    case .logReplace:
+      // Today is logged already.
+      if let sitUps {
+        LogAttemptView(sitUps, on: now)
       }
     case .logAttempt:
       if let pushUps {
@@ -133,7 +163,16 @@ struct ScreenHost: View {
     case .newGoal:
       if let pushUps {
         NavigationStack {
-          NewGoalView(pushUps)
+          NewGoalView(pushUps, cancels: true)
+        }
+      }
+    case .newGoalLow:
+      // At the current count: too low.
+      if let pushUps {
+        NavigationStack {
+          NewGoalView(
+            pushUps, goal: 10, cancels: true
+          )
         }
       }
     case .challengeSettings:

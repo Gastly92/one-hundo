@@ -87,11 +87,13 @@ final class SnapshotTests: XCTestCase {
     )
     let seeded = AppLaunch.seededScreens
     if seeded.contains(screen) {
-      let done = AppLaunch.completedScreens
+      let variant = AppLaunch.sample(
+        for: screen
+      )
       SampleData.insert(
         into: store.mainContext,
         now: Self.now,
-        completes: done.contains(screen)
+        variant: variant
       )
     }
     // No animations (the goal's confetti

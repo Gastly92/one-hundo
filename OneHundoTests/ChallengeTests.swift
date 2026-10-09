@@ -140,6 +140,18 @@ final class ChallengeTests: XCTestCase {
     )
   }
 
+  func testSuggestedGoal() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    // Half as much again over the goal.
+    let first = pushUps.suggestedGoal
+    XCTAssertEqual(first, 150)
+    // Past the goal: over the count.
+    pushUps.log(200, day: 2)
+    let past = pushUps.suggestedGoal
+    XCTAssertEqual(past, 300)
+  }
+
   func testStartDayIsDone() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()

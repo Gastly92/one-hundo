@@ -4,12 +4,23 @@ import SwiftData
 /// Challenges for UI tests (launched with
 /// -uiTesting -seedSampleData).
 enum SampleData {
+  /// How the sample Push-ups differs, for
+  /// screens that show other states.
+  enum Variant {
+    case standard
+    /// Its goal lowered to 10 and reached
+    /// ("Reached 10").
+    case completed
+    /// Its attempts deleted.
+    case noHistory
+  }
+
   @MainActor
   static func insert(
     into context: ModelContext,
     now: Date = Date(),
     calendar cal: Calendar = .current,
-    completes: Bool = false
+    variant: Variant = .standard
   ) {
     // 24-hour steps: always an earlier
     // calendar day for sample data.
@@ -50,12 +61,7 @@ enum SampleData {
     let pushUps = add(
       .pushUps, [(3, 8), (1, 10)]
     )
-    // Completed screens: its goal lowered
-    // to 10 and reached ("Reached 10").
-    if completes {
-      pushUps.goal = 10
-      pushUps.complete()
-    }
+    apply(variant, to: pushUps, in: context)
     // Logged today: "Done: 20", "20 / 100".
     add(.sitUps, [(2, 15), (0, 20)])
     // Started today with a test of 3:
@@ -78,6 +84,26 @@ enum SampleData {
     )
 
     try? context.save()
+  }
+
+  @MainActor
+  private static func apply(
+    _ variant: Variant,
+    to pushUps: Challenge,
+    in context: ModelContext
+  ) {
+    switch variant {
+    case .standard:
+      break
+    case .completed:
+      pushUps.goal = 10
+      pushUps.complete()
+    case .noHistory:
+      for attempt in pushUps.allAttempts {
+        context.delete(attempt)
+      }
+      pushUps.attempts = []
+    }
   }
 
   /// The sample custom challenge: Plank, in

@@ -2,30 +2,39 @@ import SwiftData
 import SwiftUI
 
 /// After reaching a goal (or Set a new
-/// goal on a
-/// completed challenge): pick a new, higher
-/// goal and keep going. Suggests half as
-/// much again.
+/// goal on a completed challenge): pick a
+/// new, higher goal and keep going.
+/// Suggests half as much again.
 struct NewGoalView: View {
   let challenge: Challenge
   /// Called after Keep going, to close the
   /// sheet.
   let onDone: (() -> Void)?
+  /// Shows Cancel: opened as a sheet (from
+  /// a completed challenge), not pushed
+  /// from the celebration.
+  let cancels: Bool
 
+  @Environment(\.dismiss)
+  private var dismiss
   @Environment(\.modelContext)
   private var modelContext
   @State private var goal: Int
 
+  /// `goal` starts the entry somewhere
+  /// other than the suggestion (UI tests).
   init(
     _ challenge: Challenge,
+    goal: Int? = nil,
+    cancels: Bool = false,
     onDone: (() -> Void)? = nil
   ) {
     self.challenge = challenge
+    self.cancels = cancels
     self.onDone = onDone
-    let next = Progression.nextGoal(
-      after: challenge.goal
-    )
-    _goal = State(initialValue: next)
+    let start = goal
+      ?? challenge.suggestedGoal
+    _goal = State(initialValue: start)
   }
 
   private var current: Int {
@@ -64,6 +73,19 @@ struct NewGoalView: View {
     }
     .navigationTitle("Set a new goal")
     .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      if cancels { cancel }
+    }
+  }
+
+  /// Closes the sheet, leaving the
+  /// challenge completed.
+  private var cancel: some ToolbarContent {
+    ToolbarItem(
+      placement: .cancellationAction
+    ) {
+      Button("Cancel") { dismiss() }
+    }
   }
 
   private var keepGoingBar: some View {

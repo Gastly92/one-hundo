@@ -31,12 +31,24 @@ struct AppLaunch {
     .logResult, .goalReached, .newGoal,
     .challengeSettings, .customSettings,
     .completedList, .completedDetail,
+    .noHistory, .logMissed, .logReplace,
+    .newGoalLow,
   ]
 
-  /// Seeded screens where Push-ups has
-  /// reached its goal.
-  static let completedScreens: Set<ScreenID>
-    = [.completedList, .completedDetail]
+  /// How the sample data differs for
+  /// `screen`.
+  static func sample(
+    for screen: ScreenID?
+  ) -> SampleData.Variant {
+    switch screen {
+    case .completedList, .completedDetail:
+      .completed
+    case .noHistory:
+      .noHistory
+    default:
+      .standard
+    }
+  }
 
   /// Opens the store, in memory or on disk.
   typealias Opener = (_ inMemory: Bool)
@@ -81,10 +93,9 @@ struct AppLaunch {
       case .success(let container) = store
     else { return }
     let context = container.mainContext
-    let done = Self.completedScreens
-      .contains { $0 == shown }
     SampleData.insert(
-      into: context, completes: done
+      into: context,
+      variant: Self.sample(for: shown)
     )
   }
 

@@ -677,6 +677,17 @@ listing and 1.0.0.
   `completedDetail` (sample Push-ups
   reached a goal of 10) give completed
   challenges snapshots too.
+- 0.9.3: snapshots for the other screen
+  states: a missed target (`logMissed`),
+  logging a day already logged
+  (`logReplace`), a challenge with no
+  attempts (`noHistory`), and a new goal
+  that's too low (`newGoalLow`). Cancel
+  moved into `NewGoalView`, so `newGoal`
+  shows it. Fix: the suggested new goal
+  builds on the count when it went past
+  the goal (log 200 of 100: 300, not 150,
+  which was below the count).
 
 #### 9b–9d. Polish and release
 - App icon, accent color, haptics, and a pass
