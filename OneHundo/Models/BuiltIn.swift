@@ -34,7 +34,7 @@ struct BuiltIn: Identifiable, Hashable {
       How many push-ups can you do in one \
       go?
       """),
-    colorName: "orange",
+    colorName: "violet",
     marker: .circle,
     tips: [
       String(localized: """

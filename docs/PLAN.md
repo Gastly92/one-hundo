@@ -709,7 +709,10 @@ listing and 1.0.0.
   (ImageMagick, Inter Display Bold). The
   accent is a neon violet, tuned so white
   text on it and it on black both pass
-  4.5:1 contrast.
+  4.5:1 contrast. Challenges default to a
+  new Violet swatch (the accent); built-ins
+  always show their built-in color, so an
+  existing Push-ups turns violet too.
 - Haptics, and a pass on empty and error
   states.
 

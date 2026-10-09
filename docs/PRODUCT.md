@@ -174,7 +174,7 @@ form:
   diamond, star or hexagon (star by
   default), drawn in the chosen color.
 - **Color**: color swatches for the card
-  (orange by default).
+  (violet, the app's accent, by default).
 - Then the same fields as the enroll flow:
   goal (default 100, with quick buttons),
   daily step (default 1), and reminder.

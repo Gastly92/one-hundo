@@ -20,7 +20,7 @@ final class Challenge {
   /// instead.
   var unitRaw: String = "reps"
   /// Name of a color in the app's palette.
-  var colorName: String = "orange"
+  var colorName: String = "violet"
   /// Raw value of `Marker`; use `marker`
   /// instead.
   var markerName: String = "circle"
