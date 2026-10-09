@@ -20,6 +20,10 @@ enum ScreenID: String, CaseIterable {
   case enrollGoal, enrollReminder
   case challengeDetail, logAttempt
   case completedList, completedDetail
+  case noHistory, logMissed, logReplace
+  case newGoalLow, addInProgress, dayMissed
+  case detailToday, settingsNoReminder
+  case tabs, customTimed
   case editAttempt, logTimed, logResult
   case goalReached, newGoal
   case challengeSettings, customSettings

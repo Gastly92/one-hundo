@@ -1,0 +1,184 @@
+# View lines no screen draws, checked by
+# .github/scripts/unpictured.sh. Each
+# ScreenID is opened on its own, so only
+# what a screen shows runs; lines here are
+# expected not to. A file name, then its
+# lines (indented, as trimmed text), with
+# a # comment saying why. Lines of only
+# brackets or quotes are skipped.
+
+# Pushed on tap; the enroll
+# steps are screens of their own.
+AddChallengeView.swift
+  EnrollFlowView(builtIn) { dismiss() }
+
+# Arrows and swipes change
+# the month.
+CalendarView.swift
+  by: drag.translation.width,
+  now: now
+  shown = month.adding(-1)
+  shown = month.adding(1)
+  shown = month.swiped(
+
+# Taps: open the log, settings
+# and new goal sheets (each pictured as its
+# own screen), edit and delete attempts.
+ChallengeDetailView.swift
+  $0 == attempt
+  ChallengeSettingsView(challenge) {
+  LogAttemptView(
+  NavigationStack {
+  NewGoalView(
+  challenge,
+  challenge, cancels: true
+  challenge.attempts?.removeAll {
+  delete(attempt)
+  dismiss()
+  editing: $0.attempt,
+  guard isDeleting else {
+  init(attempt: Attempt?) {
+  isContinuing = false
+  isContinuing = true
+  isDeleting = true
+  isEditing = true
+  let id = UUID()
+  modelContext.delete(attempt)
+  modelContext.delete(challenge)
+  on: now
+  openLog(attempt)
+  private func delete(_ attempt: Attempt) {
+  private func deleteIfAsked() {
+  private func openLog(_ attempt: Attempt?) {
+  return
+  self.attempt = attempt
+  sheet = LogSheet(attempt: attempt)
+  try? modelContext.save()
+
+# Taps: open a challenge, Add
+# challenge and Log attempt sheets (own
+# screens), and the delete dialog, which
+# iOS draws; UI tests open it.
+ChallengeListView.swift
+  "Delete challenge", role: .destructive
+  ) -> some View {
+  AddChallengeView()
+  Button(
+  Text("""
+  This deletes the challenge and \
+  all its attempts. You can't undo \
+  challenge, editing: today, on: now
+  confirmButton(challenge)
+  delete(challenge)
+  deleting = challenge
+  deleting = nil
+  isAdding = true
+  let today = challenge.attempt(on: now)
+  logging = challenge
+  modelContext.delete(challenge)
+  path.append(challenge)
+  return LogAttemptView(
+  this.
+  try? modelContext.save()
+  } message: { _ in
+
+# Taps: Save, Delete and its
+# confirmation dialog.
+ChallengeSettingsView.swift
+  confirming = true
+  dismiss()
+  draft.apply(to: challenge)
+  onDelete?()
+  private func delete() {
+  private func save() {
+  try? modelContext.save()
+
+# Tap: picks a color.
+ColorSwatches.swift
+  colorName = swatch.name
+
+# Tap: Start.
+CustomChallengeView.swift
+  draft.start(into: modelContext)
+  onStarted?()
+  private func start() {
+  start()
+  try? modelContext.save()
+
+# Taps: Next, Back and Start
+# (each step is pictured).
+EnrollFlowView.swift
+  // Today's test is the first attempt.
+  advance()
+  challenge.logAttempt(count: count)
+  colorName: builtIn.colorName,
+  dailyIncrease: increase,
+  else { return }
+  goal = Progression.goal(
+  goal, after: count
+  goal: goal,
+  guard let next = Step(rawValue: index)
+  if step == .test {
+  kind: builtIn.id,
+  let challenge = Challenge(
+  let index = step.rawValue + offset
+  marker: builtIn.marker,
+  modelContext.insert(challenge)
+  move(by: -1)
+  move(by: 1)
+  name: builtIn.name,
+  of: time
+  onStarted?()
+  private func advance() {
+  private func move(by offset: Int) {
+  private func start() {
+  reminderEnabled: remind,
+  reminderMinutes: ReminderTime.minutes(
+  start()
+  startingCount: count,
+  try? modelContext.save()
+  withAnimation { step = next }
+
+# Tap: picks a goal.
+GoalChips.swift
+  goal = choice
+
+# Taps: Save and Cancel (the
+# result is pictured).
+LogAttemptView.swift
+  count: count, on: attempt?.date ?? date
+  dismiss()
+  let result = challenge.recordAttempt(
+  private func save() {
+  try? modelContext.save()
+  withAnimation { outcome = result }
+
+# Tap: picks a shape.
+MarkerPicker.swift
+  marker = shape
+
+# Tap: Keep going.
+NewGoalView.swift
+  challenge.keepGoing(to: goal)
+  keepGoing()
+  onDone?()
+  private func keepGoing() {
+  try? modelContext.save()
+
+# Set only by snapshot tests,
+# which fix the day.
+Now.swift
+  set { self[NowKey.self] = newValue }
+
+# Taps on − and +, and typing.
+NumberEntry.swift
+  if Int(text) != newValue {
+  text = String(newValue)
+  value + delta, to: range
+  value = NumberText.clamp(
+
+# UI tests open the store
+# error through the real failure
+# (AppLaunch); snapshots use this case.
+ScreenHost.swift
+  StoreErrorView(details: Self.error)

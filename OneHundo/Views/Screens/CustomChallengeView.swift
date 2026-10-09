@@ -11,10 +11,18 @@ struct CustomChallengeView: View {
 
   @Environment(\.modelContext)
   private var modelContext
-  @State private var draft = ChallengeDraft()
+  @State private var draft: ChallengeDraft
 
-  init(onStarted: (() -> Void)? = nil) {
+  /// `unit` starts the form on another unit
+  /// (UI tests).
+  init(
+    unit: CountUnit = .reps,
+    onStarted: (() -> Void)? = nil
+  ) {
     self.onStarted = onStarted
+    var start = ChallengeDraft()
+    start.unit = unit
+    _draft = State(initialValue: start)
   }
 
   var body: some View {

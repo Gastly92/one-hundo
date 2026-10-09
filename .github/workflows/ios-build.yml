@@ -49,6 +49,7 @@ jobs:
             - '.github/swiftlint/**'
             - '.github/scripts/**'
             - '.github/workflows/**'
+            - '.github/unpictured.txt'
 
   # Docs, YAML and scripts fit in 45
   # characters too (Swift is SwiftLint's).
@@ -334,6 +335,16 @@ jobs:
       run: >-
         .github/scripts/coverage.sh
         merged.xcresult
+
+    # The localization shard opens every
+    # ScreenID and nothing else, so its
+    # coverage is what the screen list (and
+    # so the snapshots) draws.
+    - name: Screen list gate
+      if: always()
+      run: >-
+        .github/scripts/unpictured.sh
+        result-localization/build/test.xcresult
 
   # The Release build for a real iPhone, in
   # parallel with the tests so it doesn't add

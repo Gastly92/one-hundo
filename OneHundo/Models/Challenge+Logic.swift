@@ -80,6 +80,16 @@ extension Challenge {
     completedDate = Date()
   }
 
+  /// The new goal to suggest: half as much
+  /// again over the goal, or over the
+  /// count if it went past the goal (so
+  /// the suggestion is always higher).
+  var suggestedGoal: Int {
+    Progression.nextGoal(
+      after: max(goal, currentCount)
+    )
+  }
+
   /// Continues a challenge with a new goal,
   /// active again.
   func keepGoing(to goal: Int) {

@@ -101,10 +101,11 @@ struct ChallengeDetailView: View {
     }
     .sheet(isPresented: $isContinuing) {
       NavigationStack {
-        NewGoalView(challenge) {
+        NewGoalView(
+          challenge, cancels: true
+        ) {
           isContinuing = false
         }
-        .toolbar { cancel }
       }
     }
     .sheet(
@@ -113,18 +114,6 @@ struct ChallengeDetailView: View {
     ) {
       ChallengeSettingsView(challenge) {
         isDeleting = true
-      }
-    }
-  }
-
-  /// Closes the new goal sheet, leaving
-  /// the challenge completed.
-  private var cancel: some ToolbarContent {
-    ToolbarItem(
-      placement: .cancellationAction
-    ) {
-      Button("Cancel") {
-        isContinuing = false
       }
     }
   }
