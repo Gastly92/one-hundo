@@ -55,6 +55,12 @@ extension Challenge {
     sortedAttempts.reversed()
   }
 
+  /// Whether there's a line to draw: two
+  /// attempts or more.
+  var hasChart: Bool {
+    allAttempts.count > 1
+  }
+
   /// The attempt logged on the same calendar
   /// day as `day`, if any. That day counts
   /// as done, including the start day: the

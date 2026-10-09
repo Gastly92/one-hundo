@@ -21,6 +21,9 @@ struct ColorSwatches: View {
       }
     }
     .padding(.vertical, 4)
+    .sensoryFeedback(
+      .selection, trigger: colorName
+    )
   }
 
   private func swatch(

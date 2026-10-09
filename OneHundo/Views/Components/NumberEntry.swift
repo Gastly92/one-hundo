@@ -45,6 +45,9 @@ struct NumberEntry: View {
         .testID("\(id).plus")
     }
     .fullWidth()
+    .sensoryFeedback(
+      .selection, trigger: value
+    )
     .onAppear { text = String(value) }
     .onChange(of: text) { _, newText in
       textChanged(to: newText)

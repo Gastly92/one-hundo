@@ -254,11 +254,16 @@ jobs:
       run: tar -xf build/products.tar
 
     - name: Run tests
+      # Only the run the label started
+      # records everything; a later run (the
+      # bot's commit) while the label is
+      # still on records only what's missing.
       env:
-        LABELS: >-
-          ${{ toJSON(
-          github.event.pull_request.labels.*.name
-          ) }}
+        RECORD_ALL: >-
+          ${{
+          github.event.action == 'labeled'
+          && github.event.label.name
+          == 'record-snapshots' }}
       run: >-
         .github/scripts/run-tests.sh test
         ${{ matrix.shard }}
