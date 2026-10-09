@@ -16,12 +16,26 @@ final class ChallengeColorTests: XCTestCase {
     let labels = Color.palette.map {
       String(localized: $0.label)
     }
-    XCTAssertEqual(labels.first, "Orange")
-    XCTAssertEqual(labels.count, 10)
+    XCTAssertEqual(labels.first, "Violet")
+    XCTAssertEqual(labels.count, 11)
   }
 
-  func testUnknownNameIsOrange() {
+  /// A built-in started when Push-ups was
+  /// orange shows today's violet; a custom
+  /// challenge keeps its own color.
+  @MainActor
+  func testBuiltInUsesItsOwnColor() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    pushUps.colorName = "orange"
+    let shown = pushUps.color
+    XCTAssertEqual(shown, .accentColor)
+    pushUps.kind = Challenge.customKind
+    XCTAssertEqual(pushUps.color, .orange)
+  }
+
+  func testUnknownNameIsViolet() {
     let color = Color(paletteName: "plaid")
-    XCTAssertEqual(color, .orange)
+    XCTAssertEqual(color, .accentColor)
   }
 }

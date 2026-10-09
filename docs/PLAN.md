@@ -700,9 +700,24 @@ listing and 1.0.0.
   the goal (log 200 of 100: 300, not 150,
   which was below the count).
 
-#### 9b–9d. Polish and release
-- App icon, accent color, haptics, and a pass
-  on empty and error states.
+#### 9b. Polish
+- App icon and accent color ✅ (0.9.4): a
+  neon ring (light blue into purple) with
+  "100" inside, in light, dark and tinted
+  versions, drawn by
+  `.github/scripts/app-icon.sh`
+  (ImageMagick, Inter Display Bold). The
+  accent is a neon violet, tuned so white
+  text on it and it on black both pass
+  4.5:1 contrast. Challenges default to a
+  new Violet swatch (the accent); built-ins
+  always show their built-in color, so an
+  existing Push-ups turns violet too.
+- Haptics, and a pass on empty and error
+  states.
+
+#### 9c–9d. Release
+
 - Manual accessibility check on the phone:
   VoiceOver on every screen (each control
   named, sensible order) and the largest

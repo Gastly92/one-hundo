@@ -130,7 +130,7 @@ final class ChallengeDraftTests: XCTestCase {
     let draft = ChallengeDraft(pushUps)
     XCTAssertEqual(draft.name, "Push-ups")
     XCTAssertEqual(draft.unit, .reps)
-    XCTAssertEqual(draft.colorName, "orange")
+    XCTAssertEqual(draft.colorName, "violet")
     XCTAssertEqual(draft.marker, .circle)
     XCTAssertEqual(draft.startingCount, 8)
     XCTAssertEqual(draft.goal, 150)
@@ -185,7 +185,7 @@ final class ChallengeDraftTests: XCTestCase {
     XCTAssertEqual(pushUps.name, "Push-ups")
     XCTAssertEqual(pushUps.unit, .reps)
     XCTAssertEqual(
-      pushUps.colorName, "orange"
+      pushUps.colorName, "violet"
     )
     XCTAssertEqual(pushUps.marker, .circle)
     XCTAssertEqual(pushUps.goal, 150)

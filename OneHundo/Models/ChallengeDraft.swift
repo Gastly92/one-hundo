@@ -10,7 +10,7 @@ struct ChallengeDraft {
 
   var name = ""
   var unit = CountUnit.reps
-  var colorName = "orange"
+  var colorName = "violet"
   var marker = Marker.star
   /// Today's test (new challenges only).
   var startingCount = 1

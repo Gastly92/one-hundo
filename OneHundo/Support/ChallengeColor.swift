@@ -21,7 +21,10 @@ extension Color {
 
   /// The palette challenges pick from, by
   /// stored name (`Challenge.colorName`).
+  /// Violet, the default, is the app's
+  /// accent.
   static let palette = [
+    Swatch("violet", .accentColor, "Violet"),
     Swatch("orange", .orange, "Orange"),
     Swatch("red", .red, "Red"),
     Swatch("pink", .pink, "Pink"),
@@ -35,18 +38,25 @@ extension Color {
   ]
 
   /// The palette color with this name, or
-  /// orange.
+  /// the app's violet.
   init(paletteName name: String) {
     let match = Self.palette.first {
       $0.name == name
     }
-    self = match?.color ?? .orange
+    self = match?.color ?? .accentColor
   }
 }
 
 extension Challenge {
+  /// A built-in's color is the built-in's
+  /// own (settings can't change it), so a
+  /// new default reaches challenges already
+  /// started; a custom one's is its choice.
   var color: Color {
-    Color(paletteName: colorName)
+    Color(
+      paletteName: builtIn?.colorName
+        ?? colorName
+    )
   }
 }
 
