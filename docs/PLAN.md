@@ -773,13 +773,17 @@ listing and 1.0.0.
   reopens it through the plan. Every later
   model change adds a version, a migration
   stage, and keeps that test.
-- Crash and usage telemetry: pick a
-  service (Apple's own crash reports and App
-  Analytics first, a third-party SDK only if
-  they fall short). Update the privacy
-  manifest and the App Store privacy labels
-  to match, and say what's collected in the
-  app.
+- Crash and usage telemetry ✅: Apple's
+  own, no code. Crash and hang reports come
+  through Xcode Organizer / App Store
+  Connect, and App Analytics shows installs,
+  sessions and retention, both from users
+  who opt in to share analytics on their
+  device. The app collects nothing itself,
+  so the privacy manifest stays as it is
+  and the App Store privacy label is "Data
+  Not Collected" (step 9d). A third-party
+  SDK only if these fall short.
 - Performance tests ✅: `PerformanceTests`
   times the work behind the list, a
   challenge's screen, a calendar month and
