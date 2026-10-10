@@ -740,7 +740,10 @@ listing and 1.0.0.
   white ring and "100" on the blue-to-
   purple gradient, instead of a colored
   ring on near-white, which looked plain
-  next to other icons.
+  next to other icons. The calendar
+  always draws six week rows, so the
+  empty-month note and the page don't
+  jump between months.
 
 #### 9c–9d. Release
 
