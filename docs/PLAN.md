@@ -825,6 +825,19 @@ series after 1.0.
   iCloud entitlement, a CloudKit container,
   and the same signing changes. The models
   are already CloudKit-ready (PR 1).
+- **iPhone Duo (foldable) support**: apps
+  fill its inner screen only when built
+  with Xcode 27.1 or later (older builds
+  show with black borders), and from
+  April 2027 App Store submissions need
+  Duo screenshots. When GitHub's free
+  `macos-26` runners have Xcode 27.1 (a
+  reminder checks from 2026-10-26),
+  switch CI and the TestFlight workflow to
+  it, re-record snapshots, check the
+  portrait lock and wide layouts on the
+  inner screen, and add Duo-sized
+  snapshots and App Store screenshots.
 - **"Lower is better" challenges**, e.g.
   a faster mile time (shown as mm:ss) or
   less screen time. Targets step down,
