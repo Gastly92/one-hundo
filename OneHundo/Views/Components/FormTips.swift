@@ -1,31 +1,53 @@
 import SwiftUI
 
 /// A built-in challenge's form tips under a
-/// "Good form" heading that opens and
-/// closes, in the enroll intro and on the
-/// challenge screen.
+/// "Good form" heading. On the challenge
+/// screen the heading opens and closes
+/// them; in the enroll intro (no `isOpen`)
+/// they always show.
 struct FormTips: View {
   let tips: [String]
-  @Binding var isOpen: Bool
+  let isOpen: Binding<Bool>?
+
+  init(
+    tips: [String],
+    isOpen: Binding<Bool>? = nil
+  ) {
+    self.tips = tips
+    self.isOpen = isOpen
+  }
 
   var body: some View {
-    DisclosureGroup(isExpanded: $isOpen) {
-      LeadingStack(spacing: 10) {
-        ForEach(tips, id: \.self) { tip in
-          Label(
-            tip,
-            systemImage: "checkmark.circle"
-          )
-          .wrapsText()
-        }
+    if let isOpen {
+      DisclosureGroup(isExpanded: isOpen) {
+        list.padding(.top, 8)
+      } label: {
+        heading
       }
-      .padding(.top, 8)
-      .fullWidth(.leading)
-    } label: {
-      Text("Good form")
-        .font(.headline)
-        .foregroundStyle(.primary)
+    } else {
+      LeadingStack(spacing: 8) {
+        heading
+        list
+      }
     }
-    .testID("formTips")
+  }
+
+  private var heading: some View {
+    Text("Good form")
+      .font(.headline)
+      .foregroundStyle(.primary)
+  }
+
+  private var list: some View {
+    LeadingStack(spacing: 10) {
+      ForEach(tips, id: \.self) { tip in
+        Label(
+          tip,
+          systemImage: "checkmark.circle"
+        )
+        .wrapsText()
+      }
+    }
+    .fullWidth(.leading)
   }
 }

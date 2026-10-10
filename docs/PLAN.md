@@ -617,7 +617,10 @@ go in first.
 - As built (0.8.0): tips are a shared
   `FormTips` ("Good form", opens and
   closes): open in the enroll intro,
-  closed on the challenge screen.
+  closed on the challenge screen. Since
+  0.9.12 the intro shows them without
+  the toggle (it's when they matter, and
+  there's room).
   `HistoryChart` draws each attempt's
   count by day (line and points) in the
   challenge's color. Both sit below the
