@@ -22,11 +22,10 @@ design changed) as each one lands.
   (`Models/`, `Support/`), a lint rule
   against skipping Swift's data race
   checks, and Periphery for unused code.
-- **Stored data**: before 1.0 the models
-  change freely (a big change may need the
-  app reinstalled). From 1.0 on, schemas are
-  versioned with migrations, so App Store
-  users never lose data.
+- **Stored data**: versioned with
+  migrations (schema V1 since 0.9.10, the
+  shape 1.0 ships with), so App Store users
+  never lose data.
 - **Testable by design**: views stay thin;
   decisions live in `Models/` or `Support/`,
   and outside pieces (data store, clock,
@@ -765,13 +764,15 @@ listing and 1.0.0.
   named, sensible order) and the largest
   text size (nothing cut off, buttons easy
   to tap). Replaces the automated audit.
-- Stored data versioning: freeze the 1.0
-  models as schema V1 (a `VersionedSchema`)
-  with a `SchemaMigrationPlan`, and a test
-  that a 1.0 store reopens. Every later model
-  change adds a version, a migration stage,
-  and a test that the previous version's data
-  opens.
+- Stored data versioning ✅ (0.9.10): the
+  models are frozen as `SchemaV1` (a
+  `VersionedSchema`, the app uses them
+  through `Challenge`/`Attempt` aliases),
+  opened with the `Migrations` plan.
+  `StoreTests` writes a store with V1 and
+  reopens it through the plan. Every later
+  model change adds a version, a migration
+  stage, and keeps that test.
 - Crash and usage telemetry: pick a
   service (Apple's own crash reports and App
   Analytics first, a third-party SDK only if
