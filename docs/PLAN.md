@@ -599,6 +599,11 @@ go in first.
   (no free macOS runner). It's re-run by
   hand; a watcher workflow can come if it
   gets common.
+- Booting the simulator has a 5-minute
+  limit (it takes seconds): a hung runner
+  sat there for the job's whole 25
+  minutes (#68). It fails, not retries;
+  re-run by hand.
 - No version bump (CI only).
 
 ### 8. Form tips, images, and history chart ✅
