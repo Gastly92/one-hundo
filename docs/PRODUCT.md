@@ -60,11 +60,12 @@ the built-in ones (no form tips).
 
 ## Look
 
-- App icon: a neon ring, light blue into
-  purple, with "100" inside. It glows on
-  black in dark mode, sits on near-white
-  in light mode, and has a gray tinted
-  version that iOS colors.
+- App icon: a ring with "100" inside. In
+  dark mode it's a neon ring (light blue
+  into purple) glowing on black; in light
+  mode it's inverted, a glowing white ring
+  on that blue-to-purple gradient. A gray
+  tinted version is colored by iOS.
 - Accent (buttons, today in the calendar):
   a neon violet, deeper in light mode so
   white text on it stays readable.

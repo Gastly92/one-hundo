@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Draws the app icon: a neon ring (light
-# blue to purple) with "100" inside, in the
-# three versions iOS shows: light, dark and
-# tinted (gray, which iOS colors). Needs
-# ImageMagick 6 and the Inter Display Bold
-# font (both in the cloud session). Run
-# from the repo root after changing the
-# design; it overwrites the PNGs.
+# Draws the app icon: a ring with "100"
+# inside, in the three versions iOS shows:
+# light (a white ring on light blue to
+# purple), dark (that gradient as a neon
+# ring on black) and tinted (gray, which
+# iOS colors). Needs ImageMagick 6 and the
+# Inter Display Bold font (both in the
+# cloud session). Run from the repo root
+# after changing the design; it overwrites
+# the PNGs.
 set -euo pipefail
 
 font="${ICON_FONT:-/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf}"
@@ -72,13 +74,28 @@ convert -size "${size}x$size" \
 label "$tmp/dark.png" white \
   "$out/AppIcon-Dark.png"
 
-# Light: deeper colors on near-white, no
-# glow (it would wash out).
-ring '#00B4F0-#8B2CF5' "$tmp/deep.png"
+# Light: inverted. A white ring glowing on
+# deeper colors (white reads better on
+# them than on the dark icon's neon).
 convert -size "${size}x$size" \
-  xc:'#F5F4FA' "$tmp/deep.png" \
-  -composite "$tmp/light.png"
-label "$tmp/light.png" '#14112A' \
+  -define gradient:angle=135 \
+  gradient:'#00B4F0-#8B2CF5' "$tmp/deep.png"
+convert -size "${size}x$size" \
+  xc:'rgba(255,255,255,0)' -fill none \
+  -stroke white -strokewidth "$width" \
+  -draw "$circle" "$tmp/white.png"
+# The glow: white, with the blurred ring
+# as its opacity.
+convert -size "${size}x$size" xc:white \
+  \( "$tmp/mask.png" -blur 0x34 \
+  -evaluate multiply 0.75 \) \
+  -alpha off -compose CopyOpacity \
+  -composite "$tmp/glow.png"
+convert "$tmp/deep.png" \
+  "$tmp/glow.png" -composite \
+  "$tmp/white.png" -composite \
+  "$tmp/light.png"
+label "$tmp/light.png" white \
   "$out/AppIcon.png"
 
 # Tinted: white on black; iOS colors it.
