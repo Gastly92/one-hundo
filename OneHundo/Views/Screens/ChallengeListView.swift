@@ -64,20 +64,6 @@ struct ChallengeListView: View {
         AddChallengeView()
       }
       .sheet(item: $logging) { logSheet($0) }
-      .confirmationDialog(
-        "Delete \(deletingName)?",
-        isPresented: isDeleting,
-        titleVisibility: .visible,
-        presenting: deleting
-      ) { challenge in
-        confirmButton(challenge)
-      } message: { _ in
-        Text("""
-          This deletes the challenge and \
-          all its attempts. You can't undo \
-          this.
-          """)
-      }
   }
 
   @ViewBuilder
@@ -167,19 +153,33 @@ struct ChallengeListView: View {
     }
     .buttonStyle(.plain)
     .contextMenu { menu(for: challenge) }
+    // On the card, so iOS points the
+    // confirmation at it.
+    .confirmationDialog(
+      "Delete \(challenge.displayName)?",
+      isPresented: isDeleting(challenge),
+      titleVisibility: .visible
+    ) {
+      confirmButton(challenge)
+    } message: {
+      Text("""
+        This deletes the challenge and \
+        all its attempts. You can't undo \
+        this.
+        """)
+    }
     .testID("card.\(challenge.kind)")
   }
 
-  private var isDeleting: Binding<Bool> {
+  /// Whether `challenge` waits for delete
+  /// confirmation.
+  private func isDeleting(
+    _ challenge: Challenge
+  ) -> Binding<Bool> {
     Binding(
-      get: { deleting != nil },
+      get: { deleting == challenge },
       set: { if !$0 { deleting = nil } }
     )
-  }
-
-  private var deletingName: String {
-    let word = String(localized: "challenge")
-    return deleting?.displayName ?? word
   }
 
   /// The last card in the grid opens Add
