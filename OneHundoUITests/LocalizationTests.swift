@@ -15,13 +15,14 @@ final class LocalizationTests: XCTestCase {
     "-NSSurroundLocalizedStrings", "YES",
   ]
 
-  /// System-formatted text: dates, weekday
-  /// letters, and the system's own error
-  /// description.
+  /// System-formatted text: dates (a
+  /// completed card's is its detail),
+  /// weekday letters, and the system's own
+  /// error description.
   private static let systemIDs: Set = [
     "attemptRow", "attemptDate",
     "errorDetails", "monthTitle",
-    "weekday", "dayTitle",
+    "weekday", "dayTitle", "cardDetail",
   ]
 
   /// Calendar days ("day.5"): a date, and

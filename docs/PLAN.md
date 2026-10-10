@@ -744,6 +744,13 @@ listing and 1.0.0.
   always draws six week rows, so the
   empty-month note and the page don't
   jump between months.
+- Completed cards (0.9.8): the date the
+  goal was reached replaces "100 / 100",
+  and there's no "logged today" checkmark,
+  so two runs of a restarted built-in read
+  as two runs. The custom form's name
+  example is "e.g. Squats" (it was "e.g.
+  Plank", while the unit starts on reps).
 
 #### 9c–9d. Release
 
@@ -790,4 +797,10 @@ series after 1.0.
   iCloud entitlement, a CloudKit container,
   and the same signing changes. The models
   are already CloudKit-ready (PR 1).
+- **"Lower is better" challenges**, e.g.
+  a faster mile time (shown as mm:ss) or
+  less screen time. Targets step down,
+  hitting one means at or below it, and
+  new goals, progress, the chart and the
+  celebration all read the other way.
 - **Ads or monetization**.

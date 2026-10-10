@@ -111,7 +111,7 @@ enum SampleData {
       break
     case .completed:
       pushUps.goal = 10
-      pushUps.complete()
+      pushUps.complete(on: now)
     case .loggedToday:
       pushUps.logAttempt(
         count: 5, on: now, in: cal

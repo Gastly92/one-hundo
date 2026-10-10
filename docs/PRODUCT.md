@@ -252,7 +252,10 @@ success haptic, then two choices:
   current count.
 - **Done**: the card moves to a "Completed"
   section at the bottom of the list, saying
-  e.g. "Reached 100". Its challenge screen
+  e.g. "Reached 100" and the day it was
+  reached (no "logged today" checkmark), so
+  a restarted built-in's runs are told
+  apart and both kept. Its challenge screen
   stays viewable (history, chart) and has a
   **Set a new goal** button (Cancel leaves
   it completed), which moves it back to the
