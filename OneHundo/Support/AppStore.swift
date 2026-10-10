@@ -11,18 +11,17 @@ enum AppStore {
     ))
   }
 
-  /// Before 1.0 there's no migration plan:
-  /// SwiftData adapts the store to simple
-  /// model changes by itself, and for bigger
-  /// ones the owner reinstalls the app. Plan
-  /// step 9 adds versioned schemas, so App
-  /// Store users' data is never lost.
+  /// Opens the store at the latest schema,
+  /// migrating older data first (see
+  /// `SchemaV1`).
   static func open(
     _ configuration: ModelConfiguration
   ) throws -> ModelContainer {
     try ModelContainer(
-      for: Challenge.self,
-      Attempt.self,
+      for: Schema(
+        versionedSchema: SchemaV1.self
+      ),
+      migrationPlan: Migrations.self,
       configurations: configuration
     )
   }

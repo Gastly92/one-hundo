@@ -23,6 +23,14 @@ final class SnapshotTests: XCTestCase {
     timeIntervalSince1970: 1_768_478_400
   )
 
+  /// Every screen's store, kept for the
+  /// whole run: SwiftUI keeps a drawn
+  /// screen's @Query listening for saves,
+  /// and one whose store was freed crashes
+  /// on the next save (`StoreTests`).
+  private static var stores: [ModelContainer]
+    = []
+
   /// An iPhone 13-sized screen.
   private static let phone =
     SwiftUISnapshotLayout.device(
@@ -112,6 +120,7 @@ final class SnapshotTests: XCTestCase {
     let store = try AppStore.open(
       inMemory: true
     )
+    Self.stores.append(store)
     let seeded = AppLaunch.seededScreens
     if seeded.contains(screen) {
       let variant = AppLaunch.sample(

@@ -246,15 +246,17 @@ features land.
   upstream, disabled 2027-08); if it stops
   installing or supporting the current Xcode,
   remove the CI step.
-- Stored data: before 1.0, `@Model`s change
-  freely with no migrations. SwiftData adapts
-  to simple changes itself; for bigger ones
-  the owner deletes and reinstalls the app
-  (say so in the PR). Plan step 9 adds
-  versioned schemas (schema V1 = the 1.0
-  release); from then on every model change
-  needs a migration and a test that old data
-  opens.
+- Stored data is versioned
+  (`Models/Schema.swift`): the 1.0 models
+  are frozen in `SchemaV1`, and the app uses
+  them through the `Challenge` and
+  `Attempt` aliases. Never edit a frozen
+  schema. To change a stored model, follow
+  the steps in that file: a new schema
+  version, a migration stage, and a test
+  that the previous version's data opens
+  (`StoreTests`). Users' data must never be
+  lost.
 - `OneHundo/PrivacyInfo.xcprivacy` is the App
   Store privacy manifest. Update it when
   adding tracking, collecting data, or using
