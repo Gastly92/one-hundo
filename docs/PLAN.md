@@ -736,6 +736,14 @@ listing and 1.0.0.
   month, a Today button jumps back
   (screen `calendarEmpty`: no challenges,
   last month).
+- Light icon inverted (0.9.7): a glowing
+  white ring and "100" on the blue-to-
+  purple gradient, instead of a colored
+  ring on near-white, which looked plain
+  next to other icons. The calendar
+  always draws six week rows, so the
+  empty-month note and the page don't
+  jump between months.
 
 #### 9c–9d. Release
 

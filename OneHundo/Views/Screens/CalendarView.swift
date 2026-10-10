@@ -160,7 +160,14 @@ struct CalendarView: View {
   ) -> some View {
     switch slot {
     case .blank:
-      Color.clear
+      // A day's size, so a row of blanks
+      // is as tall as a row of days.
+      CalendarDay(
+        day: month.start,
+        entries: [],
+        isToday: false
+      )
+      .hidden()
     case .day(let day):
       cell(day)
     }
