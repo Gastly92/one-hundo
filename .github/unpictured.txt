@@ -57,18 +57,11 @@ ChallengeDetailView.swift
 
 # Taps: open a challenge, Add
 # challenge and Log attempt sheets (own
-# screens), and the delete dialog, which
-# iOS draws; UI tests open it.
+# screens), and delete (UI tests).
 ChallengeListView.swift
-  "Delete challenge", role: .destructive
   ) -> some View {
   AddChallengeView()
-  Button(
-  Text("""
-  This deletes the challenge and \
-  all its attempts. You can't undo \
   challenge, editing: today, on: now
-  confirmButton(challenge)
   delete(challenge)
   deleting = challenge
   deleting = nil
@@ -78,9 +71,7 @@ ChallengeListView.swift
   modelContext.delete(challenge)
   path.append(challenge)
   return LogAttemptView(
-  this.
   try? modelContext.save()
-  } message: { _ in
 
 # Taps: Save, Delete and its
 # confirmation dialog.
