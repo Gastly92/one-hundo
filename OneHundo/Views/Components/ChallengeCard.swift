@@ -23,6 +23,7 @@ struct ChallengeCard: View {
         Text(challenge.cardDetail)
           .font(.caption)
           .foregroundStyle(.secondary)
+          .testID("cardDetail")
         // The text above already says this;
         // a 4-point bar isn't a useful
         // target.
