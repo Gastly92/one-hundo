@@ -303,6 +303,12 @@ success haptic, then two choices:
   Backup skips those.
 - This is backup, not sync: data doesn't move
   live between devices.
+- No analytics or tracking in the app: it
+  collects nothing. Crash reports and usage
+  numbers come from Apple (App Store
+  Connect), only from people who share
+  analytics with developers in iOS
+  Settings.
 
 ## Later (not planned yet)
 
