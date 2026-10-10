@@ -257,6 +257,12 @@ features land.
   that the previous version's data opens
   (`StoreTests`). Users' data must never be
   lost.
+- `site/` holds the App Store support and
+  privacy pages, published to
+  https://gastly92.github.io/one-hundo/ by
+  `.github/workflows/pages.yml` on merge.
+  Keep `privacy.html` true to what the app
+  does (update it with the manifest).
 - `OneHundo/PrivacyInfo.xcprivacy` is the App
   Store privacy manifest. Update it when
   adding tracking, collecting data, or using

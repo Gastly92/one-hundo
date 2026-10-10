@@ -795,6 +795,11 @@ listing and 1.0.0.
   run to run.) App launch isn't timed: it
   opens one small store, and a launch
   metric adds about a minute to CI.
+- Support and privacy pages ✅: `site/`,
+  published by GitHub Pages at
+  https://gastly92.github.io/one-hundo/
+  (support) and `privacy.html`, for the
+  listing's required URLs.
 - App Store listing: screenshots made by a
   UI test from the sample data (light mode,
   the required iPhone sizes), plus the
