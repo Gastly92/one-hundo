@@ -3,10 +3,12 @@ import XCTest
 
 /// The work behind each screen stays quick
 /// with a year of daily attempts. Each limit
-/// is about ten times what CI's runners
-/// take, so only a real slowdown fails (say,
-/// work that grows much faster than the
-/// history), never a slow runner.
+/// is about ten times CI's time on its
+/// first run (list 13 ms, challenge 6 ms,
+/// month 176 ms, logging 4 ms), so only a
+/// real slowdown fails (say, work that
+/// grows much faster than the history),
+/// never a slow runner.
 @MainActor
 final class PerformanceTests: XCTestCase {
   /// Days of history: a year.
@@ -40,7 +42,7 @@ final class PerformanceTests: XCTestCase {
   func testListCards() throws {
     let store = try TestStore()
     let all = year(in: store)
-    expect("List cards", under: 1) {
+    expect("List cards", under: 0.15) {
       for challenge in all {
         _ = challenge.todayText(
           on: today, in: utc
@@ -60,7 +62,9 @@ final class PerformanceTests: XCTestCase {
     let store = try TestStore()
     let all = year(in: store)
     let challenge = all[0]
-    expect("Challenge screen", under: 1) {
+    expect(
+      "Challenge screen", under: 0.1
+    ) {
       _ = challenge.todayText(
         on: today, in: utc
       )
@@ -79,7 +83,7 @@ final class PerformanceTests: XCTestCase {
     let month = CalendarMonth(
       containing: day(Self.days), in: utc
     )
-    expect("Calendar month", under: 3) {
+    expect("Calendar month", under: 2) {
       for date in month.days {
         _ = CalendarLog.entries(
           for: all, on: date, in: utc
@@ -95,7 +99,7 @@ final class PerformanceTests: XCTestCase {
   func testLogAttempt() throws {
     let store = try TestStore()
     let all = year(in: store)
-    expect("Log attempt", under: 1) {
+    expect("Log attempt", under: 0.1) {
       all[0].recordAttempt(
         count: 400, on: today, in: utc
       )
