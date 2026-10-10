@@ -10,6 +10,9 @@ struct Poster: View {
   /// The screen as drawn on a 440 × 956
   /// point phone.
   let screen: UIImage
+  /// Dark mode: a white status bar and home
+  /// bar.
+  let dark: Bool
 
   /// The phone's size on the poster.
   private static let scale = 0.76
@@ -59,6 +62,11 @@ struct Poster: View {
     .ignoresSafeArea()
   }
 
+  /// The status and home bars' color.
+  private var ink: Color {
+    dark ? .white : .black
+  }
+
   /// The screen at full size, with a status
   /// bar, home bar and black bezel.
   private var phone: some View {
@@ -67,11 +75,11 @@ struct Poster: View {
       .accessibilityLabel(caption)
       .frame(width: 440, height: 956)
       .overlay(alignment: .top) {
-        StatusBar()
+        StatusBar(ink: ink)
       }
       .overlay(alignment: .bottom) {
         Capsule()
-          .fill(.black)
+          .fill(ink)
           .frame(width: 150, height: 5)
           .padding(.bottom, 8)
       }
@@ -88,6 +96,8 @@ struct Poster: View {
 /// pictures: 9:41, full signal and battery,
 /// either side of the Dynamic Island.
 private struct StatusBar: View {
+  let ink: Color
+
   private static let icons = [
     "cellularbars",
     "wifi",
@@ -110,7 +120,7 @@ private struct StatusBar: View {
       .frame(maxWidth: .infinity)
     }
     .font(.body.weight(.semibold))
-    .foregroundStyle(.black)
+    .foregroundStyle(ink)
     .padding(.top, 11)
   }
 }

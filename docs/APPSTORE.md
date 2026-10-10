@@ -8,7 +8,7 @@ does, and update it as features change.
 
 ## Screenshots
 
-Six iPhone screenshots, 1320 × 2868 (the
+Seven iPhone screenshots, 1320 × 2868 (the
 6.9-inch size; App Store Connect scales
 them down for smaller iPhones). Each is a
 caption on the icon's violet-to-blue
@@ -16,7 +16,8 @@ gradient over the screen in a phone frame,
 with a tidy 9:41 status bar (`Poster`).
 They're drawn by `AppStoreTests` from a
 month of sample training (`Showcase`), in
-light mode, and saved in
+light mode (the last in dark), and saved
+in
 `OneHundoTests/__Snapshots__/AppStoreTests/`.
 CI records them like the other snapshots,
 so they follow the app's look; re-record
@@ -34,6 +35,8 @@ with the `record-snapshots` label.
    your goal and pace"
 6. `6-goal`: goal reached. "Reach 100,
    then aim higher"
+7. `7-dark`: Push-ups' screen in dark
+   mode. "Light or dark, your choice"
 
 Captions are in `AppStoreTests.shots`.
 
@@ -106,7 +109,7 @@ push ups,pushups,sit ups,pull ups,plank,workout,fitness,training,reps,calistheni
 2. Tap a picture, then the download
    button (or "Raw"), long-press the
    image and tap "Save to Photos". Do all
-   six, in order.
+   seven, in order.
 3. Open appstoreconnect.apple.com, tap
    the aA button and "Request Desktop
    Website".
@@ -115,7 +118,7 @@ push ups,pushups,sit ups,pull ups,plank,workout,fitness,training,reps,calistheni
    and Screenshots" → the 6.9" iPhone
    tab.
 5. Tap "Choose File" → Photo Library, pick
-   the six, and drag them into order if
+   the seven, and drag them into order if
    needed.
 6. Paste the text above into its fields,
    fill in the other fields, and tap

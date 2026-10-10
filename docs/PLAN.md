@@ -827,8 +827,9 @@ listing and 1.0.0.
 - App Store listing ✅: `docs/APPSTORE.md`
   has the text to paste (subtitle,
   description, keywords, URLs, age rating,
-  privacy). Six screenshots (list,
-  challenge, log, calendar, plan, goal)
+  privacy). Seven screenshots (list,
+  challenge, log, calendar, plan, goal,
+  and the challenge in dark mode)
   are drawn by `AppStoreTests` like the
   snapshots: each a caption on the icon's
   gradient over the screen in a phone

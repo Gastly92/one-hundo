@@ -24,17 +24,18 @@ final class AppStoreTests: XCTestCase {
   private static var stores: [ModelContainer]
     = []
 
-  /// One screenshot: its file name, caption
-  /// and screen.
+  /// One screenshot: its file name, caption,
+  /// screen and light or dark mode.
   private struct Shot {
     let name: String
     let caption: String
     let screen: ScreenID
+    var style = UIUserInterfaceStyle.light
   }
 
-  /// A drawn screen and its caption.
+  /// A screenshot and its screen's view.
   private struct Page {
-    let caption: String
+    let shot: Shot
     let view: AnyView
   }
 
@@ -72,24 +73,36 @@ final class AppStoreTests: XCTestCase {
       caption: "Reach 100, then aim higher",
       screen: .goalReached
     ),
+    Shot(
+      name: "7-dark",
+      caption: "Light or dark, your choice",
+      screen: .challengeDetail,
+      style: .dark
+    ),
   ]
 
-  /// Light mode, standard text, 3x, sRGB.
-  private static let traits =
+  /// `style`, standard text, 3x, sRGB.
+  private static func traits(
+    _ style: UIUserInterfaceStyle
+  ) -> UITraitCollection {
     UITraitCollection {
-      $0.userInterfaceStyle = .light
+      $0.userInterfaceStyle = style
       $0.displayScale = 3
       $0.displayGamut = .SRGB
       $0.preferredContentSizeCategory =
         .large
     }
+  }
 
   /// The screen: an iPhone Pro Max, 440 ×
   /// 956 points with its safe area, drawn
   /// in the app's window like the
   /// snapshots.
-  private static let screen =
-    Snapshotting<AnyView, UIImage>.image(
+  private static func screen(
+    _ style: UIUserInterfaceStyle
+  ) -> Snapshotting<AnyView, UIImage> {
+    let look = traits(style)
+    return .image(
       drawHierarchyInKeyWindow: true,
       precision: 0.99,
       perceptualPrecision: 0.98,
@@ -102,11 +115,12 @@ final class AppStoreTests: XCTestCase {
             right: 0
           ),
           size: size,
-          traits: traits
+          traits: look
         )
       ),
-      traits: traits
+      traits: look
     )
+  }
 
   private static let size = CGSize(
     width: 440,
@@ -121,27 +135,30 @@ final class AppStoreTests: XCTestCase {
     Snapshotting<Page, UIImage> {
     Snapshotting(
       pathExtension: "png",
-      diffing: screen.diffing
+      diffing: screen(.light).diffing
     ) { page in
-      screen.snapshot(page.view).map {
-        opaque(frame($0, with: page.caption))
-      }
+      let shot = page.shot
+      return screen(shot.style)
+        .snapshot(page.view)
+        .map { opaque(frame($0, for: shot)) }
     }
   }
 
-  /// `shot` in the `Poster`, drawn off
+  /// `image` in `shot`'s `Poster`, drawn off
   /// screen by SwiftUI (it's only shapes,
   /// text and the picture, so it comes out
   /// the same every time; a second pass in
   /// the window sometimes caught the screen
   /// before the poster appeared).
   private static func frame(
-    _ shot: UIImage,
-    with caption: String
+    _ image: UIImage,
+    for shot: Shot
   ) -> UIImage {
+    let dark = shot.style == .dark
     let framed = Poster(
-      caption: caption,
-      screen: shot
+      caption: shot.caption,
+      screen: image,
+      dark: dark
     )
     .frame(
       width: size.width,
@@ -154,17 +171,14 @@ final class AppStoreTests: XCTestCase {
     )
     renderer.scale = 3
     renderer.isOpaque = true
-    return renderer.uiImage ?? shot
+    return renderer.uiImage ?? image
   }
 
   func testScreenshots() throws {
     for shot in Self.shots {
       let view = try page(shot.screen)
       assertSnapshot(
-        of: Page(
-          caption: shot.caption,
-          view: AnyView(view)
-        ),
+        of: Page(shot: shot, view: view),
         as: Self.poster,
         named: shot.name
       )
@@ -176,7 +190,7 @@ final class AppStoreTests: XCTestCase {
   /// day.
   private func page(
     _ screen: ScreenID
-  ) throws -> some View {
+  ) throws -> AnyView {
     let store = try AppStore.open(
       inMemory: true
     )
@@ -185,10 +199,11 @@ final class AppStoreTests: XCTestCase {
       into: store.mainContext,
       now: Self.now
     )
-    return ScreenHost(screen: screen)
+    let host = ScreenHost(screen: screen)
       .modelContainer(store)
       .environment(\.now, Self.now)
       .transaction { $0.animation = nil }
+    return AnyView(host)
   }
 
   /// The saved image is what App Store
