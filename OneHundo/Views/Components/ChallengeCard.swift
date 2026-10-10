@@ -14,16 +14,13 @@ struct ChallengeCard: View {
   private var symbol: String {
     challenge.marker.symbol
   }
-  private var isDoneToday: Bool {
-    challenge.attempt(on: now) != nil
-  }
 
   var body: some View {
     LeadingStack(spacing: 10) {
       name
       today
       LeadingStack(spacing: 4) {
-        Text(challenge.progressText)
+        Text(challenge.cardDetail)
           .font(.caption)
           .foregroundStyle(.secondary)
         // The text above already says this;
@@ -73,7 +70,9 @@ struct ChallengeCard: View {
   /// checkmark fits beside the text.)
   private var today: some View {
     HStack(spacing: 4) {
-      if isDoneToday { DoneMark() }
+      if challenge.showsDoneMark(on: now) {
+        DoneMark()
+      }
       Text(challenge.todayText(on: now))
         .wrapsText()
     }

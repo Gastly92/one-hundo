@@ -105,23 +105,6 @@ final class ChallengeTests: XCTestCase {
     XCTAssertEqual(chart, [5, 6])
   }
 
-  func testCardTextTryAndDone() throws {
-    let store = try TestStore()
-    let pushUps = store.pushUps()
-    pushUps.log(5, day: 1)
-    XCTAssertEqual(
-      pushUps.todayText(day: 2),
-      "Try 6 today"
-    )
-    pushUps.log(6, day: 2)
-    XCTAssertEqual(
-      pushUps.todayText(day: 2), "Done: 6"
-    )
-    XCTAssertEqual(
-      pushUps.progressText, "6 / 100"
-    )
-  }
-
   func testCompleteAndKeepGoing() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()

@@ -736,6 +736,13 @@ listing and 1.0.0.
   month, a Today button jumps back
   (screen `calendarEmpty`: no challenges,
   last month).
+- Completed cards (0.9.8): the date the
+  goal was reached replaces "100 / 100",
+  and there's no "logged today" checkmark,
+  so two runs of a restarted built-in read
+  as two runs. The custom form's name
+  example is "e.g. Squats" (it was "e.g.
+  Plank", while the unit starts on reps).
 
 #### 9c–9d. Release
 

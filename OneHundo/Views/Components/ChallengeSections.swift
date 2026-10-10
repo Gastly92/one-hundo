@@ -11,7 +11,7 @@ struct CustomSections: View {
       TextField(
         "Name",
         text: $draft.name,
-        prompt: Text("e.g. Plank")
+        prompt: Text("e.g. Squats")
       )
       .textInputAutocapitalization(.words)
       .testID("customName")

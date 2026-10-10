@@ -81,9 +81,10 @@ extension Challenge {
     completedDate != nil
   }
 
-  /// Sets the challenge aside as completed.
-  func complete() {
-    completedDate = Date()
+  /// Sets the challenge aside as completed,
+  /// reached on `date`.
+  func complete(on date: Date = Date()) {
+    completedDate = date
   }
 
   /// The new goal to suggest: half as much
@@ -155,11 +156,6 @@ extension Challenge {
       This replaces the \(count) you logged \
       that day.
       """)
-  }
-
-  /// Progress label, e.g. "6 / 100".
-  var progressText: String {
-    "\(currentCount) / \(goal)"
   }
 
   /// The count a day's target builds on: the
@@ -276,7 +272,7 @@ extension Challenge {
     logAttempt(
       count: count, on: date, in: cal
     )
-    if count >= goal { complete() }
+    if count >= goal { complete(on: date) }
     return LogOutcome(
       count: count,
       target: dayTarget,
