@@ -789,4 +789,10 @@ series after 1.0.
   iCloud entitlement, a CloudKit container,
   and the same signing changes. The models
   are already CloudKit-ready (PR 1).
+- **"Lower is better" challenges**, e.g.
+  a faster mile time (shown as mm:ss) or
+  less screen time. Targets step down,
+  hitting one means at or below it, and
+  new goals, progress, the chart and the
+  celebration all read the other way.
 - **Ads or monetization**.
