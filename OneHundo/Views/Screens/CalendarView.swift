@@ -17,6 +17,12 @@ struct CalendarView: View {
   /// the current one.
   @State private var shown: CalendarMonth?
 
+  /// Opens on `month` (UI tests), or this
+  /// month.
+  init(month: CalendarMonth? = nil) {
+    _shown = State(initialValue: month)
+  }
+
   /// Between columns, in the grid and the
   /// weekday row alike.
   private static let spacing: CGFloat = 4
@@ -54,12 +60,26 @@ struct CalendarView: View {
       .testID("calendarGrid")
       .simultaneousGesture(swipe)
       .navigationTitle("Calendar")
+      .toolbar {
+        ToolbarItem(
+          placement: .primaryAction
+        ) { today }
+      }
       .navigationDestination(
         for: Date.self
       ) { DayView($0) }
       .navigationDestination(
         for: Challenge.self
       ) { ChallengeDetailView($0) }
+    }
+  }
+
+  /// Back to this month, once away from it.
+  @ViewBuilder
+  private var today: some View {
+    if !month.isLatest(now: now) {
+      Button("Today") { shown = nil }
+        .testID("todayButton")
     }
   }
 

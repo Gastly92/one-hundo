@@ -732,8 +732,10 @@ listing and 1.0.0.
 - Empty calendar (0.9.6): a month with
   nothing logged says so under the grid,
   and that each day you log shows your
-  challenges' shapes (screen
-  `calendarEmpty`).
+  challenges' shapes. Away from this
+  month, a Today button jumps back
+  (screen `calendarEmpty`: no challenges,
+  last month).
 
 #### 9c–9d. Release
 
