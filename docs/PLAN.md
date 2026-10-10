@@ -773,6 +773,11 @@ listing and 1.0.0.
   reopens it through the plan. Every later
   model change adds a version, a migration
   stage, and keeps that test.
+- Time zone tests ✅: `TimeZoneTests`
+  logs either side of midnight and across
+  both daylight saving changes (US
+  Pacific), checking days and targets
+  follow the phone's calendar.
 - Crash and usage telemetry ✅: Apple's
   own, no code. Crash and hang reports come
   through Xcode Organizer / App Store
