@@ -24,17 +24,54 @@ final class AppStoreTests: XCTestCase {
   private static var stores: [ModelContainer]
     = []
 
-  /// Each picture's name and screen, in the
-  /// listing's order.
-  private static let shots: [
-    (String, ScreenID)
-  ] = [
-    ("1-list", .tabs),
-    ("2-challenge", .challengeDetail),
-    ("3-log", .logAttempt),
-    ("4-calendar", .calendar),
-    ("5-plan", .enrollGoal),
-    ("6-goal", .goalReached),
+  /// One screenshot: its file name, caption
+  /// and screen.
+  private struct Shot {
+    let name: String
+    let caption: String
+    let screen: ScreenID
+  }
+
+  /// A drawn screen and its caption.
+  private struct Page {
+    let caption: String
+    let view: AnyView
+  }
+
+  /// The screenshots, in the listing's
+  /// order.
+  private static let shots = [
+    Shot(
+      name: "1-list",
+      caption:
+        "Get to 100, one day at a time",
+      screen: .tabs
+    ),
+    Shot(
+      name: "2-challenge",
+      caption: "See how far you've come",
+      screen: .challengeDetail
+    ),
+    Shot(
+      name: "3-log",
+      caption: "Log what you did today",
+      screen: .logAttempt
+    ),
+    Shot(
+      name: "4-calendar",
+      caption: "Every day you trained",
+      screen: .calendar
+    ),
+    Shot(
+      name: "5-plan",
+      caption: "Set your goal and pace",
+      screen: .enrollGoal
+    ),
+    Shot(
+      name: "6-goal",
+      caption: "Reach 100, then aim higher",
+      screen: .goalReached
+    ),
   ]
 
   /// Light mode, standard text, 3x, sRGB.
@@ -48,16 +85,26 @@ final class AppStoreTests: XCTestCase {
     }
 
   /// An iPhone Pro Max: 440 × 956 points,
-  /// with its safe area.
-  private static let layout =
-    SwiftUISnapshotLayout.device(
+  /// with its safe area, for the screen.
+  private static let phone = layout(
+    UIEdgeInsets(
+      top: 62,
+      left: 0,
+      bottom: 34,
+      right: 0
+    )
+  )
+
+  /// The same size with no safe area, for
+  /// the poster around it.
+  private static let full = layout(.zero)
+
+  private static func layout(
+    _ safeArea: UIEdgeInsets
+  ) -> SwiftUISnapshotLayout {
+    .device(
       config: ViewImageConfig(
-        safeArea: UIEdgeInsets(
-          top: 62,
-          left: 0,
-          bottom: 34,
-          right: 0
-        ),
+        safeArea: safeArea,
         size: CGSize(
           width: 440,
           height: 956
@@ -65,40 +112,63 @@ final class AppStoreTests: XCTestCase {
         traits: traits
       )
     )
+  }
 
-  private typealias Shot =
+  private typealias Strategy =
     Snapshotting<AnyView, UIImage>
 
-  /// A picture without an alpha channel,
-  /// which App Store Connect turns down.
-  private static var flat: Shot {
-    let image = Shot.image(
+  private static func image(
+    on layout: SwiftUISnapshotLayout
+  ) -> Strategy {
+    .image(
       drawHierarchyInKeyWindow: true,
       precision: 0.99,
       perceptualPrecision: 0.98,
       layout: layout,
       traits: traits
     )
-    return Shot(
+  }
+
+  /// Draws the screen, then the `Poster`
+  /// around it, saved without an alpha
+  /// channel (App Store Connect turns
+  /// those down).
+  private static var poster:
+    Snapshotting<Page, UIImage> {
+    let screen = image(on: phone)
+    let around = image(on: full)
+    return Snapshotting(
       pathExtension: "png",
-      diffing: image.diffing
-    ) { view in
-      image.snapshot(view).map(opaque)
+      diffing: around.diffing
+    ) { page in
+      Async { done in
+        screen.snapshot(page.view).run {
+          let view = Poster(
+            caption: page.caption,
+            screen: $0
+          )
+          around.snapshot(AnyView(view))
+            .map(opaque)
+            .run(done)
+        }
+      }
     }
   }
 
   func testScreenshots() throws {
-    for (name, screen) in Self.shots {
-      let view = try page(screen)
+    for shot in Self.shots {
+      let view = try page(shot.screen)
       assertSnapshot(
-        of: AnyView(view),
-        as: Self.flat,
-        named: name
+        of: Page(
+          caption: shot.caption,
+          view: AnyView(view)
+        ),
+        as: Self.poster,
+        named: shot.name
       )
-      try check(name)
+      try check(shot.name)
     }
   }
-
   /// The screen as `ScreenHost` shows it,
   /// with the showcase data, on the fixed
   /// day.

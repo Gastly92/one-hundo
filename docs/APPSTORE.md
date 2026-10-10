@@ -10,21 +10,32 @@ does, and update it as features change.
 
 Six iPhone screenshots, 1320 × 2868 (the
 6.9-inch size; App Store Connect scales
-them down for smaller iPhones). They're
-drawn by `AppStoreTests` from a month of
-sample training (`Showcase`), in light
-mode, and saved in
+them down for smaller iPhones). Each is a
+caption on the icon's violet-to-blue
+gradient over the screen in a phone frame,
+with a tidy 9:41 status bar (`Poster`).
+They're drawn by `AppStoreTests` from a
+month of sample training (`Showcase`), in
+light mode, and saved in
 `OneHundoTests/__Snapshots__/AppStoreTests/`.
 CI records them like the other snapshots,
 so they follow the app's look; re-record
 with the `record-snapshots` label.
 
-1. `1-list`: the challenge list.
-2. `2-challenge`: Push-ups' screen.
-3. `3-log`: logging an attempt.
-4. `4-calendar`: the month's calendar.
-5. `5-plan`: setting a goal and pace.
-6. `6-goal`: goal reached.
+1. `1-list`: the challenge list. "Get to
+   100, one day at a time"
+2. `2-challenge`: Push-ups' screen. "See
+   how far you've come"
+3. `3-log`: logging an attempt. "Log what
+   you did today"
+4. `4-calendar`: the month. "Every day you
+   trained"
+5. `5-plan`: a new challenge's plan. "Set
+   your goal and pace"
+6. `6-goal`: goal reached. "Reach 100,
+   then aim higher"
+
+Captions are in `AppStoreTests.shots`.
 
 ## Text
 

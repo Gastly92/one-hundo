@@ -221,7 +221,8 @@ features land.
   Re-record after Xcode or iOS updates.
 - `AppStoreTests` draws the App Store
   screenshots the same way (6.9-inch,
-  light, `Showcase` data); the listing's
+  light, `Showcase` data, framed and
+  captioned by `Poster`); the listing's
   text is in `docs/APPSTORE.md`. Update
   both when a pictured screen or a listed
   feature changes.

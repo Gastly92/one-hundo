@@ -830,17 +830,19 @@ listing and 1.0.0.
   privacy). Six screenshots (list,
   challenge, log, calendar, plan, goal)
   are drawn by `AppStoreTests` like the
-  snapshots, at the 6.9-inch size (1320 ×
-  2868, which App Store Connect scales for
-  smaller iPhones), from a month of sample
+  snapshots: each a caption on the icon's
+  gradient over the screen in a phone
+  frame with a 9:41 status bar (`Poster`),
+  at the 6.9-inch size (1320 × 2868; App
+  Store Connect scales it for smaller
+  iPhones), from a month of sample
   training (`Showcase`, in the tests) on
-  Jan 28. A test checks each saved PNG's
-  size and that it has no alpha channel,
-  which App Store Connect rejects. A
-  snapshot test, not a UI test as first
-  planned: it reuses CI's recording, needs
-  no Pro Max simulator, and the pictures
-  can't drift (no status bar clock).
+  Jan 28. A test checks each PNG's size
+  and that it has no alpha channel, which
+  App Store Connect rejects. A snapshot
+  test, not a UI test as first planned:
+  it reuses CI's recording and needs no
+  Pro Max simulator.
 - Bump `MARKETING_VERSION` to 1.0.0 when
   you're happy with it: the first App Store
   release.
