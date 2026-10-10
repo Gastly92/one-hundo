@@ -84,50 +84,34 @@ final class AppStoreTests: XCTestCase {
         .large
     }
 
-  /// An iPhone Pro Max: 440 × 956 points,
-  /// with its safe area, for the screen.
-  private static let phone = layout(
-    UIEdgeInsets(
-      top: 62,
-      left: 0,
-      bottom: 34,
-      right: 0
-    )
-  )
-
-  /// The same size with no safe area, for
-  /// the poster around it.
-  private static let full = layout(.zero)
-
-  private static func layout(
-    _ safeArea: UIEdgeInsets
-  ) -> SwiftUISnapshotLayout {
-    .device(
-      config: ViewImageConfig(
-        safeArea: safeArea,
-        size: CGSize(
-          width: 440,
-          height: 956
-        ),
-        traits: traits
-      )
-    )
-  }
-
-  private typealias Strategy =
-    Snapshotting<AnyView, UIImage>
-
-  private static func image(
-    on layout: SwiftUISnapshotLayout
-  ) -> Strategy {
-    .image(
+  /// The screen: an iPhone Pro Max, 440 ×
+  /// 956 points with its safe area, drawn
+  /// in the app's window like the
+  /// snapshots.
+  private static let screen =
+    Snapshotting<AnyView, UIImage>.image(
       drawHierarchyInKeyWindow: true,
       precision: 0.99,
       perceptualPrecision: 0.98,
-      layout: layout,
+      layout: .device(
+        config: ViewImageConfig(
+          safeArea: UIEdgeInsets(
+            top: 62,
+            left: 0,
+            bottom: 34,
+            right: 0
+          ),
+          size: size,
+          traits: traits
+        )
+      ),
       traits: traits
     )
-  }
+
+  private static let size = CGSize(
+    width: 440,
+    height: 956
+  )
 
   /// Draws the screen, then the `Poster`
   /// around it, saved without an alpha
@@ -135,24 +119,42 @@ final class AppStoreTests: XCTestCase {
   /// those down).
   private static var poster:
     Snapshotting<Page, UIImage> {
-    let screen = image(on: phone)
-    let around = image(on: full)
-    return Snapshotting(
+    Snapshotting(
       pathExtension: "png",
-      diffing: around.diffing
+      diffing: screen.diffing
     ) { page in
-      Async { done in
-        screen.snapshot(page.view).run {
-          let view = Poster(
-            caption: page.caption,
-            screen: $0
-          )
-          around.snapshot(AnyView(view))
-            .map(opaque)
-            .run(done)
-        }
+      screen.snapshot(page.view).map {
+        opaque(frame($0, with: page.caption))
       }
     }
+  }
+
+  /// `shot` in the `Poster`, drawn off
+  /// screen by SwiftUI (it's only shapes,
+  /// text and the picture, so it comes out
+  /// the same every time; a second pass in
+  /// the window sometimes caught the screen
+  /// before the poster appeared).
+  private static func frame(
+    _ shot: UIImage,
+    with caption: String
+  ) -> UIImage {
+    let framed = Poster(
+      caption: caption,
+      screen: shot
+    )
+    .frame(
+      width: size.width,
+      height: size.height
+    )
+    .environment(\.colorScheme, .light)
+    .environment(\.dynamicTypeSize, .large)
+    let renderer = ImageRenderer(
+      content: framed
+    )
+    renderer.scale = 3
+    renderer.isOpaque = true
+    return renderer.uiImage ?? shot
   }
 
   func testScreenshots() throws {
