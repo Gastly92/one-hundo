@@ -824,10 +824,23 @@ listing and 1.0.0.
   https://gastly92.github.io/one-hundo/
   (support) and `privacy.html`, for the
   listing's required URLs.
-- App Store listing: screenshots made by a
-  UI test from the sample data (light mode,
-  the required iPhone sizes), plus the
-  description, keywords and support URL.
+- App Store listing ✅: `docs/APPSTORE.md`
+  has the text to paste (subtitle,
+  description, keywords, URLs, age rating,
+  privacy). Six screenshots (list,
+  challenge, log, calendar, plan, goal)
+  are drawn by `AppStoreTests` like the
+  snapshots, at the 6.9-inch size (1320 ×
+  2868, which App Store Connect scales for
+  smaller iPhones), from a month of sample
+  training (`Showcase`, in the tests) on
+  Jan 28. A test checks each saved PNG's
+  size and that it has no alpha channel,
+  which App Store Connect rejects. A
+  snapshot test, not a UI test as first
+  planned: it reuses CI's recording, needs
+  no Pro Max simulator, and the pictures
+  can't drift (no status bar clock).
 - Bump `MARKETING_VERSION` to 1.0.0 when
   you're happy with it: the first App Store
   release.

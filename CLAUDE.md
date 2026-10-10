@@ -219,6 +219,12 @@ features land.
   record all of them again; a failed
   comparison uploads `snapshot-diffs`.
   Re-record after Xcode or iOS updates.
+- `AppStoreTests` draws the App Store
+  screenshots the same way (6.9-inch,
+  light, `Showcase` data); the listing's
+  text is in `docs/APPSTORE.md`. Update
+  both when a pictured screen or a listed
+  feature changes.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
   ShellCheck on `.github/scripts/` and
