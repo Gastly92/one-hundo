@@ -146,7 +146,8 @@ GoalChips.swift
 # Taps: Save and Cancel (the
 # result is pictured).
 LogAttemptView.swift
-  count: count, on: attempt?.date ?? date
+  count: count,
+  on: attempt?.noon() ?? date
   dismiss()
   let result = challenge.recordAttempt(
   private func save() {
