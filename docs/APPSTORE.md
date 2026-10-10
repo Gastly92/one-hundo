@@ -37,32 +37,32 @@ One Hundo
 Subtitle (30):
 
 ```
-One more rep, every day
+Get to 100, one day at a time
 ```
 
 Promotional text (170; can change any
 time without a new version):
 
 ```
-Pick a challenge, test yourself, and do a little more each day. One Hundo sets today's target and shows how close you are to 100.
+How many push-ups can you do in a row? Start there, do one more each day, and watch yourself get to 100.
 ```
 
 Description:
 
 ```
-Can you do 100 push-ups in one go? One Hundo gets you there one small step at a time.
+Can you do 100 push-ups in a row? Not yet? One Hundo gets you there, one small step a day.
 
-Start a challenge and test yourself: how many can you do today? That's your starting point. Each day the app suggests a target, a little more than last time. Log what you did, and tomorrow's target builds on it.
+Pick a challenge and test yourself: how many can you do today without stopping? That's where you start. Each day the app gives you a target, just one more than last time. Do it, tap to log it, and tomorrow's target builds on it. Start at 10 and you'll reach 100 in about three months. Miss a day? Pick up where you left off.
 
-• Push-ups, sit-ups and pull-ups, each with tips on good form
-• Custom challenges for anything else, in reps, seconds or minutes
-• Today's target on every card, and a progress ring toward your goal
-• A chart of your progress and a history of every attempt
-• A calendar of the days you trained
-• A daily reminder at the time you choose, skipped once you've logged
-• Reach your goal, then set a new one
+• Push-ups, sit-ups and pull-ups, with tips on good form
+• Make your own challenge for anything else, like squats or holding a plank, counted as a number, in seconds or in minutes
+• Today's target on every challenge, and a ring that fills up as you get closer to your goal
+• A chart of your progress and a list of every day you logged
+• A calendar showing the days you trained
+• A daily reminder at the time you choose, which skips the days you've already logged
+• Reach your goal, then set a bigger one
 
-No account, no ads, no tracking. Your challenges stay on your iPhone.
+No account, no ads, no tracking. Your progress stays on your iPhone.
 ```
 
 Keywords (100, commas, no spaces after
