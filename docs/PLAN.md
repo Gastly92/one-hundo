@@ -780,10 +780,17 @@ listing and 1.0.0.
   manifest and the App Store privacy labels
   to match, and say what's collected in the
   app.
-- Performance tests (XCTest metrics with
-  baselines in CI): launch time, opening
-  the list and a challenge with a year of
-  attempts, and logging an attempt.
+- Performance tests ✅: `PerformanceTests`
+  times the work behind the list, a
+  challenge's screen, a calendar month and
+  logging, on three challenges with a year
+  of daily attempts each, against fixed
+  ceilings about ten times CI's times.
+  (Xcode's saved baselines are tied to one
+  machine, and CI's free runners differ
+  run to run.) App launch isn't timed: it
+  opens one small store, and a launch
+  metric adds about a minute to CI.
 - App Store listing: screenshots made by a
   UI test from the sample data (light mode,
   the required iPhone sizes), plus the
