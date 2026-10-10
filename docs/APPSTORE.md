@@ -12,8 +12,9 @@ Seven iPhone screenshots, 1320 × 2868 (the
 6.9-inch size; App Store Connect scales
 them down for smaller iPhones). Each is a
 caption on the icon's violet-to-blue
-gradient over the screen in a phone frame,
-with a tidy 9:41 status bar (`Poster`).
+gradient over the screen in a phone frame
+(black bezel, grey rim), with a tidy 9:41
+status bar (`Poster`).
 They're drawn by `AppStoreTests` from a
 month of sample training (`Showcase`), in
 light mode (the last in dark), and saved

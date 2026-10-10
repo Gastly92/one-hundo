@@ -68,7 +68,9 @@ struct Poster: View {
   }
 
   /// The screen at full size, with a status
-  /// bar, home bar and black bezel.
+  /// bar, home bar and black bezel, and a
+  /// grey rim like the phone's metal edge
+  /// (so it shows around a dark screen).
   private var phone: some View {
     Image(uiImage: screen)
       .resizable()
@@ -89,6 +91,13 @@ struct Poster: View {
         .black,
         in: .rect(cornerRadius: 70)
       )
+      .overlay {
+        RoundedRectangle(cornerRadius: 70)
+          .strokeBorder(
+            Color(white: 0.5),
+            lineWidth: 4
+          )
+      }
   }
 }
 
