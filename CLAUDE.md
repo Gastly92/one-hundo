@@ -248,9 +248,10 @@ features land.
   remove the CI step.
 - Stored data is versioned
   (`Models/Schema.swift`): the 1.0 models
-  are frozen in `SchemaV1`, and the app uses
+  are in `SchemaV1` (frozen from the 1.0
+  release on), and the app uses
   them through the `Challenge` and
-  `Attempt` aliases. Never edit a frozen
+  `Attempt` aliases. Never edit a released
   schema. To change a stored model, follow
   the steps in that file: a new schema
   version, a migration stage, and a test

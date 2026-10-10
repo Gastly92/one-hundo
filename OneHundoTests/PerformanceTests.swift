@@ -26,7 +26,10 @@ final class PerformanceTests: XCTestCase {
       challenge.attempts = (1...Self.days)
         .map {
           Attempt(
-            date: day($0), count: $0 + 5
+            date: day($0),
+            count: $0 + 5,
+            target: $0 + 5,
+            in: utc
           )
         }
       return challenge
@@ -69,7 +72,7 @@ final class PerformanceTests: XCTestCase {
         on: today, in: utc
       )
       _ = challenge.personalBest
-      _ = challenge.daysLogged(in: utc)
+      _ = challenge.daysLogged
       _ = challenge.daysToGoal
       _ = challenge.sortedAttempts
       _ = challenge.oldestFirst

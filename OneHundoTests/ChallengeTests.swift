@@ -213,12 +213,12 @@ final class ChallengeTests: XCTestCase {
   func testDaysLoggedIsDistinct() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
-    XCTAssertEqual(daysLogged(pushUps), 0)
+    XCTAssertEqual(pushUps.daysLogged, 0)
     pushUps.log(5, day: 1)
     pushUps.log(6, day: 2, hour: 8)
     pushUps.log(7, day: 2, hour: 20)
     pushUps.log(7, day: 5)
-    XCTAssertEqual(daysLogged(pushUps), 3)
+    XCTAssertEqual(pushUps.daysLogged, 3)
   }
 
   func testUnitFormatting() {
@@ -248,7 +248,7 @@ final class ChallengeTests: XCTestCase {
       pushUps.allAttempts.isEmpty
     )
     XCTAssertEqual(pushUps.currentCount, 5)
-    XCTAssertEqual(daysLogged(pushUps), 0)
+    XCTAssertEqual(pushUps.daysLogged, 0)
   }
 
   func testUnknownUnitIsReps() throws {
@@ -256,11 +256,5 @@ final class ChallengeTests: XCTestCase {
     let pushUps = store.pushUps()
     pushUps.unitRaw = "laps"
     XCTAssertEqual(pushUps.unit, .reps)
-  }
-
-  private func daysLogged(
-    _ challenge: Challenge
-  ) -> Int {
-    challenge.daysLogged(in: utc)
   }
 }

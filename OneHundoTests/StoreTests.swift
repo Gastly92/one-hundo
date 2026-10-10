@@ -29,12 +29,16 @@ final class StoreTests: XCTestCase {
         name: "Push-ups",
         colorName: "violet",
         startingCount: 5,
-        createdDate: day(1)
+        createdDate: day(1),
+        in: utc
       )
       old.mainContext.insert(pushUps)
       pushUps.attempts = [
         SchemaV1.Attempt(
-          date: day(2), count: 6
+          date: day(2),
+          count: 6,
+          target: 6,
+          in: utc
         ),
       ]
       try old.mainContext.save()

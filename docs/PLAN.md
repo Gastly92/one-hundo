@@ -773,6 +773,17 @@ listing and 1.0.0.
   reopens it through the plan. Every later
   model change adds a version, a migration
   stage, and keeps that test.
+- Stored days and targets (0.9.11): each
+  attempt stores its local day (e.g.
+  20260407) and that day's target when
+  logged, and each challenge its start
+  day. Days are compared by these, so
+  travel can't move a log to another day
+  (or let the next day's log replace it),
+  and changing the goal or daily step no
+  longer rewrites past targets. Changed in
+  `SchemaV1` before release (the owner
+  reinstalled).
 - Time zone tests ✅: `TimeZoneTests`
   logs either side of midnight and across
   both daylight saving changes (US

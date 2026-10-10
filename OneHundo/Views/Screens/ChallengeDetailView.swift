@@ -191,7 +191,7 @@ struct ChallengeDetailView: View {
 
   private var stats: some View {
     let best = challenge.personalBest
-    let days = challenge.daysLogged()
+    let days = challenge.daysLogged
     return HStack {
       stat(
         "Personal best",
@@ -314,7 +314,7 @@ extension ChallengeDetailView {
     } label: {
       HStack {
         Text(
-          attempt.date,
+          attempt.noon(),
           format: Self.dayFormat
         )
         .testID("attemptDate")

@@ -44,9 +44,9 @@ extension Challenge {
     return Array(lists.joined())
   }
 
-  /// Attempts, newest first.
+  /// Attempts, newest day first.
   var sortedAttempts: [Attempt] {
-    allAttempts.sorted { $0.date > $1.date }
+    allAttempts.sorted { $0.day > $1.day }
   }
 
   /// Attempts, oldest first (the history
@@ -69,8 +69,9 @@ extension Challenge {
     on day: Date,
     in cal: Calendar = .current
   ) -> Attempt? {
-    allAttempts.first {
-      cal.isDate($0.date, inSameDayAs: day)
+    let number = cal.day(of: day)
+    return allAttempts.first {
+      $0.day == number
     }
   }
 
@@ -167,9 +168,9 @@ extension Challenge {
     before day: Date,
     in cal: Calendar = .current
   ) -> Int {
-    let start = cal.startOfDay(for: day)
+    let number = cal.day(of: day)
     let earlier = allAttempts.filter {
-      $0.date < start
+      $0.day < number
     }
     let last = latest(of: earlier)
     return last?.count ?? startingCount
@@ -229,13 +230,8 @@ extension Challenge {
   /// starting test counts). Missed days are
   /// fine; this is shown instead of a
   /// streak.
-  func daysLogged(
-    in cal: Calendar = .current
-  ) -> Int {
-    let days = allAttempts.map {
-      cal.startOfDay(for: $0.date)
-    }
-    return Set(days).count
+  var daysLogged: Int {
+    Set(allAttempts.map(\.day)).count
   }
 
   /// The best count on any day other than
@@ -247,8 +243,9 @@ extension Challenge {
     excludingDayOf day: Date,
     in cal: Calendar = .current
   ) -> Int {
+    let number = cal.day(of: day)
     let others = allAttempts.filter {
-      !cal.isDate($0.date, inSameDayAs: day)
+      $0.day != number
     }
     return best(of: others)
   }
@@ -287,23 +284,28 @@ extension Challenge {
     )
   }
 
-  /// Logs a count for the day of `date`.
-  /// Logging the same day again replaces
-  /// that day's count, keeping one attempt
-  /// per day.
+  /// Logs a count for the day of `date`,
+  /// with that day's target. Logging the
+  /// same day again replaces that day's
+  /// count, keeping one attempt per day.
   @discardableResult
   func logAttempt(
     count: Int,
     on date: Date = Date(),
     in cal: Calendar = .current
   ) -> Attempt {
+    let aim = target(on: date, in: cal)
     if let old = attempt(on: date, in: cal) {
       old.count = count
       old.date = date
+      old.target = aim
       return old
     }
     let new = Attempt(
-      date: date, count: count
+      date: date,
+      count: count,
+      target: aim,
+      in: cal
     )
     modelContext?.insert(new)
     if attempts == nil { attempts = [] }
@@ -311,11 +313,12 @@ extension Challenge {
     return new
   }
 
-  /// The most recent of `attempts`, if any.
+  /// The latest day's of `attempts`, if
+  /// any.
   private func latest(
     of attempts: [Attempt]
   ) -> Attempt? {
-    attempts.max { $0.date < $1.date }
+    attempts.max { $0.day < $1.day }
   }
 
   /// The highest of `attempts` and the

@@ -70,6 +70,11 @@ extension SchemaV1 {
     /// midnight (18:00 by default).
     var reminderMinutes: Int = 1080
     var createdDate = Date.now
+    /// The day it started on, where it
+    /// started (`Calendar.day(of:)`), so
+    /// that day stays the start day after
+    /// a move to another time zone.
+    var startDay: Int = 0
     var completedDate: Date?
     @Relationship(
       deleteRule: .cascade,
@@ -88,7 +93,8 @@ extension SchemaV1 {
       dailyIncrease: Int = 1,
       reminderEnabled: Bool = true,
       reminderMinutes: Int = 1080,
-      createdDate: Date = .now
+      createdDate: Date = .now,
+      in cal: Calendar = .current
     ) {
       self.kind = kind
       self.name = name
@@ -101,6 +107,7 @@ extension SchemaV1 {
       self.reminderEnabled = reminderEnabled
       self.reminderMinutes = reminderMinutes
       self.createdDate = createdDate
+      startDay = cal.day(of: createdDate)
     }
   }
 
@@ -111,13 +118,31 @@ extension SchemaV1 {
   /// constraints).
   @Model
   final class Attempt {
+    /// The moment it was logged for.
     var date = Date.now
+    /// The day it counts for, where it was
+    /// logged (`Calendar.day(of:)`). Days
+    /// are compared by this, so a log stays
+    /// on its day after a move to another
+    /// time zone.
+    var day: Int = 0
     var count: Int = 0
+    /// That day's target when it was
+    /// logged, so history keeps it after the
+    /// goal or daily step changes.
+    var target: Int = 0
     var challenge: Challenge?
 
-    init(date: Date, count: Int) {
+    init(
+      date: Date,
+      count: Int,
+      target: Int,
+      in cal: Calendar = .current
+    ) {
       self.date = date
+      day = cal.day(of: date)
       self.count = count
+      self.target = target
     }
   }
 }

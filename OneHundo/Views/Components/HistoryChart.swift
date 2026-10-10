@@ -33,7 +33,7 @@ struct HistoryChart: View {
   private var chart: some View {
     Chart(challenge.oldestFirst) { attempt in
       let day = PlottableValue.value(
-        "Day", attempt.date, unit: .day
+        "Day", attempt.noon(), unit: .day
       )
       let count = PlottableValue.value(
         "Count", attempt.count

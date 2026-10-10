@@ -47,7 +47,7 @@ struct LogAttemptView: View {
     let start = attempt?.count
       ?? challenge.target(on: now)
     _count = State(initialValue: start)
-    let day = attempt?.date ?? now
+    let day = attempt?.noon() ?? now
     _date = State(initialValue: day)
     _outcome = State(initialValue: outcome)
   }
@@ -231,7 +231,8 @@ struct LogAttemptView: View {
 
   private func save() {
     let result = challenge.recordAttempt(
-      count: count, on: attempt?.date ?? date
+      count: count,
+      on: attempt?.noon() ?? date
     )
     try? modelContext.save()
     withAnimation { outcome = result }
