@@ -101,7 +101,8 @@ struct ChallengeDraft {
       dailyIncrease: increase,
       reminderEnabled: remind,
       reminderMinutes: minutes,
-      createdDate: date
+      createdDate: date,
+      in: cal
     )
     context.insert(challenge)
     challenge.logAttempt(

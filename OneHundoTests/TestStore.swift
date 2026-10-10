@@ -110,7 +110,8 @@ struct TestStore {
       marker: BuiltIn.pushUps.marker,
       goal: goal,
       dailyIncrease: increase,
-      createdDate: day(1)
+      createdDate: day(1),
+      in: utc
     )
     context.insert(challenge)
     return challenge

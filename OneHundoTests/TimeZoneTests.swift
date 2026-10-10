@@ -109,4 +109,62 @@ final class TimeZoneTests: XCTestCase {
       ups.target(on: next, in: cal), 8
     )
   }
+
+  /// Logged late Monday in Los Angeles, then
+  /// in New York, where that moment is
+  /// already Tuesday: Monday's log stays
+  /// Monday's, and Tuesday's is its own.
+  func testTravelKeepsDays() throws {
+    let store = try TestStore()
+    let ups = store.pushUps()
+    try log(6, ups, at(4, 6, 23, 30))
+    var east = cal
+    east.timeZone = TimeZone(
+      identifier: "America/New_York"
+    ) ?? .gmt
+    let tuesday = try at(4, 7, 17)
+    ups.logAttempt(
+      count: 7, on: tuesday, in: east
+    )
+    XCTAssertEqual(
+      ups.sortedAttempts.map(\.count),
+      [7, 6]
+    )
+    let monday = east.noon(of: 20_260_406)
+    XCTAssertEqual(
+      ups.attempt(on: monday, in: east)?
+        .count,
+      6
+    )
+    XCTAssertEqual(ups.daysLogged, 2)
+  }
+
+  /// The start day is the day it started,
+  /// where it started.
+  func testStartDayStays() throws {
+    let started = try at(4, 5, 23, 30)
+    let ups = Challenge(
+      name: "Push-ups",
+      colorName: "violet",
+      startingCount: 5,
+      createdDate: started,
+      in: cal
+    )
+    XCTAssertEqual(ups.startDay, 20_260_405)
+  }
+
+  /// A day number and its noon, both ways.
+  func testDayNumbers() throws {
+    let date = try at(12, 31, 23, 59)
+    XCTAssertEqual(
+      cal.day(of: date), 20_261_231
+    )
+    let noon = cal.noon(of: 20_261_231)
+    XCTAssertEqual(
+      cal.component(.hour, from: noon), 12
+    )
+    XCTAssertEqual(
+      cal.day(of: noon), 20_261_231
+    )
+  }
 }

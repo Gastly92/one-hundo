@@ -48,7 +48,8 @@ enum SampleData {
         startingCount: first.count,
         kind: builtIn.id,
         marker: builtIn.marker,
-        createdDate: ago(first.days)
+        createdDate: ago(first.days),
+        in: cal
       )
       context.insert(challenge)
       for log in logs {
@@ -87,14 +88,7 @@ enum SampleData {
     // that day, so the list order is fixed):
     // logged 40 yesterday, so
     // "Try 45 seconds today", "40 / 120".
-    let plank = Self.plank(started: ago(4))
-    context.insert(plank)
-    plank.logAttempt(
-      count: 30, on: ago(4), in: cal
-    )
-    plank.logAttempt(
-      count: 40, on: ago(1), in: cal
-    )
+    addPlank(into: context, in: cal, ago)
 
     try? context.save()
   }
@@ -122,11 +116,17 @@ enum SampleData {
   }
 
   /// The sample custom challenge: Plank, in
-  /// seconds, from 30 up 5 a day to 120.
-  private static func plank(
-    started: Date
-  ) -> Challenge {
-    Challenge(
+  /// seconds, from 30 up 5 a day to 120,
+  /// started 4 days ago and logged 40
+  /// yesterday (`ago` turns days ago into a
+  /// date).
+  @MainActor
+  private static func addPlank(
+    into context: ModelContext,
+    in cal: Calendar,
+    _ ago: (Int) -> Date
+  ) {
+    let plank = Challenge(
       name: "Plank",
       colorName: "teal",
       startingCount: 30,
@@ -134,7 +134,15 @@ enum SampleData {
       marker: .diamond,
       goal: 120,
       dailyIncrease: 5,
-      createdDate: started
+      createdDate: ago(4),
+      in: cal
+    )
+    context.insert(plank)
+    plank.logAttempt(
+      count: 30, on: ago(4), in: cal
+    )
+    plank.logAttempt(
+      count: 40, on: ago(1), in: cal
     )
   }
 }

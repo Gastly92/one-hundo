@@ -163,10 +163,8 @@ extension Challenge {
     return DayEntry(
       challenge: self,
       count: done.count,
-      target: target(on: day, in: cal),
-      isTest: cal.isDate(
-        day, inSameDayAs: createdDate
-      )
+      target: done.target,
+      isTest: done.day == startDay
     )
   }
 }

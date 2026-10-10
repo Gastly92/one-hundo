@@ -170,4 +170,27 @@ final class CalendarMonthTests: XCTestCase {
       )
     )
   }
+
+  /// A day keeps the target it had when it
+  /// was logged, after the step changes.
+  func testDayKeepsItsTarget() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    pushUps.log(5, day: 1)
+    pushUps.log(6, day: 2)
+    pushUps.dailyIncrease = 5
+    let entry = try XCTUnwrap(
+      pushUps.entry(on: day(2), in: utc)
+    )
+    XCTAssertEqual(entry.target, 6)
+    XCTAssertTrue(entry.hitTarget)
+    // Logging it again uses the day's
+    // target now.
+    pushUps.log(7, day: 2)
+    XCTAssertEqual(
+      pushUps.attempt(on: day(2), in: utc)?
+        .target,
+      10
+    )
+  }
 }
