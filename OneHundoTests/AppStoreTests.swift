@@ -45,7 +45,7 @@ final class AppStoreTests: XCTestCase {
     Shot(
       name: "1-list",
       caption:
-        "Get to 100, one day at a time",
+        "Get to 100,\none day at a time",
       screen: .tabs
     ),
     Shot(
