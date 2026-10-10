@@ -37,8 +37,6 @@ struct EnrollFlowView: View {
   @State private var goal = 100
   @State private var increase = 1
   @State private var remind = true
-  /// Form tips start open in the intro.
-  @State private var showsTips = true
   /// The reminder time, as `ReminderTime`
   /// keeps it for the picker.
   @State private var time = ReminderTime
@@ -190,10 +188,7 @@ extension EnrollFlowView {
     LeadingStack(spacing: 16) {
       Text(builtIn.summary)
         .font(.title3)
-      FormTips(
-        tips: builtIn.tips,
-        isOpen: $showsTips
-      )
+      FormTips(tips: builtIn.tips)
       Text("""
         Warm up, then test yourself: do as \
         many as you can in one go, with \

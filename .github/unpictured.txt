@@ -139,6 +139,12 @@ EnrollFlowView.swift
   try? modelContext.save()
   withAnimation { step = next }
 
+# Opened by a tap on the challenge
+# screen; the enroll intro pictures
+# the list.
+FormTips.swift
+  list.padding(.top, 8)
+
 # Tap: picks a goal.
 GoalChips.swift
   goal = choice

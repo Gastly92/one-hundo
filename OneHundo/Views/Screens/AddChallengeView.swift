@@ -67,7 +67,7 @@ struct AddChallengeView: View {
         ChoiceRow(
           title: Text("Custom challenge"),
           subtitle: Text("""
-            Track anything else, like planks.
+            Track anything else, like squats.
             """)
         )
       }
