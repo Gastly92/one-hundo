@@ -263,7 +263,10 @@ success haptic, then two choices:
   months (or use the arrows), up to the
   current month; days with logged attempts
   show a marker (one per challenge, its
-  shape in its color, up to 3).
+  shape in its color, up to 3). A month
+  with nothing logged says so, and what
+  the markers mean. Away from the current
+  month, Today jumps back to it.
 - Tap a marked day to open the day view:
   each challenge you logged that day with
   its count, and whether you hit that

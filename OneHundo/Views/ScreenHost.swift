@@ -81,6 +81,14 @@ struct ScreenHost: View {
       ChallengeListView()
     case .calendar:
       CalendarView()
+    case .calendarEmpty:
+      // No challenges; last month, so Today
+      // shows too.
+      CalendarView(
+        month: CalendarMonth(
+          containing: now
+        ).adding(-1)
+      )
     case .calendarDay, .dayMissed:
       // Today: Sit-ups (target hit) and
       // Pull-ups (started today); with

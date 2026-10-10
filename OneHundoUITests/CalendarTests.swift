@@ -69,5 +69,11 @@ final class CalendarTests: XCTestCase {
     XCTAssertEqual(title.label, now)
     app.button("Previous month").tap()
     XCTAssertNotEqual(title.label, now)
+
+    // Today goes back, then hides.
+    let today = app.button("todayButton")
+    today.tap()
+    XCTAssertEqual(title.label, now)
+    XCTAssertTrue(today.disappears())
   }
 }
