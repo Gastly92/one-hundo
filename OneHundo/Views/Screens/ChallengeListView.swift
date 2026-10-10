@@ -25,8 +25,6 @@ struct ChallengeListView: View {
   private var now
   @Environment(\.dynamicTypeSize)
   private var textSize
-  @ScaledMetric(relativeTo: .headline)
-  private var tileHeight: CGFloat = 120
 
   private static let tile = RoundedRectangle(
     cornerRadius: 16
@@ -193,18 +191,14 @@ struct ChallengeListView: View {
     Button {
       isAdding = true
     } label: {
-      VStack(spacing: 8) {
-        Image(systemName: "plus.circle.fill")
-          .font(.title)
-          .accessibilityHidden(true)
-        Text("Add challenge")
-          .font(.headline)
+      // At least a card's height, even
+      // alone in its row.
+      ZStack {
+        ChallengeCard.space
+        addLabel
       }
-      .foregroundStyle(Color.accentColor)
-      .padding()
       .frame(
         maxWidth: .infinity,
-        minHeight: tileHeight,
         maxHeight: .infinity
       )
       .overlay(
@@ -216,6 +210,18 @@ struct ChallengeListView: View {
     }
     .buttonStyle(.plain)
     .testID("addTile")
+  }
+
+  private var addLabel: some View {
+    VStack(spacing: 8) {
+      Image(systemName: "plus.circle.fill")
+        .font(.title)
+        .accessibilityHidden(true)
+      Text("Add challenge")
+        .font(.headline)
+    }
+    .foregroundStyle(Color.accentColor)
+    .padding()
   }
 
   @ViewBuilder

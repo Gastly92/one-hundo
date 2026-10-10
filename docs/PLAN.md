@@ -751,6 +751,12 @@ listing and 1.0.0.
   as two runs. The custom form's name
   example is "e.g. Squats" (it was "e.g.
   Plank", while the unit starts on reps).
+- Add challenge tile (0.9.9): always a
+  card's height. Alone in its row it fell
+  back to a fixed minimum and looked
+  shorter; it now sits on a hidden empty
+  card (same fonts and spacing), so it
+  matches at any text size.
 
 #### 9c–9d. Release
 
