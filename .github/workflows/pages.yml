@@ -1,0 +1,36 @@
+# Publishes site/ (the App Store support
+# and privacy pages) to GitHub Pages:
+# https://gastly92.github.io/one-hundo/
+# Needs Settings > Pages > Source set to
+# "GitHub Actions" once.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publish
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/configure-pages@v6
+    - uses: actions/upload-pages-artifact@v5
+      with:
+        path: site
+    - uses: actions/deploy-pages@v5
