@@ -9,7 +9,8 @@ struct OneHundoApp: App {
   init() {
     let info = ProcessInfo.processInfo
     launch = AppLaunch(
-      arguments: info.arguments
+      arguments: info.arguments,
+      environment: info.environment
     )
     if launch.isUITesting {
       // No UIKit animations (screen pushes,
@@ -28,6 +29,15 @@ struct OneHundoApp: App {
 
   @ViewBuilder
   private var content: some View {
+    if launch.isTestHost {
+      Color.clear
+    } else {
+      app
+    }
+  }
+
+  @ViewBuilder
+  private var app: some View {
     switch launch.store {
     case .success(let container):
       Group {

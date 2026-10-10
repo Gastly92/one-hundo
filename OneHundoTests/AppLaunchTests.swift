@@ -145,6 +145,25 @@ final class AppLaunchTests: XCTestCase {
     )
   }
 
+  func testTestHostShowsNothing() {
+    let key = "XCTestConfigurationFilePath"
+    let host = AppLaunch(
+      arguments: ["OneHundo"],
+      environment: [key: "/tmp/x"],
+      open: memory
+    )
+    XCTAssertTrue(host.isTestHost)
+    let app = start(["OneHundo"])
+    XCTAssertFalse(app.isTestHost)
+    // UI tests always show the app.
+    let tested = AppLaunch(
+      arguments: ["-uiTesting"],
+      environment: [key: "/tmp/x"],
+      open: memory
+    )
+    XCTAssertFalse(tested.isTestHost)
+  }
+
   func testDefaultStoreOpens() throws {
     XCTAssertNoThrow(
       try AppStore.open(inMemory: true)

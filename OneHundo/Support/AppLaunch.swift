@@ -9,6 +9,11 @@ import SwiftData
 @MainActor
 struct AppLaunch {
   let isUITesting: Bool
+  /// Hosting unit tests (Xcode sets
+  /// `XCTestConfigurationFilePath`): the app
+  /// shows nothing, so its screens don't
+  /// react to stores the tests open.
+  let isTestHost: Bool
   /// The opened store, or the error that
   /// stopped it from opening.
   let store:
@@ -62,12 +67,16 @@ struct AppLaunch {
 
   init(
     arguments args: [String],
+    environment env: [String: String] = [:],
     open: Opener = AppStore.open(inMemory:)
   ) {
     // UI tests launch with -uiTesting: an
     // in-memory store, so every run starts
     // clean.
     isUITesting = args.contains("-uiTesting")
+    let key = "XCTestConfigurationFilePath"
+    isTestHost = env[key] != nil
+      && !isUITesting
     let inMemory = isUITesting
     let real = !isUITesting
       || args.contains("-notifications")
