@@ -196,8 +196,17 @@ features land.
   Likewise `run-tests.sh` runs a shard once
   more only when the UI test runner failed
   to start ("failed to initialize for UI
-  testing") and no UI test ran; it adds a
+  testing") and no UI test ran, or the
+  simulator dropped out ("Unable to find a
+  device") before any test ran (it boots a
+  freshly picked one first); it adds a
   warning and a summary line.
+  `LocalizationTests` reads each screen in
+  one accessibility snapshot, not element
+  by element: hundreds of separate queries
+  a screen timed out when a runner
+  stalled. Read many elements the same way
+  in new UI tests.
   `testLongPressLogsToday` taps first on
   purpose, so this path runs every time.
 - Snapshot tests (`SnapshotTests`) take a

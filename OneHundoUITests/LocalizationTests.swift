@@ -51,34 +51,54 @@ final class LocalizationTests: XCTestCase {
         XCTFail("[\(screen)] showed no text")
         continue
       }
-      check(app, on: screen)
+      // The whole screen in one read. Asking
+      // for each element's label and frame
+      // took hundreds of round trips a
+      // screen, and one timed out when CI's
+      // runner stalled.
+      do {
+        check(try app.snapshot(), on: screen)
+      } catch {
+        XCTFail("[\(screen)] \(error)")
+      }
       app.terminate()
     }
   }
 
+  private typealias Node =
+    any XCUIElementSnapshot
+
+  /// `node` and everything inside it.
+  @MainActor
+  private func all(_ node: Node) -> [Node] {
+    let inside = node.children.flatMap {
+      all($0)
+    }
+    return [node] + inside
+  }
+
   /// Where system text sits, which isn't
   /// the app's to translate: navigation bar
-  /// buttons (e.g. Back), date pickers, and
-  /// the history chart's axis labels
-  /// (system-formatted dates and numbers).
+  /// buttons (e.g. Back), inside date
+  /// pickers, and the history chart (its
+  /// axis labels are system-formatted dates
+  /// and numbers).
   @MainActor
   private func systemAreas(
-    _ app: XCUIApplication,
-    on screen: ScreenID
+    in nodes: [Node]
   ) -> [CGRect] {
-    let pickers = app.datePickers
-      .descendants(matching: .any)
-      .allElementsBoundByIndex
-    let bars = app.navigationBars.buttons
-      .allElementsBoundByIndex
-    // Searching every element is slow on
-    // CI's simulators (it timed out once),
-    // so only where the chart is.
-    let charts = screen == .challengeDetail
-      ? app.descendants(matching: .any)
-        .matching(identifier: "historyChart")
-        .allElementsBoundByIndex
-      : []
+    let bars = nodes.filter {
+      $0.elementType == .navigationBar
+    }
+    .flatMap { all($0) }
+    .filter { $0.elementType == .button }
+    let pickers = nodes.filter {
+      $0.elementType == .datePicker
+    }
+    .flatMap { all($0).dropFirst() }
+    let charts = nodes.filter {
+      $0.identifier == "historyChart"
+    }
     return (bars + pickers + charts)
       .map(\.frame)
   }
@@ -87,20 +107,20 @@ final class LocalizationTests: XCTestCase {
   /// label that has letters but no brackets.
   @MainActor
   private func check(
-    _ app: XCUIApplication,
+    _ root: Node,
     on screen: ScreenID,
     file: StaticString = #filePath,
     line: UInt = #line
   ) {
-    let system = systemAreas(app, on: screen)
-    let elements =
-      app.staticTexts.allElementsBoundByIndex
-      + app.buttons.allElementsBoundByIndex
+    let nodes = all(root)
+    let system = systemAreas(in: nodes)
+    let kinds: [XCUIElement.ElementType] =
+      [.staticText, .button]
     var bracketed = 0
-    for element in elements {
-      guard element.exists else { continue }
-      let label = element.label
-      let id = element.identifier
+    for node in nodes
+    where kinds.contains(node.elementType) {
+      let label = node.label
+      let id = node.identifier
       guard label.contains(where: \.isLetter)
       else { continue }
       if label.contains("[#") {
@@ -112,7 +132,7 @@ final class LocalizationTests: XCTestCase {
         || Self.userText.contains(label) {
         continue
       }
-      let frame = element.frame
+      let frame = node.frame
       if system.contains(where: {
         $0.contains(frame)
       }) {
