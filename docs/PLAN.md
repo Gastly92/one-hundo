@@ -838,9 +838,10 @@ listing and 1.0.0.
   snapshots: each a caption on the icon's
   gradient over the screen in a phone
   frame with a 9:41 status bar (`Poster`),
-  at the 6.9-inch size (1320 × 2868; App
-  Store Connect scales it for smaller
-  iPhones), from a month of sample
+  in both sizes App Store Connect takes:
+  large (1320 × 2868) and medium (1206 ×
+  2622, the required one, scaled down
+  from the large), from a month of sample
   training (`Showcase`, in the tests) on
   Jan 28. A test checks each PNG's size
   and that it has no alpha channel, which

@@ -8,9 +8,19 @@ does, and update it as features change.
 
 ## Screenshots
 
-Seven iPhone screenshots, 1320 × 2868 (the
-6.9-inch size; App Store Connect scales
-them down for smaller iPhones). Each is a
+Seven iPhone screenshots, in the two
+sizes App Store Connect takes (its
+[screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications)):
+
+- Medium, 1206 × 2622 (`…-medium.png`):
+  "iPhone with Dynamic Island (medium
+  display)", e.g. 17 Pro. Required.
+- Large, 1320 × 2868: "iPhone with
+  Dynamic Island (large display)", e.g.
+  17 Pro Max and Air.
+
+The medium ones are the large ones scaled
+down (the shapes differ by 0.07%). Each is a
 caption on the icon's violet-to-blue
 gradient over the screen in a phone frame
 (black bezel, grey rim), with a tidy 9:41
@@ -131,7 +141,8 @@ Save the pictures first:
 2. Tap a picture, then the download
    button (or "Raw"), long-press the
    image and tap "Save to Photos". Do all
-   seven, in order (1 to 7).
+   fourteen (seven of each size), in
+   order (1 to 7).
 3. Do the same for
    `docs/appstore/header.png`.
 
@@ -145,8 +156,11 @@ Submission"). Tap Save now and then.
    tab empty.
 2. Screenshots: tap "Header and Search
    Results >" (or find "Previews and
-   Screenshots"), pick the 6.9" iPhone
-   size, and upload the seven in order.
+   Screenshots"). Upload the seven
+   `-medium` files, in order, to "iPhone
+   with Dynamic Island (medium display)"
+   (or 6.3"), and the other seven to the
+   large display (or 6.9").
 3. Promotional Text, Description,
    Keywords: paste from the boxes above
    (each box on GitHub has a copy
