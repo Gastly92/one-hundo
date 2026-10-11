@@ -859,9 +859,9 @@ listing and 1.0.0.
   any test runs ("Unable to find a
   device") gets one fresh boot and re-run,
   like the stuck UI test runner.
-- Bump `MARKETING_VERSION` to 1.0.0 when
-  you're happy with it: the first App Store
-  release.
+- 1.0.0 ✅: `MARKETING_VERSION` bumped for
+  the first App Store release, sent to
+  TestFlight to submit for review.
 
 ## Later
 
