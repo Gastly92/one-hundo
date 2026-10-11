@@ -20,20 +20,24 @@ set -euo pipefail
 mode="${1:?boot, build or test}"
 
 # The first available iPhone simulator.
-devices=$(
-  xcrun simctl list devices available -j
-)
-pick='[.devices | to_entries[]
-  | select(.key | contains("iOS"))
-  | .value[]
-  | select(.name | startswith("iPhone"))
-  ][0].udid // empty'
-device=$(jq -r "$pick" <<<"$devices")
-if [ -z "$device" ]; then
-  echo "::error::No iPhone simulator found"
-  exit 1
-fi
-echo "Using simulator $device"
+pick() {
+  local devices query
+  devices=$(
+    xcrun simctl list devices available -j
+  )
+  query='[.devices | to_entries[]
+    | select(.key | contains("iOS"))
+    | .value[]
+    | select(.name | startswith("iPhone"))
+    ][0].udid // empty'
+  device=$(jq -r "$query" <<<"$devices")
+  if [ -z "$device" ]; then
+    echo "::error::No iPhone simulator found"
+    exit 1
+  fi
+  echo "Using simulator $device"
+}
+pick
 
 if [ "$mode" = boot ]; then
   # Returns while the simulator boots;
@@ -124,20 +128,36 @@ run
 
 # On CI's simulators the UI test runner
 # sometimes fails to start ("Timed out while
-# loading Accessibility") before any UI test
-# runs. Only then, run the shard once more.
-# Any other failure stands.
+# loading Accessibility"), or the simulator
+# drops out of the device list ("Unable to
+# find a device"), before those tests run.
+# Only then, run the shard once more (on a
+# freshly picked, booted simulator if it
+# dropped out). Any other failure stands.
 stuck='failed to initialize for UI testing'
-ui="Test Case '-[OneHundoUITests."
-if [ "$status" -ne 0 ] \
-  && grep -qF "$stuck" build/test.log \
-  && ! grep -qF "$ui" build/test.log; then
-  echo "::warning::The UI test runner" \
-    "didn't start; running the $shard" \
-    "tests once more."
-  echo "UI test runner restarted" \
-    "($shard)" >> "$summary"
-  run
+gone='Unable to find a device matching'
+started="Test Case '-["
+log=build/test.log
+if [ "$status" -ne 0 ]; then
+  if grep -qF "$stuck" "$log" \
+    && ! grep -qF "$started$ui." "$log"; then
+    echo "::warning::The UI test runner" \
+      "didn't start; running the $shard" \
+      "tests once more."
+    echo "UI test runner restarted" \
+      "($shard)" >> "$summary"
+    run
+  elif grep -qF "$gone" "$log" \
+    && ! grep -qF "$started" "$log"; then
+    echo "::warning::The simulator was" \
+      "gone; booting one and running the" \
+      "$shard tests once more."
+    echo "Simulator rebooted ($shard)" \
+      >> "$summary"
+    pick
+    xcrun simctl boot "$device" || true
+    run
+  fi
 fi
 
 # Each test's result and errors, and any

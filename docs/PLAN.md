@@ -844,6 +844,16 @@ listing and 1.0.0.
   test, not a UI test as first planned:
   it reuses CI's recording and needs no
   Pro Max simulator.
+- CI flakes ✅: no release on a flaky CI.
+  `LocalizationTests` timed out on main
+  after #73 (a stalled runner, while it
+  read every element of a screen one query
+  at a time); it now reads each screen in
+  one accessibility snapshot. A simulator
+  that drops out of the device list before
+  any test runs ("Unable to find a
+  device") gets one fresh boot and re-run,
+  like the stuck UI test runner.
 - Bump `MARKETING_VERSION` to 1.0.0 when
   you're happy with it: the first App Store
   release.
