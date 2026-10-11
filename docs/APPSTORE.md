@@ -8,9 +8,19 @@ does, and update it as features change.
 
 ## Screenshots
 
-Seven iPhone screenshots, 1320 × 2868 (the
-6.9-inch size; App Store Connect scales
-them down for smaller iPhones). Each is a
+Seven iPhone screenshots, in the two
+sizes App Store Connect takes (its
+[screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications)):
+
+- Medium, 1206 × 2622 (`…-medium.png`):
+  "iPhone with Dynamic Island (medium
+  display)", e.g. 17 Pro. Required.
+- Large, 1320 × 2868: "iPhone with
+  Dynamic Island (large display)", e.g.
+  17 Pro Max and Air.
+
+The medium ones are the large ones scaled
+down (the shapes differ by 0.07%). Each is a
 caption on the icon's violet-to-blue
 gradient over the screen in a phone frame
 (black bezel, grey rim), with a tidy 9:41
@@ -131,7 +141,8 @@ Save the pictures first:
 2. Tap a picture, then the download
    button (or "Raw"), long-press the
    image and tap "Save to Photos". Do all
-   seven, in order (1 to 7).
+   fourteen (seven of each size), in
+   order (1 to 7).
 3. Do the same for
    `docs/appstore/header.png`.
 
@@ -139,14 +150,22 @@ Then the version page (Apps → One Hundo →
 iOS App Version, "Prepare for
 Submission"). Tap Save now and then.
 
-1. Under "Header and Search Results",
-   on the Header tab, tap Upload and pick
-   the header. Leave the Search Results
-   tab empty.
-2. Screenshots: tap "Header and Search
-   Results >" (or find "Previews and
-   Screenshots"), pick the 6.9" iPhone
-   size, and upload the seven in order.
+1. Screenshots: tap "View All Sizes in
+   Media Manager". Under Required, in
+   "iPhone with Dynamic Island (medium
+   display)", tap Upload and pick the
+   seven `-medium` files, in order.
+2. Under Optional, open "iPhone with
+   Dynamic Island (large display)" and
+   upload the other seven (1320 × 2868).
+   Leave the other sizes empty: Apple
+   scales ours for older iPhones. Leave
+   iPhone Duo empty too (needed only from
+   April 2027, for apps built with the
+   iOS 27.1 SDK). The header isn't in
+   Media Manager: if the version page
+   shows "Header and Search Results",
+   it goes on that Header tab (optional).
 3. Promotional Text, Description,
    Keywords: paste from the boxes above
    (each box on GitHub has a copy

@@ -229,7 +229,8 @@ features land.
   comparison uploads `snapshot-diffs`.
   Re-record after Xcode or iOS updates.
 - `AppStoreTests` draws the App Store
-  screenshots the same way (6.9-inch,
+  screenshots the same way (large and
+  medium iPhone sizes,
   light, `Showcase` data, framed and
   captioned by `Poster`); the listing's
   text is in `docs/APPSTORE.md`, and

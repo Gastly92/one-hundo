@@ -4,9 +4,10 @@ import SwiftUI
 import TestSupport
 import XCTest
 
-/// The App Store screenshots: six screens in
-/// light mode on a 6.9-inch iPhone (1320 ×
-/// 2868 pixels), with a month of sample
+/// The App Store screenshots: seven
+/// screens (one in dark mode) on a 6.9-inch
+/// iPhone, saved at the large and medium
+/// sizes (`phones`), with a month of sample
 /// training (`Showcase`). Recorded and
 /// compared like `SnapshotTests`; the images
 /// in `__Snapshots__/AppStoreTests/` are the
@@ -128,12 +129,34 @@ final class AppStoreTests: XCTestCase {
     height: 956
   )
 
+  /// An iPhone size App Store Connect takes,
+  /// in pixels, and what's added to the
+  /// file name.
+  private struct Phone {
+    let suffix: String
+    let pixels: (width: Int, height: Int)
+  }
+
+  /// Large (6.9-inch, e.g. 17 Pro Max) and
+  /// medium (6.3-inch, e.g. 17 Pro, the one
+  /// App Store Connect requires).
+  private static let phones = [
+    Phone(suffix: "", pixels: (1320, 2868)),
+    Phone(
+      suffix: "-medium",
+      pixels: (1206, 2622)
+    ),
+  ]
+
   /// Draws the screen, then the `Poster`
-  /// around it, saved without an alpha
-  /// channel (App Store Connect turns
-  /// those down).
-  private static var poster:
-    Snapshotting<Page, UIImage> {
+  /// around it, at `phone`'s size (the
+  /// medium one scaled down from the large;
+  /// their shapes differ by 0.07%), saved
+  /// without an alpha channel (App Store
+  /// Connect turns those down).
+  private static func poster(
+    _ phone: Phone
+  ) -> Snapshotting<Page, UIImage> {
     Snapshotting(
       pathExtension: "png",
       diffing: screen(.light).diffing
@@ -141,7 +164,12 @@ final class AppStoreTests: XCTestCase {
       let shot = page.shot
       return screen(shot.style)
         .snapshot(page.view)
-        .map { opaque(frame($0, for: shot)) }
+        .map {
+          opaque(
+            frame($0, for: shot),
+            pixels: phone.pixels
+          )
+        }
     }
   }
 
@@ -178,12 +206,15 @@ final class AppStoreTests: XCTestCase {
   func testScreenshots() throws {
     for shot in Self.shots {
       let view = try page(shot.screen)
-      assertSnapshot(
-        of: Page(shot: shot, view: view),
-        as: Self.poster,
-        named: shot.name
-      )
-      try check(shot.name)
+      for phone in Self.phones {
+        let name = shot.name + phone.suffix
+        assertSnapshot(
+          of: Page(shot: shot, view: view),
+          as: Self.poster(phone),
+          named: name
+        )
+        try check(name, phone.pixels)
+      }
     }
   }
   /// The screen as `ScreenHost` shows it,
@@ -208,9 +239,12 @@ final class AppStoreTests: XCTestCase {
   }
 
   /// The saved image is what App Store
-  /// Connect takes: 1320 × 2868, 8-bit RGB
-  /// (read from the PNG's header).
-  private func check(_ name: String) throws {
+  /// Connect takes: `pixels`' size, 8-bit
+  /// RGB (read from the PNG's header).
+  private func check(
+    _ name: String,
+    _ pixels: (width: Int, height: Int)
+  ) throws {
     let file = URL(filePath: #filePath)
       .deletingLastPathComponent()
       .appending(path: "__Snapshots__")
@@ -231,25 +265,31 @@ final class AppStoreTests: XCTestCase {
     }
     let width = number(at: 16)
     let height = number(at: 20)
-    XCTAssertEqual(width, 1320, name)
-    XCTAssertEqual(height, 2868, name)
+    XCTAssertEqual(width, pixels.width, name)
+    XCTAssertEqual(
+      height,
+      pixels.height,
+      name
+    )
     // 8 bits a channel; color type 2 is RGB
     // (6 would be RGB with alpha).
     XCTAssertEqual(head[24], 8, name)
     XCTAssertEqual(head[25], 2, name)
   }
 
-  /// `image` drawn again with no alpha
-  /// channel (and so saved without one).
+  /// `image` drawn again at `pixels`' size
+  /// with no alpha channel (and so saved
+  /// without one).
   nonisolated private static func opaque(
-    _ image: UIImage
+    _ image: UIImage,
+    pixels: (width: Int, height: Int)
   ) -> UIImage {
     guard let source = image.cgImage,
       let space = source.colorSpace,
       let context = CGContext(
         data: nil,
-        width: source.width,
-        height: source.height,
+        width: pixels.width,
+        height: pixels.height,
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: space,
@@ -260,9 +300,10 @@ final class AppStoreTests: XCTestCase {
     let rect = CGRect(
       x: 0,
       y: 0,
-      width: source.width,
-      height: source.height
+      width: pixels.width,
+      height: pixels.height
     )
+    context.interpolationQuality = .high
     context.draw(source, in: rect)
     guard let drawn = context.makeImage()
     else { return image }
