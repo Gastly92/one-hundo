@@ -4,9 +4,10 @@ import SwiftUI
 import TestSupport
 import XCTest
 
-/// The App Store screenshots: six screens in
-/// light mode on a 6.9-inch iPhone (1320 ×
-/// 2868 pixels), with a month of sample
+/// The App Store screenshots: seven
+/// screens (one in dark mode) on a 6.9-inch
+/// iPhone, saved at the large and medium
+/// sizes (`phones`), with a month of sample
 /// training (`Showcase`). Recorded and
 /// compared like `SnapshotTests`; the images
 /// in `__Snapshots__/AppStoreTests/` are the
@@ -128,23 +129,24 @@ final class AppStoreTests: XCTestCase {
     height: 956
   )
 
-  /// The two iPhone sizes App Store Connect
-  /// takes: large (6.9-inch, e.g. 17 Pro
-  /// Max) and medium (6.3-inch, e.g. 17
-  /// Pro, the one it requires), in pixels.
-  private enum Phone: CaseIterable {
-    case large, medium
-
-    var pixels: (width: Int, height: Int) {
-      self == .large
-        ? (1320, 2868) : (1206, 2622)
-    }
-
-    /// Added to the file name.
-    var suffix: String {
-      self == .large ? "" : "-medium"
-    }
+  /// An iPhone size App Store Connect takes,
+  /// in pixels, and what's added to the
+  /// file name.
+  private struct Phone {
+    let suffix: String
+    let pixels: (width: Int, height: Int)
   }
+
+  /// Large (6.9-inch, e.g. 17 Pro Max) and
+  /// medium (6.3-inch, e.g. 17 Pro, the one
+  /// App Store Connect requires).
+  private static let phones = [
+    Phone(suffix: "", pixels: (1320, 2868)),
+    Phone(
+      suffix: "-medium",
+      pixels: (1206, 2622)
+    ),
+  ]
 
   /// Draws the screen, then the `Poster`
   /// around it, at `phone`'s size (the
@@ -204,7 +206,7 @@ final class AppStoreTests: XCTestCase {
   func testScreenshots() throws {
     for shot in Self.shots {
       let view = try page(shot.screen)
-      for phone in Phone.allCases {
+      for phone in Self.phones {
         let name = shot.name + phone.suffix
         assertSnapshot(
           of: Page(shot: shot, view: view),
