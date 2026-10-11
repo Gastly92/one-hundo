@@ -232,7 +232,9 @@ features land.
   screenshots the same way (6.9-inch,
   light, `Showcase` data, framed and
   captioned by `Poster`); the listing's
-  text is in `docs/APPSTORE.md`. Update
+  text is in `docs/APPSTORE.md`, and
+  `.github/scripts/app-header.sh` draws
+  the product page header. Update
   both when a pictured screen or a listed
   feature changes.
 - CI's `Workflows & scripts` job runs

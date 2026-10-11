@@ -830,7 +830,10 @@ listing and 1.0.0.
   privacy). Seven screenshots (list,
   challenge, calendar, plan, log, goal,
   and the challenge in dark mode; search
-  results show the first three)
+  results show the first three), and a
+  product page header for iOS 27
+  (`docs/appstore/header.png`, drawn by
+  `.github/scripts/app-header.sh`)
   are drawn by `AppStoreTests` like the
   snapshots: each a caption on the icon's
   gradient over the screen in a phone

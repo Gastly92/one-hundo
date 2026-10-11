@@ -66,7 +66,7 @@ final class AppStoreTests: XCTestCase {
     ),
     Shot(
       name: "5-log",
-      caption: "Log what you did today",
+      caption: "Beat yesterday by one",
       screen: .logAttempt
     ),
     Shot(
