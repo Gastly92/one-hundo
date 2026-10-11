@@ -150,23 +150,22 @@ Then the version page (Apps → One Hundo →
 iOS App Version, "Prepare for
 Submission"). Tap Save now and then.
 
-1. Screenshots: under "App Previews and
-   Screenshots", on the "iPhone with
-   Dynamic Island (medium display)" tab,
-   tap Upload and pick the seven
-   `-medium` files, in order. Leave the
-   iPhone Duo tab empty: Duo screenshots
-   are only needed from April 2027, for
-   apps built with the iOS 27.1 SDK.
-2. Large sizes and the header: tap "View
-   All Sizes in Media Manager". Add the
-   other seven (1320 × 2868) under the
-   large display (6.9"), and the header
-   under Header (if there's a Search
-   Results slot, leave it empty). If the
-   page shows "Header and Search Results"
-   instead, the header goes on its Header
-   tab.
+1. Screenshots: tap "View All Sizes in
+   Media Manager". Under Required, in
+   "iPhone with Dynamic Island (medium
+   display)", tap Upload and pick the
+   seven `-medium` files, in order.
+2. Under Optional, open "iPhone with
+   Dynamic Island (large display)" and
+   upload the other seven (1320 × 2868).
+   Leave the other sizes empty: Apple
+   scales ours for older iPhones. Leave
+   iPhone Duo empty too (needed only from
+   April 2027, for apps built with the
+   iOS 27.1 SDK). The header isn't in
+   Media Manager: if the version page
+   shows "Header and Search Results",
+   it goes on that Header tab (optional).
 3. Promotional Text, Description,
    Keywords: paste from the boxes above
    (each box on GitHub has a copy
