@@ -32,8 +32,8 @@ with the `record-snapshots` label.
    trained"
 4. `4-plan`: a new challenge's plan. "Set
    your goal and pace"
-5. `5-log`: logging an attempt. "Log what
-   you did today"
+5. `5-log`: logging an attempt. "Beat
+   yesterday by one"
 6. `6-goal`: goal reached. "Reach 100,
    then aim higher"
 7. `7-dark`: Push-ups' screen in dark
@@ -42,7 +42,23 @@ with the `record-snapshots` label.
 Search results show only the first three
 (the app's page shows all, two or three
 at a time), so the strongest go first.
-Captions are in `AppStoreTests.shots`.
+Captions are in `AppStoreTests.shots`. Each
+is a short phrase that adds to the picture
+rather than describing it (Apple's
+[asset guidance](https://developer.apple.com/app-store/asset-best-practices/)).
+
+## Header
+
+`docs/appstore/header.png` (5244 × 2950),
+the product page header on iOS 27 and
+later: the light icon's ring, "One Hundo"
+and the subtitle on the icon's gradient,
+all in the centre so no device crops it.
+Drawn by `.github/scripts/app-header.sh`;
+run it again if the subtitle changes.
+There's no search results image: without
+one, search shows the first three
+screenshots.
 
 ## Text
 
@@ -107,23 +123,62 @@ push ups,pushups,sit ups,pull ups,plank,workout,fitness,training,reps,calistheni
 
 ## Adding them from an iPhone
 
+Save the pictures first:
+
 1. In Safari, open the repo on GitHub and
    go to
    `OneHundoTests/__Snapshots__/AppStoreTests`.
 2. Tap a picture, then the download
    button (or "Raw"), long-press the
    image and tap "Save to Photos". Do all
-   seven, in order.
-3. Open appstoreconnect.apple.com, tap
-   the aA button and "Request Desktop
-   Website".
-4. Apps → One Hundo → the iOS version
-   being prepared (e.g. 1.0) → "Previews
-   and Screenshots" → the 6.9" iPhone
-   tab.
-5. Tap "Choose File" → Photo Library, pick
-   the seven, and drag them into order if
-   needed.
-6. Paste the text above into its fields,
-   fill in the other fields, and tap
-   Save.
+   seven, in order (1 to 7).
+3. Do the same for
+   `docs/appstore/header.png`.
+
+Then the version page (Apps → One Hundo →
+iOS App Version, "Prepare for
+Submission"). Tap Save now and then.
+
+1. Under "Header and Search Results",
+   on the Header tab, tap Upload and pick
+   the header. Leave the Search Results
+   tab empty.
+2. Screenshots: tap "Header and Search
+   Results >" (or find "Previews and
+   Screenshots"), pick the 6.9" iPhone
+   size, and upload the seven in order.
+3. Promotional Text, Description,
+   Keywords: paste from the boxes above
+   (each box on GitHub has a copy
+   button).
+4. Support URL as above; leave Marketing
+   URL empty.
+5. Version: 1.0.0, the same as the app's
+   (it must match exactly).
+6. Copyright: `2026` and your name.
+7. Leave Routing App Coverage, App Clip,
+   iMessage App and Game Center empty.
+8. Build: once the 1.0.0 build is in
+   TestFlight, tap + and pick it.
+9. App Review Information: untick
+   "Sign-in required" (the app has no
+   accounts), add your contact details
+   (only Apple sees them), and paste the
+   notes below.
+10. Release: "Manually release this
+    version", so you choose the day once
+    Apple approves.
+11. Save. "Add for Review" comes last,
+    with the build attached.
+
+The other fields (category, age rating,
+price, App Privacy and the privacy policy
+URL) are under Distribution at the top,
+on the App Information, Pricing and
+Availability, and App Privacy pages.
+
+Notes for App Review:
+
+```
+No account or sign-in. Tap "Start your first challenge", pick Push-ups, enter how many you can do, set a goal and tap Start. Tap the card to see its screen and log an attempt; long-press a card for a quick menu. Daily reminders are optional local notifications. The app collects no data.
+```
