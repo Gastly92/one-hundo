@@ -28,17 +28,20 @@ with the `record-snapshots` label.
    100, one day at a time"
 2. `2-challenge`: Push-ups' screen. "See
    how far you've come"
-3. `3-log`: logging an attempt. "Log what
-   you did today"
-4. `4-calendar`: the month. "Every day you
+3. `3-calendar`: the month. "Every day you
    trained"
-5. `5-plan`: a new challenge's plan. "Set
+4. `4-plan`: a new challenge's plan. "Set
    your goal and pace"
+5. `5-log`: logging an attempt. "Log what
+   you did today"
 6. `6-goal`: goal reached. "Reach 100,
    then aim higher"
 7. `7-dark`: Push-ups' screen in dark
    mode. "Light or dark, your choice"
 
+Search results show only the first three
+(the app's page shows all, two or three
+at a time), so the strongest go first.
 Captions are in `AppStoreTests.shots`.
 
 ## Text

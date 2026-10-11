@@ -40,7 +40,8 @@ final class AppStoreTests: XCTestCase {
   }
 
   /// The screenshots, in the listing's
-  /// order.
+  /// order. Search results show the first
+  /// three, so they're the strongest.
   private static let shots = [
     Shot(
       name: "1-list",
@@ -54,19 +55,19 @@ final class AppStoreTests: XCTestCase {
       screen: .challengeDetail
     ),
     Shot(
-      name: "3-log",
-      caption: "Log what you did today",
-      screen: .logAttempt
-    ),
-    Shot(
-      name: "4-calendar",
+      name: "3-calendar",
       caption: "Every day you trained",
       screen: .calendar
     ),
     Shot(
-      name: "5-plan",
+      name: "4-plan",
       caption: "Set your goal and pace",
       screen: .enrollGoal
+    ),
+    Shot(
+      name: "5-log",
+      caption: "Log what you did today",
+      screen: .logAttempt
     ),
     Shot(
       name: "6-goal",
