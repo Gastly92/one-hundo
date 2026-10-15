@@ -863,6 +863,20 @@ listing and 1.0.0.
   the first App Store release, sent to
   TestFlight to submit for review.
 
+## After approval
+
+Once 1.0 is approved, this plan retires:
+
+- The built steps (Approach through step
+  9) move to `docs/`, as a record of how
+  the app was built and why.
+- "Later" below moves to
+  `docs/ROADMAP.md`, the list of post-1.0
+  features, each its own PR series.
+- Update the links to this file
+  (`CLAUDE.md`, `README.md`) in the same
+  PR.
+
 ## Later
 
 Not scheduled; each would be its own PR
