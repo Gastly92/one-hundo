@@ -31,4 +31,4 @@ permissions:
 jobs:
   ci:
     name: CI
-    uses: gastly92/ios-template/.github/workflows/ci.yml@v1.0.0
+    uses: gastly92/ios-template/.github/workflows/ci.yml@one-base-copy

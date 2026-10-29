@@ -127,32 +127,23 @@ final class AppLaunchTests: XCTestCase {
     }
   }
 
-  /// The notifier's type name. (Compared by
-  /// name: the app and this test bundle
-  /// each link their own copy of Base, so
-  /// `is` checks can't match.)
-  private func kind(
-    _ args: [String]
-  ) -> String {
-    let notifier = start(args).notifier
-    return String(
-      describing: type(of: notifier)
-    )
-  }
-
   func testNotifierOnlyRealOutsideTests() {
-    XCTAssertEqual(
-      kind(["OneHundo"]), "PhoneNotifier"
+    XCTAssertTrue(
+      start(["OneHundo"]).notifier
+        is PhoneNotifier
     )
     // UI tests get no permission prompt,
     // unless they ask for one.
-    XCTAssertEqual(
-      kind(["-uiTesting"]), "SilentNotifier"
+    XCTAssertTrue(
+      start(["-uiTesting"]).notifier
+        is SilentNotifier
     )
-    let real = kind(
+    let real = start(
       ["-uiTesting", "-notifications"]
     )
-    XCTAssertEqual(real, "PhoneNotifier")
+    XCTAssertTrue(
+      real.notifier is PhoneNotifier
+    )
   }
 
   func testDefaultStoreOpens() throws {
