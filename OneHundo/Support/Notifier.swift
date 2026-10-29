@@ -20,7 +20,7 @@ protocol Notifier: Sendable {
 struct PhoneNotifier: Notifier {
   /// What iOS answers, in the system log
   /// (CI prints it after the tests).
-  private nonisolated static let log =
+  nonisolated private static let log =
     Logger(
       subsystem: "com.gastly92.onehundo",
       category: "notifications"
