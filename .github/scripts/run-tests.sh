@@ -175,15 +175,17 @@ shown+='|Long-press read as a tap'
 grep -E "($shown)" build/test.log || true
 
 # What the app (PhoneNotifier) and iOS's
-# notification service and SpringBoard
-# logged about it, to see why the
-# permission prompt did or didn't show.
+# notifications (in SpringBoard) logged
+# about it, to see why the permission
+# prompt did or didn't show. A passing
+# run reads: Requesting authorization,
+# Show ... prompt, Authorization granted,
+# Asked; allowed: Optional(true).
 if [ "$shard" = main ]; then
   app=com.gastly92.onehundo
-  daemon=usernotificationsd
   logs="subsystem == '$app'"
-  logs+=" OR ((process == '$daemon'"
-  logs+=" OR process == 'SpringBoard')"
+  logs+=" OR (subsystem =="
+  logs+=" 'com.apple.UserNotifications'"
   logs+=" AND composedMessage"
   logs+=" CONTAINS '$app')"
   echo "::group::Notification logs"
