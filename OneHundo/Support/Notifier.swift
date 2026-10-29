@@ -20,10 +20,11 @@ protocol Notifier: Sendable {
 struct PhoneNotifier: Notifier {
   /// What iOS answers, in the system log
   /// (CI prints it after the tests).
-  private static let log = Logger(
-    subsystem: "com.gastly92.onehundo",
-    category: "notifications"
-  )
+  private nonisolated static let log =
+    Logger(
+      subsystem: "com.gastly92.onehundo",
+      category: "notifications"
+    )
 
   func ask() async {
     let hub = UNUserNotificationCenter
