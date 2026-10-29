@@ -9,11 +9,6 @@ Code; there is no Mac. What the app does:
 features land. How 1.0 was built (a
 finished record): `docs/HISTORY.md`.
 
-## Working with the owner
-- Keep it simple: few steps, few questions.
-  Pick sensible defaults and say what you
-  chose.
-
 ## Building
 - This container is Linux: nothing
   Swift/Xcode builds locally. CI is the
