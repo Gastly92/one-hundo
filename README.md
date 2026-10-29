@@ -6,8 +6,8 @@ phone with Claude Code and GitHub Actions.
 [On the App Store](https://apps.apple.com/app/id6818800020).
 See [docs/PRODUCT.md](docs/PRODUCT.md) for
 what the app does and
-[docs/PLAN.md](docs/PLAN.md) for build
-progress.
+[docs/ROADMAP.md](docs/ROADMAP.md) for
+what's next.
 
 Every PR and push to `main` runs
 `.github/workflows/ios-build.yml` on a macOS

@@ -310,13 +310,7 @@ success haptic, then two choices:
   analytics with developers in iOS
   Settings.
 
-## Later (not planned yet)
+## Later
 
-- **Apple Health integration**: e.g. save
-  workouts to the Health app.
-- **Ads or other monetization**, in some
-  light form.
-- **iCloud sync** (CloudKit) so data shows up
-  on a new phone or iPad without a full
-  restore. Needs the iCloud entitlement and
-  extra signing setup.
+Planned features after 1.0 are in
+`docs/ROADMAP.md`.

@@ -3,10 +3,11 @@
 One Hundo: a SwiftUI iOS fitness-challenge
 tracker (e.g. 100 push-ups a day). The owner
 develops entirely from an iPhone via Claude
-Code; there is no Mac. Product vision and
-planned features: `docs/PRODUCT.md`. Build
-order: `docs/PLAN.md`. Keep both updated as
-features land.
+Code; there is no Mac. What the app does:
+`docs/PRODUCT.md`. Features after 1.0:
+`docs/ROADMAP.md`. Keep both updated as
+features land. How 1.0 was built (a
+finished record): `docs/HISTORY.md`.
 
 ## Working with the owner
 - Keep it simple: few steps, few questions.
@@ -77,8 +78,9 @@ features land.
   screen scaled. There's no automated
   accessibility audit: Xcode's audit
   stalled at random on CI's simulators, so
-  it was removed; a manual check on the
-  phone is part of plan step 9.
+  it was removed. Check VoiceOver and the
+  largest text size on the phone by hand
+  when screens change.
 - All user-facing text must be translatable
   (English only for now):
   - In views, pass literals to `Text`,
@@ -329,17 +331,13 @@ features land.
 - Version scheme (`MARKETING_VERSION` in
   `project.yml`; Apple allows only three
   numbers):
-  - Before 1.0: `0.<plan step>.0` when a plan
-    step's PR lands (step 4 → 0.4.0), and
-    bump the patch for fixes between steps
-    (0.4.1). Make the bump in the same PR as
-    the change.
-  - 1.0.0 is the first App Store release (end
-    of plan step 9). After that: patch for
-    bug fixes, minor for new features.
+  - 1.0.0 was the first App Store
+    release. Now: patch for bug fixes,
+    minor for new features. Make the bump
+    in the same PR as the change.
   - Build number = workflow run number
     (automatic), shown in TestFlight as e.g.
-    0.4.0 (5).
+    1.0.0 (5).
 - Secrets (`APPLE_TEAM_ID`, `ASC_ISSUER_ID`,
   `ASC_KEY_ID`, `ASC_KEY_P8`) live in GitHub
   repo secrets. Never print, log, or ask for
