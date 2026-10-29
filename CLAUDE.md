@@ -236,8 +236,8 @@ finished record): `docs/HISTORY.md`.
   feature changes.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
-  ShellCheck on `.github/scripts/` and
-  `.claude/hooks/`. Versions are pinned in
+  ShellCheck on every `*.sh`. Versions are
+  pinned in
   `.github/scripts/checkers.txt`; the cloud
   session start hook
   (`.claude/hooks/session-start.sh`) installs
