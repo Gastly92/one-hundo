@@ -18,38 +18,23 @@ protocol Notifier: Sendable {
 
 /// The phone's notification center.
 struct PhoneNotifier: Notifier {
-  /// What iOS answers, in the system log
-  /// (CI prints it after the tests).
-  nonisolated private static let log =
-    Logger(
-      subsystem: "com.gastly92.onehundo",
-      category: "notifications"
-    )
+  /// iOS's answer to the request, in the
+  /// system log (CI prints it after the
+  /// tests): false without a prompt means
+  /// it was already denied, nil an error.
+  private static let log = Logger(
+    subsystem: "com.gastly92.onehundo",
+    category: "notifications"
+  )
 
   func ask() async {
     let hub = UNUserNotificationCenter
       .current()
-    // Sendable: iOS calls it off the main
-    // thread.
-    let report: @Sendable (
-      UNNotificationSettings
-    ) -> Void = { settings in
-      let status = settings
-        .authorizationStatus
-      Self.log.info("""
-        Status before asking: \
-        \(status.rawValue, privacy: .public)
-        """)
-    }
-    hub.getNotificationSettings(
-      completionHandler: report
-    )
     let allowed = try? await hub
       .requestAuthorization(
         options: [.alert, .sound]
       )
-    let answer = allowed.map { "\($0)" }
-      ?? "error"
+    let answer = String(describing: allowed)
     Self.log.info("""
       Asked; allowed: \
       \(answer, privacy: .public)
