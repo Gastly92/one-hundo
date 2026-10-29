@@ -174,8 +174,16 @@ finished record): `docs/HISTORY.md`.
   twice (`stallRetries`), and logs
   "Long-press read as a tap" in the CI
   log each time. Any other miss fails.
+  `allowPrompt` (the notification
+  prompt, read from SpringBoard) works
+  the same way: when Allow is missing
+  but something covers the app (the
+  prompt, unreadable during a stall), it
+  relaunches the app, which asks again,
+  up to `stallRetries`, logging
+  "Notification prompt unreadable".
   The owner wants 100% coverage kept and
-  accepts retries like this one: tied to
+  accepts retries like these: tied to
   a detected stall sign, never blind.
   Likewise `run-tests.sh` runs a shard once
   more only when the UI test runner failed

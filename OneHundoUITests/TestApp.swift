@@ -124,6 +124,52 @@ extension XCUIApplication {
     return item
   }
 
+  /// The notification prompt's Allow
+  /// button, which must appear. It belongs
+  /// to SpringBoard, so the test reads it
+  /// across processes.
+  ///
+  /// When a CI runner stalls, the prompt
+  /// can be up but unreadable (the log
+  /// shows `kAXErrorServerNotFound`). Only
+  /// that case, Allow missing while the
+  /// push-ups card is on screen but covered
+  /// (not hittable), gets a relaunch (up to
+  /// `stallRetries`): iOS asks again until
+  /// the prompt is answered. If the app
+  /// never asked, the card is uncovered and
+  /// the test fails.
+  @MainActor
+  func allowPrompt() -> XCUIElement {
+    let springboard = App(
+      bundleIdentifier:
+        "com.apple.springboard"
+    )
+    let allow = springboard.buttons["Allow"]
+    let behind = card("pushups")
+    for _ in 0..<Self.stallRetries {
+      if allow.appears(within: 10) {
+        return allow
+      }
+      XCTAssertTrue(
+        behind.exists && !behind.isHittable,
+        "No prompt, and the app is uncovered"
+      )
+      print("""
+        Notification prompt unreadable \
+        (runner stalled): relaunching the \
+        app to ask again.
+        """)
+      terminate()
+      launch()
+    }
+    XCTAssertTrue(
+      allow.appears(within: 10),
+      "The prompt never became readable"
+    )
+    return allow
+  }
+
   /// Whether `item` is in the menu. The
   /// screen a tap opens can have a button
   /// with the same label (the challenge
