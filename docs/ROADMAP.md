@@ -109,13 +109,10 @@ new feature (1.1.0), patch for fixes.
     generally available 2026-10-15,
     Xcode 27.1 default, iOS 27.1
     simulator with an iPhone Duo; checked
-    2026-10-29). Not yet confirmed free
-    for public repos like `macos-26`
-    (`xcode-27-xlarge` is paid): the
-    first CI run shows it. Its tools
-    differ, so check XcodeGen, SwiftLint
-    and Periphery still install.
-  - PR 1 (1.0.1, in progress): CI and
+    2026-10-29). Free for this public
+    repo, like `macos-26` was;
+    XcodeGen and Periphery install.
+  - PR 1 (1.0.1, #89, done): CI and
     the TestFlight workflow on
     `xcode-27`, `run-tests.sh` skips the
     Duo (tests keep a regular iPhone's
