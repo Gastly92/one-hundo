@@ -218,22 +218,6 @@ final class AppStoreTests: XCTestCase {
       }
     }
   }
-  /// Draws the first screen once and throws
-  /// it away. These are the shard's first
-  /// pictures in the app's window, and on
-  /// CI's GPU-less runners that first one
-  /// sometimes came out black (the
-  /// renderer timed out starting up). It
-  /// checks nothing: `assertSnapshot` does.
-  private func warmUp() throws {
-    let view = try page(Self.shots[0].screen)
-    let drawn = XCTestExpectation()
-    let draw = Self.screen(.light).snapshot
-    draw(view).run { _ in drawn.fulfill() }
-    _ = XCTWaiter()
-      .wait(for: [drawn], timeout: 5)
-  }
-
   /// The screen as `ScreenHost` shows it,
   /// with the showcase data, on the fixed
   /// day.
@@ -329,5 +313,28 @@ final class AppStoreTests: XCTestCase {
       scale: image.scale,
       orientation: .up
     )
+  }
+}
+
+extension AppStoreTests {
+  /// Draws the first screenshot once and
+  /// throws it away. The first poster
+  /// (`ImageRenderer`) on CI's GPU-less
+  /// runners builds its shaders (over a
+  /// second) and sometimes timed out,
+  /// coming out all black. It checks
+  /// nothing: `assertSnapshot` does.
+  private func warmUp() throws {
+    let shot = Self.shots[0]
+    let first = Page(
+      shot: shot,
+      view: try page(shot.screen)
+    )
+    let drawn = XCTestExpectation()
+    let draw = Self.poster(Self.phones[0])
+      .snapshot
+    draw(first).run { _ in drawn.fulfill() }
+    _ = XCTWaiter()
+      .wait(for: [drawn], timeout: 5)
   }
 }
