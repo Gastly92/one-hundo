@@ -384,8 +384,12 @@ jobs:
           | tail -n 20
 
   # Single pass/fail check for a PR. It
-  # always reports, passing when the build
-  # was skipped (docs-only PR) or succeeded.
+  # reports on every run that isn't
+  # cancelled, passing when the build was
+  # skipped (docs-only PR) or succeeded. A
+  # run a newer push cancelled skips it
+  # instead of failing (the newer run
+  # reports).
   gate:
     name: CI Gate
     needs:
@@ -399,7 +403,7 @@ jobs:
     - test
     - coverage
     - release
-    if: always()
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
     - name: Check results
