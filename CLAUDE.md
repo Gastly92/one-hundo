@@ -53,6 +53,14 @@ finished record): `docs/HISTORY.md`.
   the history chart's axes and the sample
   custom challenge's name ("Plank"). Add
   new system text there.
+- The app and the unit test bundle each
+  link their own copy of Base, so a test
+  can't set Base's environment keys or
+  `is`-check Base types the app made.
+  Snapshot tests fix the day with
+  `.fixedNow(_:)` (app code, in
+  `Support/FixedNow.swift`); compare
+  notifier types by name.
 - `testLongPressLogsToday` taps first on
   purpose, so `menuItem`'s stall path
   runs every time.

@@ -1,4 +1,3 @@
-import Base
 import BaseSnapshots
 @testable import OneHundo
 import SwiftData
@@ -57,7 +56,7 @@ final class SnapshotTests: XCTestCase {
     // shows where they end.
     return ScreenHost(screen: screen)
       .modelContainer(store)
-      .environment(\.now, Self.now)
+      .fixedNow(Self.now)
       .transaction { $0.animation = nil }
   }
 }
