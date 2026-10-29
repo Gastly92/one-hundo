@@ -1,7 +1,8 @@
 # App Store listing
 
-What to fill in on App Store Connect for
-the first release (plan step 9d). Text to
+What to fill in on App Store Connect
+(written for 1.0, plan step 9d in
+`docs/HISTORY.md`). Text to
 paste is in the boxes below; each box is
 one field. Keep it true to what the app
 does, and update it as features change.
