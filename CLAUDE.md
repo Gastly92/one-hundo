@@ -193,6 +193,30 @@ finished record): `docs/HISTORY.md`.
   in new UI tests.
   `testLongPressLogsToday` taps first on
   purpose, so this path runs every time.
+- `NotificationTests` answers the real
+  permission prompt (SpringBoard's). On
+  the `xcode-27` runner it twice found
+  no prompt at all (Oct 2026, PR #89;
+  the screen recording showed the app
+  uncovered; cause unknown, not seen
+  since). To read a failure, open the
+  main shard's "Notification logs"
+  group (`run-tests.sh`: the app's
+  `PhoneNotifier` line and iOS's
+  `com.apple.UserNotifications` lines).
+  A pass reads: Requesting authorization,
+  Show notification user authorization
+  prompt, Approved by user, Authorization
+  granted, then the app's "Asked;
+  allowed: Optional(true)". Where that
+  stops is the cause (no request: the
+  app didn't ask; no "Show": iOS chose
+  not to; `nil`: the request failed).
+  A failed UI test's xcresult (in the
+  `result-main` artifact) holds a screen
+  recording: `.mov` among its
+  zstd-packed `Data` files. Write down
+  what you find here.
 - Snapshot tests (`SnapshotTests`) take a
   picture of every `ScreenID` in light,
   dark and large text (on a screen three
@@ -229,7 +253,11 @@ finished record): `docs/HISTORY.md`.
   `.github/scripts/app-header.sh` draws
   the product page header. Update
   both when a pictured screen or a listed
-  feature changes.
+  feature changes. `warmUp` draws the
+  first screenshot once and throws it
+  away: on CI the first `ImageRenderer`
+  poster builds its shaders and
+  sometimes timed out, all black.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
   ShellCheck on every `*.sh`. Versions are
