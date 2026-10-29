@@ -862,6 +862,14 @@ listing and 1.0.0.
 - 1.0.0 ✅: `MARKETING_VERSION` bumped for
   the first App Store release, sent to
   TestFlight to submit for review.
+- On the App Store ✅ (October 2026):
+  https://apps.apple.com/app/id6818800020
+  App Review first asked for more
+  information (Guideline 2.1, usual for
+  a new developer account): a screen
+  recording and answers about the app.
+  The answers are in `docs/APPSTORE.md`
+  for later submissions.
 
 ## After approval
 
