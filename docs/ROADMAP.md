@@ -115,8 +115,9 @@ new feature (1.1.0), patch for fixes.
     first CI run shows it. Its tools
     differ, so check XcodeGen, SwiftLint
     and Periphery still install.
-  - PR 1 (1.0.1): CI and the TestFlight
-    workflow on `xcode-27`, simulator
+  - PR 1 (next patch version): CI and
+    the TestFlight workflow on
+    `xcode-27`, simulator
     names in `run-tests.sh` if they
     changed, `CLAUDE.md`'s runner note,
     re-record snapshots
