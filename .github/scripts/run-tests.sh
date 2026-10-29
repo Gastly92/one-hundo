@@ -187,7 +187,13 @@ if [ "$shard" = main ]; then
   logs+=" OR (subsystem =="
   logs+=" 'com.apple.UserNotifications'"
   logs+=" AND composedMessage"
-  logs+=" CONTAINS '$app')"
+  logs+=" CONTAINS '$app'"
+  logs+=" AND (composedMessage"
+  logs+=" CONTAINS[c] 'authoriz'"
+  logs+=" OR composedMessage"
+  logs+=" CONTAINS[c] 'prompt'"
+  logs+=" OR composedMessage"
+  logs+=" CONTAINS[c] 'by user'))"
   echo "::group::Notification logs"
   xcrun simctl spawn "$device" log show \
     --start "$since" --style compact \
