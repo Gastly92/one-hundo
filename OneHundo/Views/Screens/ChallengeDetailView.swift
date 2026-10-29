@@ -29,9 +29,6 @@ struct ChallengeDetailView: View {
   /// settings; the challenge goes once
   /// settings close.
   @State private var isDeleting = false
-  /// Form tips start closed here; they're
-  /// open in the enroll intro.
-  @State private var showsTips = false
   @ScaledMetric(relativeTo: .largeTitle)
   private var countSize: CGFloat = 44
   @ScaledMetric(relativeTo: .largeTitle)
@@ -80,7 +77,7 @@ struct ChallengeDetailView: View {
         Section {
           FormTips(
             tips: builtIn.tips,
-            isOpen: $showsTips
+            folds: true
           )
         }
       }

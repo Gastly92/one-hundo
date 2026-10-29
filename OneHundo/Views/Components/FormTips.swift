@@ -3,23 +3,20 @@ import SwiftUI
 /// A built-in challenge's form tips under a
 /// "Good form" heading. On the challenge
 /// screen the heading opens and closes
-/// them; in the enroll intro (no `isOpen`)
-/// they always show.
+/// them (`folds`, starting closed); in
+/// the enroll intro they always show.
 struct FormTips: View {
   let tips: [String]
-  let isOpen: Binding<Bool>?
+  let folds: Bool
 
-  init(
-    tips: [String],
-    isOpen: Binding<Bool>? = nil
-  ) {
+  init(tips: [String], folds: Bool = false) {
     self.tips = tips
-    self.isOpen = isOpen
+    self.folds = folds
   }
 
   var body: some View {
-    if let isOpen {
-      DisclosureGroup(isExpanded: isOpen) {
+    if folds {
+      DisclosureGroup {
         list.padding(.top, 8)
       } label: {
         heading
