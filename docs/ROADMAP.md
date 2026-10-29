@@ -97,17 +97,36 @@ new feature (1.1.0), patch for fixes.
     developer), version 1.1.0.
 - **iPhone Duo (foldable) support**: apps
   fill its inner screen only when built
-  with Xcode 27.1 or later (older builds
-  show with black borders), and from
-  April 2027 App Store submissions need
-  Duo screenshots. When GitHub's free
-  `macos-26` runners have Xcode 27.1 (a
-  reminder checks from 2026-10-26),
-  switch CI and the TestFlight workflow to
-  it, re-record snapshots, check the
-  portrait lock and wide layouts on the
-  inner screen, and add Duo-sized
-  snapshots and App Store screenshots.
+  with Xcode 27.1 or later (older builds,
+  like 1.0.0, show with black borders),
+  and from April 2027 App Store
+  submissions need Duo screenshots. On
+  sale since 2026-10-23.
+  - Runner: `macos-26` tops out at Xcode
+    26.6 (Xcode 27 needs macOS 27), so
+    switch `runs-on` to GitHub's
+    `xcode-27` image instead (macOS 27,
+    generally available 2026-10-15,
+    Xcode 27.1 default, iOS 27.1
+    simulator with an iPhone Duo; checked
+    2026-10-29). Not yet confirmed free
+    for public repos like `macos-26`
+    (`xcode-27-xlarge` is paid): the
+    first CI run shows it. Its tools
+    differ, so check XcodeGen, SwiftLint
+    and Periphery still install.
+  - PR 1 (1.0.1): CI and the TestFlight
+    workflow on `xcode-27`, simulator
+    names in `run-tests.sh` if they
+    changed, `CLAUDE.md`'s runner note,
+    re-record snapshots
+    (`record-snapshots` label), check
+    the portrait lock and wide layouts on
+    the Duo simulator's inner screen.
+  - PR 2: Duo-sized snapshots and App
+    Store screenshots (`AppStoreTests`),
+    and the upload steps in
+    `docs/APPSTORE.md`.
 - **"Lower is better" challenges**, e.g.
   a faster mile time (shown as mm:ss) or
   less screen time. Targets step down,
