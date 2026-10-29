@@ -1,3 +1,4 @@
+import BaseTesting
 import XCTest
 
 /// Reaching a goal: the celebration, a new

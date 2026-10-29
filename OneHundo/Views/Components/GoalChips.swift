@@ -1,3 +1,4 @@
+import Base
 import SwiftUI
 
 /// Quick goal buttons (e.g. 50, 100, 150,

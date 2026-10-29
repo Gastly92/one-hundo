@@ -1,21 +1,7 @@
+import BaseTesting
 @testable import OneHundo
 import UserNotifications
 import XCTest
-
-/// Records what reminder updates do.
-@MainActor
-private final class FakeNotifier: Notifier {
-  var asked = 0
-  var pending: [UNNotificationRequest] = []
-
-  func ask() { asked += 1 }
-
-  func replace(
-    with requests: [UNNotificationRequest]
-  ) {
-    pending = requests
-  }
-}
 
 /// Daily reminders: which days, what they
 /// say, and how they're scheduled.
@@ -185,25 +171,25 @@ final class ReminderTests: XCTestCase {
   }
 
   func testAsksOnlyWithReminders() async {
-    let fake = FakeNotifier()
+    let fake = RecordingNotifier()
     let reminder = Self.sample
     await ReminderSync.update(
       [], with: fake
     )
-    XCTAssertEqual(fake.asked, 0)
-    XCTAssertEqual(fake.pending, [])
+    XCTAssertEqual(fake.asks, 0)
+    XCTAssertEqual(fake.scheduled, [])
 
     await ReminderSync.update(
       [reminder], with: fake
     )
-    XCTAssertEqual(fake.asked, 1)
+    XCTAssertEqual(fake.asks, 1)
     XCTAssertEqual(
-      fake.pending.map(\.identifier), ["a"]
+      fake.scheduled.map(\.identifier), ["a"]
     )
   }
 
   func testCancelledUpdateKeepsOld() async {
-    let fake = FakeNotifier()
+    let fake = RecordingNotifier()
     let reminder = Self.sample
     // Cancelled before it runs: a newer
     // update took over.
@@ -214,6 +200,6 @@ final class ReminderTests: XCTestCase {
     }
     task.cancel()
     await task.value
-    XCTAssertEqual(fake.pending, [])
+    XCTAssertEqual(fake.scheduled, [])
   }
 }

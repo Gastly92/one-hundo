@@ -1,3 +1,4 @@
+import Base
 @testable import OneHundo
 import SwiftData
 import XCTest
@@ -58,20 +59,20 @@ final class AppLaunchTests: XCTestCase {
 
   func testSampleDataOnlyInUITests() throws {
     let seeded = start(
-      ["-uiTesting", "-seedSampleData"]
+      ["-uiTesting", "-seedData"]
     )
     XCTAssertEqual(try count(seeded), 4)
 
-    // -seedSampleData alone is ignored, so
+    // -seedData alone is ignored, so
     // it can never touch real data.
-    let real = start(["-seedSampleData"])
+    let real = start(["-seedData"])
     XCTAssertEqual(try count(real), 0)
   }
 
   func testStoreFailureIsNotFatal() {
     let launch = AppLaunch(
       arguments: [
-        "-uiTesting", "-seedSampleData",
+        "-uiTesting", "-seedData",
       ]
     ) { _ in
       throw StoreDown()

@@ -1,3 +1,4 @@
+import Base
 import SwiftUI
 
 /// A built-in challenge's form tips under a

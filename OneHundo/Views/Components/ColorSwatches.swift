@@ -1,3 +1,4 @@
+import Base
 import SwiftUI
 
 /// The palette as round swatches to pick a

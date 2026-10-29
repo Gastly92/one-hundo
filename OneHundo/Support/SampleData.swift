@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 /// Challenges for UI tests (launched with
-/// -uiTesting -seedSampleData).
+/// -uiTesting -seedData).
 enum SampleData {
   /// How the sample Push-ups differs, for
   /// screens that show other states.

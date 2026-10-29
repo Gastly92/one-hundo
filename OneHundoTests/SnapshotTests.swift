@@ -1,20 +1,12 @@
+import Base
+import BaseSnapshots
 @testable import OneHundo
 import SwiftData
 import SwiftUI
-import TestSupport
 import XCTest
 
 /// A picture of every screen (`ScreenID`) in
-/// light mode, dark mode and large text,
-/// compared with the committed images in
-/// `__Snapshots__/`. A screen that looks
-/// different fails until its images are
-/// recorded again (see CLAUDE.md).
-///
-/// Pictures are drawn in the app's window:
-/// iOS 26's glass bars only show their real
-/// colors there (offscreen, small titles
-/// came out white on white).
+/// each look (see `Looks`), on a fixed day.
 @MainActor
 final class SnapshotTests: XCTestCase {
   /// The fixed "now": noon, Jan 15 2026,
@@ -31,83 +23,11 @@ final class SnapshotTests: XCTestCase {
   private static var stores: [ModelContainer]
     = []
 
-  /// An iPhone 13-sized screen.
-  private static let phone =
-    SwiftUISnapshotLayout.device(
-      config: .iPhone13
-    )
-
-  /// The same width, three times as tall:
-  /// large text runs long, and a phone-sized
-  /// picture cut off whatever scrolled past
-  /// the bottom.
-  private static let tall = {
-    let base = ViewImageConfig.iPhone13
-    let size = base.size.map {
-      CGSize(
-        width: $0.width,
-        height: $0.height * 3
-      )
-    }
-    return SwiftUISnapshotLayout.device(
-      config: ViewImageConfig(
-        safeArea: base.safeArea,
-        size: size,
-        traits: base.traits
-      )
-    )
-  }()
-
-  /// Each look's name, traits and screen.
-  /// 2x scale keeps the images small but
-  /// readable.
-  private static let looks = [
-    ("light", traits(.light), phone),
-    ("dark", traits(.dark), phone),
-    (
-      "large",
-      traits(.light, large: true),
-      tall
-    ),
-  ]
-
-  /// sRGB color: in the app's window images
-  /// are otherwise wide color (Display P3),
-  /// which compares unreliably once saved.
-  /// The text size is always set: left
-  /// unset, sizes scaled with text (like
-  /// @ScaledMetric) drift from the standard
-  /// size.
-  private static func traits(
-    _ style: UIUserInterfaceStyle,
-    large: Bool = false
-  ) -> UITraitCollection {
-    UITraitCollection {
-      $0.userInterfaceStyle = style
-      $0.displayScale = 2
-      $0.displayGamut = .SRGB
-      $0.preferredContentSizeCategory = large
-        ? .accessibilityExtraLarge : .large
-    }
-  }
-
   func testEveryScreen() throws {
     for screen in ScreenID.allCases {
       let view = try page(screen)
-      for (look, traits, layout)
-        in Self.looks {
-        assertSnapshot(
-          of: view,
-          as: .image(
-            drawHierarchyInKeyWindow: true,
-            precision: 0.99,
-            perceptualPrecision: 0.98,
-            layout: layout,
-            traits: traits
-          ),
-          named: "\(screen.rawValue)-\(look)"
-        )
-      }
+      let name = screen.rawValue
+      Looks.check(view, named: name)
     }
   }
 

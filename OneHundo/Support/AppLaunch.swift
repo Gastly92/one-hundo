@@ -1,3 +1,4 @@
+import Base
 import Foundation
 import SwiftData
 
@@ -93,7 +94,7 @@ struct AppLaunch {
       $0 == shown
     }
     let seedFlag = args.contains(
-      "-seedSampleData"
+      "-seedData"
     )
     guard isUITesting, seedFlag || needsData,
       case .success(let container) = store

@@ -1,3 +1,4 @@
+import BaseTesting
 import XCTest
 
 /// The notification permission prompt, with

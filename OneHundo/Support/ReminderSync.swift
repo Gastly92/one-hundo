@@ -1,56 +1,6 @@
+import Base
 import Foundation
 import UserNotifications
-
-/// Where reminders go: the phone's
-/// notification center, or a stand-in in
-/// tests.
-@MainActor
-protocol Notifier: Sendable {
-  /// Asks to show notifications. iOS shows
-  /// its prompt only the first time.
-  func ask() async
-  /// Replaces every pending reminder.
-  func replace(
-    with requests: [UNNotificationRequest]
-  )
-}
-
-/// The phone's notification center.
-struct PhoneNotifier: Notifier {
-  func ask() async {
-    let hub = UNUserNotificationCenter
-      .current()
-    _ = try? await hub.requestAuthorization(
-      options: [.alert, .sound]
-    )
-  }
-
-  func replace(
-    with requests: [UNNotificationRequest]
-  ) {
-    let hub = UNUserNotificationCenter
-      .current()
-    hub
-      .removeAllPendingNotificationRequests()
-    for request in requests {
-      hub.add(request)
-    }
-  }
-}
-
-/// UI tests: no permission prompt, and
-/// nothing scheduled.
-struct SilentNotifier: Notifier {
-  func ask() {
-    // Never prompts.
-  }
-
-  func replace(
-    with _: [UNNotificationRequest]
-  ) {
-    // Schedules nothing.
-  }
-}
 
 extension Reminder {
   /// The notification, shown once at

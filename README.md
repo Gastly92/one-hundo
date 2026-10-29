@@ -9,17 +9,14 @@ what the app does and
 [docs/ROADMAP.md](docs/ROADMAP.md) for
 what's next.
 
-Every PR and push to `main` runs
-`.github/workflows/ios-build.yml` on a macOS
-runner. It runs the unit tests in
+Built on
+[ios-template](https://github.com/gastly92/ios-template),
+pinned in `.github/workflows/build.yml`:
+its shared CI runs the unit tests in
 `OneHundoTests/` and the UI tests in
-`OneHundoUITests/`; the `CI Gate` check shows
-whether a PR passed. It uploads:
-
-- `OneHundo-unsigned-ipa`: install on a phone
-  with a sideloading app (e.g. SideStore)
-- `OneHundo-simulator`: run in the browser on
-  Appetize.io
+`OneHundoUITests/` on every PR and push to
+`main`, and the `CI / Gate` check shows
+whether a PR passed. See CLAUDE.md.
 
 To install on a real iPhone, run the
 **TestFlight** workflow (Actions → TestFlight

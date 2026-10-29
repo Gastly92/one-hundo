@@ -1,3 +1,4 @@
+import Base
 import SwiftData
 import SwiftUI
 

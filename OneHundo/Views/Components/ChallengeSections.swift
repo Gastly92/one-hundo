@@ -1,3 +1,4 @@
+import Base
 import SwiftUI
 
 /// A custom challenge's name and unit, in

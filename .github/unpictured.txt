@@ -1,11 +1,11 @@
 # View lines no screen draws, checked by
-# .github/scripts/unpictured.sh. Each
-# ScreenID is opened on its own, so only
-# what a screen shows runs; lines here are
-# expected not to. A file name, then its
-# lines (indented, as trimmed text), with
-# a # comment saying why. Lines of only
-# brackets or quotes are skipped.
+# the template's scripts/unpictured.sh.
+# Each ScreenID is opened on its own, so
+# only what a screen shows runs; lines here
+# are expected not to. A file name, then
+# its lines (indented, as trimmed text),
+# with a # comment saying why. Lines of
+# only brackets or quotes are skipped.
 
 # Pushed on tap; the enroll
 # steps are screens of their own.
@@ -156,11 +156,6 @@ NewGoalView.swift
   onDone?()
   private func keepGoing() {
   try? modelContext.save()
-
-# Set only by snapshot tests,
-# which fix the day.
-Now.swift
-  set { self[NowKey.self] = newValue }
 
 # Taps on − and +, and typing.
 NumberEntry.swift

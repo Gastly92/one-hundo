@@ -11,7 +11,7 @@ options:
   usesTabs: false
 settings:
   base:
-    MARKETING_VERSION: "1.0.0"
+    MARKETING_VERSION: "1.0.1"
     CURRENT_PROJECT_VERSION: "1"
     # Swift 6: data races are compile errors
     # in every target, tests included.
@@ -20,24 +20,26 @@ settings:
     # Every compiler warning fails the build,
     # so none pile up unread.
     SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
-    # Translations live in
-    # OneHundo/Localizable.xcstrings (a
-    # String Catalog).
+    # Translations live in the String
+    # Catalog:
+    # OneHundo/Localizable.xcstrings
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
-# Test-only libraries.
-# Their versions live in
-# Packages/TestSupport/Package.swift, where
-# Dependabot can update them.
+# The template's shared code, at the version
+# this repo pins (.template/ is fetched by
+# CI and the session start hook).
 packages:
-  TestSupport:
-    path: Packages/TestSupport
+  Base:
+    path: .template/Packages/Base
 targets:
   OneHundo:
     type: application
     platform: iOS
     sources:
       - OneHundo
+    dependencies:
+      - package: Base
+        product: Base
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER:
@@ -53,6 +55,8 @@ targets:
           UIInterfaceOrientationPortrait
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption:
           NO
+        # Drawn by
+        # .github/scripts/app-icon.sh.
         ASSETCATALOG_COMPILER_APPICON_NAME:
           AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME:
@@ -66,7 +70,12 @@ targets:
       - OneHundoTests
     dependencies:
       - target: OneHundo
-      - package: TestSupport
+      - package: Base
+        product: Base
+      - package: Base
+        product: BaseTesting
+      - package: Base
+        product: BaseSnapshots
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER:
@@ -83,6 +92,8 @@ targets:
       - path: OneHundo/Support/ScreenID.swift
     dependencies:
       - target: OneHundo
+      - package: Base
+        product: BaseTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER:

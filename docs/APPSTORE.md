@@ -25,7 +25,8 @@ down (the shapes differ by 0.07%). Each is a
 caption on the icon's violet-to-blue
 gradient over the screen in a phone frame
 (black bezel, grey rim), with a tidy 9:41
-status bar (`Poster`).
+status bar (the template's
+`AppStoreShots`).
 They're drawn by `AppStoreTests` from a
 month of sample training (`Showcase`), in
 light mode (the last in dark), and saved

@@ -13,11 +13,12 @@ new feature (1.1.0), patch for fixes.
   `.entitlements` file through
   `project.yml`, and turn the capability
   on for the App ID in the developer
-  portal (owner, by hand). The TestFlight
-  workflow archives with
-  `CODE_SIGNING_ALLOWED=NO`, which leaves
-  entitlements out; sign the archive (or
-  make export add them) and check the
+  portal (owner, by hand). The template's
+  shared TestFlight workflow archives
+  with `CODE_SIGNING_ALLOWED=NO`, which
+  leaves entitlements out; sign the
+  archive (or make export add them) in a
+  new template version, and check the
   uploaded app with
   `codesign -d --entitlements`. CI's
   simulator builds can stay unsigned.
@@ -115,19 +116,23 @@ new feature (1.1.0), patch for fixes.
     first CI run shows it. Its tools
     differ, so check XcodeGen, SwiftLint
     and Periphery still install.
-  - PR 1 (next patch version): CI and
-    the TestFlight workflow on
-    `xcode-27`, simulator
-    names in `run-tests.sh` if they
-    changed, `CLAUDE.md`'s runner note,
-    re-record snapshots
-    (`record-snapshots` label), check
-    the portrait lock and wide layouts on
-    the Duo simulator's inner screen.
-  - PR 2: Duo-sized snapshots and App
-    Store screenshots (`AppStoreTests`),
-    and the upload steps in
-    `docs/APPSTORE.md`.
+  - Template first (a new
+    ios-template version): the shared CI
+    and TestFlight workflows on
+    `xcode-27`, simulator names in
+    `run-tests.sh` if they changed, and
+    RULES.md's runner note.
+  - PR 1 (next patch version): pin that
+    template version, re-record
+    snapshots (`record-snapshots`
+    label), check the portrait lock and
+    wide layouts on the Duo simulator's
+    inner screen.
+  - PR 2: Duo-sized App Store
+    screenshots (a Duo size in the
+    template's `AppStoreShots`, then
+    `AppStoreTests`), and the upload
+    steps in `docs/APPSTORE.md`.
 - **"Lower is better" challenges**, e.g.
   a faster mile time (shown as mm:ss) or
   less screen time. Targets step down,

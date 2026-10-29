@@ -1,25 +1,34 @@
 #!/bin/bash
-# Claude Code cloud sessions: install the
-# workflow and script checkers CI runs, so
-# they can run before pushing.
+# Claude Code cloud sessions: fetch the
+# template at the version this repo pins
+# into .template/ (git ignores it), then run
+# its setup: the checkers CI runs, the
+# SwiftLint image, and the shared rules.
+# The same file in every app.
 set -euo pipefail
 
 remote="${CLAUDE_CODE_REMOTE:-}"
-[ "$remote" = "true" ] || exit 0
+[ "$remote" = true ] || exit 0
+cd "$CLAUDE_PROJECT_DIR"
 
-root="$CLAUDE_PROJECT_DIR"
-venv="$HOME/.cache/onehundo-venv"
-if [ ! -x "$venv/bin/pip" ]; then
-  python3 -m venv "$venv"
+# The pin: `<owner/repo> <ref>` from the
+# shared CI call in build.yml. The template
+# calls its own copy (no pin): .template is
+# the repo itself.
+uses='s|.*uses: *\([^/]*/[^/]*\)'
+uses+='/\.github/workflows/ci\.yml@'
+uses+='\(.*\)|\1 \2|p'
+pin=$(sed -n "$uses" \
+  .github/workflows/build.yml)
+if [ -z "$pin" ]; then
+  ln -sfn . .template
+else
+  read -r repo ref <<<"$pin"
+  rm -rf .template
+  git init -q .template
+  git -C .template fetch -q --depth 1 \
+    "https://github.com/$repo" "$ref"
+  git -C .template checkout -q FETCH_HEAD
 fi
-"$venv/bin/pip" install -q \
-  --disable-pip-version-check \
-  -r "$root/.github/scripts/checkers.txt"
-echo "export PATH=\"$venv/bin:\$PATH\"" \
-  >> "$CLAUDE_ENV_FILE"
 
-# SwiftLint runs in Docker: start it and
-# fetch the image in the background so the
-# first lint is quick.
-lint="$root/.github/scripts/swiftlint.sh"
-(nohup "$lint" --prepare >/dev/null 2>&1 &)
+exec .template/scripts/session-start.sh

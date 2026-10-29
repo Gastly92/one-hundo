@@ -1,3 +1,4 @@
+import BaseTesting
 import XCTest
 
 final class ChallengeListTests: XCTestCase {
@@ -89,7 +90,7 @@ final class ChallengeListTests: XCTestCase {
     let item = app.menuItem(
       "Delete challenge",
       on: pullUps,
-      ifTapped: app.screen("Pull-ups")
+      ifTapped: app.pushed("Pull-ups")
     )
     let edit = app.button("Edit today")
     XCTAssertTrue(edit.exists)
@@ -127,7 +128,7 @@ final class ChallengeListTests: XCTestCase {
     app.menuItem(
       "Log attempt",
       on: pushUps,
-      ifTapped: app.screen("Push-ups")
+      ifTapped: app.pushed("Push-ups")
     ) { $0.tap() }
       .tap()
     let sheet = app.bar("Log attempt")
