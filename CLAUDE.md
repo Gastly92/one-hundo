@@ -12,11 +12,12 @@ finished record): `docs/HISTORY.md`.
 
 ## The template
 - Built on
-  [ios-template](https://github.com/gastly92/ios-template)
-  v1.0.0, pinned in the `uses:` lines of
+  [ios-template](https://github.com/gastly92/ios-template),
+  pinned in the `uses:` lines of
   `.github/workflows/build.yml`,
-  `testflight.yml` and `pages.yml` (keep
-  all three on the same version). The
+  `testflight.yml` and `pages.yml` (the
+  version lives only there; Dependabot
+  bumps all three in one PR). The
   template's RULES.md applies here; the
   session start hook fetches the template
   into `.template/` and prints it. Only
@@ -27,6 +28,13 @@ finished record): `docs/HISTORY.md`.
   from the template. To change them,
   change the template and pin the new
   version here.
+- New code goes in One Hundo by default,
+  even if it could be shared. Suggest a
+  template change only for a bug in the
+  shared code, or tooling every app would
+  want, and ask the owner first: it's a
+  template PR and tag before this repo
+  can use it.
 
 ## This app
 - Bundle ID `com.gastly92.onehundo`, shown
