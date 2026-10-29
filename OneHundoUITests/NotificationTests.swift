@@ -19,7 +19,12 @@ final class NotificationTests: XCTestCase {
       seeded: true,
       arguments: ["-notifications"]
     )
-    let allow = app.allowPrompt()
+    let springboard = App(
+      bundleIdentifier:
+        "com.apple.springboard"
+    )
+    let allow = springboard.buttons["Allow"]
+    XCTAssertTrue(allow.appears(within: 10))
     allow.tap()
     XCTAssertTrue(allow.disappears())
     let card = app.card("pushups")

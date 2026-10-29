@@ -165,13 +165,11 @@ if [ "$status" -ne 0 ]; then
 fi
 
 # Each test's result and errors, and any
-# step retried after a stall (see
-# `menuItem` and `allowPrompt` in
-# OneHundoUITests).
+# long-press retried after a stall (see
+# `menuItem` in OneHundoUITests).
 shown='Test Case .*(passed|failed)'
 shown+='|error:|\*\* TEST'
 shown+='|Long-press read as a tap'
-shown+='|Notification prompt unreadable'
 grep -E "($shown)" build/test.log || true
 
 echo "Tests ($shard):" \
