@@ -13,10 +13,6 @@ finished record): `docs/HISTORY.md`.
 - Keep it simple: few steps, few questions.
   Pick sensible defaults and say what you
   chose.
-- Explain anything they must do by hand as
-  short numbered steps for iPhone Safari. App
-  Store Connect's mobile layout can hide
-  buttons; Safari's Find on page helps.
 
 ## Building
 - This container is Linux: nothing
