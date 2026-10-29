@@ -117,6 +117,8 @@ export \
 # a shard needs no Xcode project.
 plan=$(find build/test/Build/Products \
   -name '*.xctestrun' | head -1)
+# For the notification logs below.
+since=$(date '+%Y-%m-%d %H:%M:%S')
 run() {
   rm -rf build/test.xcresult
   status=0
@@ -171,6 +173,26 @@ shown='Test Case .*(passed|failed)'
 shown+='|error:|\*\* TEST'
 shown+='|Long-press read as a tap'
 grep -E "($shown)" build/test.log || true
+
+# What the app (PhoneNotifier) and iOS's
+# notification service and SpringBoard
+# logged about it, to see why the
+# permission prompt did or didn't show.
+if [ "$shard" = main ]; then
+  app=com.gastly92.onehundo
+  daemon=usernotificationsd
+  logs="subsystem == '$app'"
+  logs+=" OR ((process == '$daemon'"
+  logs+=" OR process == 'SpringBoard')"
+  logs+=" AND composedMessage"
+  logs+=" CONTAINS '$app')"
+  echo "::group::Notification logs"
+  xcrun simctl spawn "$device" log show \
+    --start "$since" --style compact \
+    --info --debug \
+    --predicate "$logs" || true
+  echo "::endgroup::"
+fi
 
 echo "Tests ($shard):" \
   "$((SECONDS - start)) s" >> "$summary"
