@@ -3,6 +3,7 @@
 A daily tracker for fitness challenges like
 100 push-ups in one go, built entirely from a
 phone with Claude Code and GitHub Actions.
+[On the App Store](https://apps.apple.com/app/id6818800020).
 See [docs/PRODUCT.md](docs/PRODUCT.md) for
 what the app does and
 [docs/PLAN.md](docs/PLAN.md) for build

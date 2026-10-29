@@ -201,3 +201,25 @@ Notes for App Review:
 ```
 No account or sign-in. Tap "Start your first challenge", pick Push-ups, enter how many you can do, set a goal and tap Start. Tap the card to see its screen and log an attempt; long-press a card for a quick menu. Daily reminders are optional local notifications. The app collects no data.
 ```
+
+## First review (Guideline 2.1)
+
+App Review asked new developer accounts
+for more information before approving
+1.0: a screen recording on a physical
+device (starting from launch, showing
+the typical flow) and the answers below.
+They went in a reply in App Store
+Connect and in the App Review Notes
+field, so later reviewers see them.
+Approved in late October 2026. Keep
+them true as the app changes.
+
+```
+1. A screen recording demonstrating typical user flow is attached. This app does not require accounts or a log-in flow. Users can't generate content or interact with other users. This app is free and does not require payment to access any content.
+2. In this app, users start challenges, like push-ups and sit-ups challenges, and try to reach the ability to do 100 in a row. When users start a challenge, the app lets them configure a goal number, which is 100 by default. Then they pick a daily increment, like 1. So if they can do 5 in a row the first day, the app will encourage them to try 6 tomorrow. The app lets users pick when they get notified to try the challenge daily. The target audience of this app is anyone who wants to challenge themselves to be able to do many iterations of an exercise in a row, as well as general fitness users who want to track fitness goals. The out of box notes and health apps that come with an iPhone don't have a way to track a challenge daily over the course of a few months. Nor do they have a mechanism for viewing history and getting daily notifications to try out their challenge. The app solves this tracking problem, and provides additional value by allowing users to configure and track custom challenges as well.
+3. No log in credentials are required to use this app. When starting the app for the first time, an introductory welcome screen is displayed that provides instructions for getting started. From there, a user configures their first challenge through a simple input flow.
+4. This app doesn't utilize or depend on any external services, tools, or platforms.
+5. This app functions the same across all regions.
+6. This app doesn't operate in a highly regulated industry and does not include protected third party material.
+```
