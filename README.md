@@ -14,12 +14,7 @@ Every PR and push to `main` runs
 runner. It runs the unit tests in
 `OneHundoTests/` and the UI tests in
 `OneHundoUITests/`; the `CI Gate` check shows
-whether a PR passed. It uploads:
-
-- `OneHundo-unsigned-ipa`: install on a phone
-  with a sideloading app (e.g. SideStore)
-- `OneHundo-simulator`: run in the browser on
-  Appetize.io
+whether a PR passed.
 
 To install on a real iPhone, run the
 **TestFlight** workflow (Actions → TestFlight

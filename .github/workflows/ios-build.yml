@@ -34,22 +34,19 @@ jobs:
         steps.filter.outputs.code ==
         'true' }}
     steps:
+    # Anything but docs counts, so new code
+    # paths never need adding here.
     - uses: dorny/paths-filter@v4
       id: filter
       if: github.event_name == 'pull_request'
       with:
+        predicate-quantifier: every
         filters: |
           code:
-            - 'OneHundo/**'
-            - 'OneHundoTests/**'
-            - 'OneHundoUITests/**'
-            - 'project.yml'
-            - 'Packages/**'
-            - '.swiftlint.yml'
-            - '.github/swiftlint/**'
-            - '.github/scripts/**'
-            - '.github/workflows/**'
-            - '.github/unpictured.txt'
+            - '**'
+            - '!**/*.md'
+            - '!docs/**'
+            - '!site/**'
 
   # Docs, YAML and scripts fit in 45
   # characters too (Swift is SwiftLint's).
@@ -93,10 +90,11 @@ jobs:
           -r .github/scripts/checkers.txt
         echo "$venv/bin" >> "$GITHUB_PATH"
 
+    # Every shell script in the repo.
     - name: ShellCheck
       run: |
-        shellcheck .github/scripts/*.sh \
-          .claude/hooks/*.sh
+        git ls-files -z '*.sh' \
+          | xargs -0 -r shellcheck
 
     # Also runs ShellCheck on each `run:`
     # block.
@@ -386,8 +384,12 @@ jobs:
           | tail -n 20
 
   # Single pass/fail check for a PR. It
-  # always reports, passing when the build
-  # was skipped (docs-only PR) or succeeded.
+  # reports on every run that isn't
+  # cancelled, passing when the build was
+  # skipped (docs-only PR) or succeeded. A
+  # run a newer push cancelled skips it
+  # instead of failing (the newer run
+  # reports).
   gate:
     name: CI Gate
     needs:
@@ -401,7 +403,7 @@ jobs:
     - test
     - coverage
     - release
-    if: always()
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
     - name: Check results

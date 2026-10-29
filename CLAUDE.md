@@ -9,16 +9,6 @@ Code; there is no Mac. What the app does:
 features land. How 1.0 was built (a
 finished record): `docs/HISTORY.md`.
 
-## Working with the owner
-- Keep it simple: few steps, few questions.
-  Pick sensible defaults and say what you
-  chose.
-- Explain anything they must do by hand as
-  short numbered steps for iPhone Safari. App
-  Store Connect's mobile layout can hide
-  buttons; "Request Desktop Website" or
-  Safari's Find on page helps.
-
 ## Building
 - This container is Linux: nothing
   Swift/Xcode builds locally. CI is the
@@ -36,11 +26,10 @@ finished record): `docs/HISTORY.md`.
   how long building and each shard took.
   When adding a slow test class, check the
   shards stay balanced.
-  Docs-only PRs skip the macOS job. The `CI
-  Gate` job is the single pass/fail check for
-  a PR; keep its name stable, and add new
-  code paths to the `changes` filter. Test
-  steps live in
+  Docs-only PRs (`*.md`, `docs/`, `site/`)
+  skip the macOS jobs. The `CI Gate` job is
+  the single pass/fail check for a PR; keep
+  its name stable. Test steps live in
   `.github/scripts/run-tests.sh`.
 - Tests: `OneHundoTests/` (unit tests for
   logic in `OneHundo/Models/`) and
@@ -167,17 +156,8 @@ finished record): `docs/HISTORY.md`.
   using Swift's automatic initializer shows
   its private property defaults as untested;
   give it an explicit `init`.
-- No Thread Sanitizer: Swift 6 mode already
-  makes data races compile errors, and it
-  slowed every test by 25–30%. The
-  `unchecked_concurrency` lint rule bans
-  the ways around that check
-  (`@unchecked Sendable`,
-  `nonisolated(unsafe)`,
-  `@preconcurrency`); if one is ever needed,
-  add `-enableThreadSanitizer YES` back to
-  `run-tests.sh`. UI tests launch the app
-  with `App.start(seeded:)`; `-uiTesting`
+- UI tests launch the app with
+  `App.start(seeded:)`; `-uiTesting`
   turns off UIKit animations, so a
   long-press never lands on a screen still
   sliding in (it turns into a tap). No
@@ -220,16 +200,21 @@ finished record): `docs/HISTORY.md`.
   "today" from it, not `Date()`). Images live
   in `OneHundoTests/__Snapshots__/`. CI
   records missing ones and commits them to
-  the PR branch (pull before pushing again).
-  A bot push needs approval to merge, so
-  look at the images, then push the next
-  real change (or the owner approves).
-  Deleting images re-records them too.
+  the PR branch (pull before pushing again)
+  and starts CI on it. GitHub also holds a
+  duplicate run for the bot's push
+  ("Approve and run"; `action_required` in
+  `actions_list`): it needs no approval,
+  and its box goes away with the next
+  push. Look at the images, then push the
+  next real change. Deleting images
+  re-records them too.
   After an intended visual change, add the
   `record-snapshots` label to the PR to
   record all of them again; a failed
   comparison uploads `snapshot-diffs`.
-  Re-record after Xcode or iOS updates.
+  Re-record after Xcode, iOS or snapshot
+  library updates.
 - `AppStoreTests` draws the App Store
   screenshots the same way (large and
   medium iPhone sizes,
@@ -242,8 +227,8 @@ finished record): `docs/HISTORY.md`.
   feature changes.
 - CI's `Workflows & scripts` job runs
   actionlint on `.github/workflows/` and
-  ShellCheck on `.github/scripts/` and
-  `.claude/hooks/`. Versions are pinned in
+  ShellCheck on every `*.sh`. Versions are
+  pinned in
   `.github/scripts/checkers.txt`; the cloud
   session start hook
   (`.claude/hooks/session-start.sh`) installs
