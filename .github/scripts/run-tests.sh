@@ -19,7 +19,10 @@ set -euo pipefail
 
 mode="${1:?boot, build or test}"
 
-# The first available iPhone simulator.
+# The first available iPhone simulator,
+# not the Duo (foldable): snapshots are
+# drawn in the app's window, so its size
+# must not change between runs.
 pick() {
   local devices query
   devices=$(
@@ -29,6 +32,7 @@ pick() {
     | select(.key | contains("iOS"))
     | .value[]
     | select(.name | startswith("iPhone"))
+    | select(.name | contains("Duo") | not)
     ][0].udid // empty'
   device=$(jq -r "$query" <<<"$devices")
   if [ -z "$device" ]; then

@@ -14,8 +14,10 @@ finished record): `docs/HISTORY.md`.
   Swift/Xcode builds locally. CI is the
   compiler.
 - `.github/workflows/ios-build.yml` runs on
-  every PR and push to `main` (macOS runner,
-  `macos-26`). It generates the project and
+  every PR and push to `main` (macOS
+  runner `xcode-27`: macOS 27 with Xcode
+  27.1, which the iPhone Duo needs). It
+  generates the project and
   builds the tests once, then runs them in
   two shards on separate runners in
   parallel (`run-tests.sh`; one simulator

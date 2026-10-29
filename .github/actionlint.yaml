@@ -1,0 +1,6 @@
+# Runner labels newer than the pinned
+# actionlint (checkers.txt) knows. Drop
+# one once actionlint lists it.
+self-hosted-runner:
+  labels:
+  - xcode-27

@@ -115,19 +115,20 @@ new feature (1.1.0), patch for fixes.
     first CI run shows it. Its tools
     differ, so check XcodeGen, SwiftLint
     and Periphery still install.
-  - PR 1 (next patch version): CI and
+  - PR 1 (1.0.1, in progress): CI and
     the TestFlight workflow on
-    `xcode-27`, simulator
-    names in `run-tests.sh` if they
-    changed, `CLAUDE.md`'s runner note,
+    `xcode-27`, `run-tests.sh` skips the
+    Duo (tests keep a regular iPhone's
+    window), `CLAUDE.md`'s runner note,
     re-record snapshots
-    (`record-snapshots` label), check
-    the portrait lock and wide layouts on
-    the Duo simulator's inner screen.
+    (`record-snapshots` label).
   - PR 2: Duo-sized snapshots and App
     Store screenshots (`AppStoreTests`),
     and the upload steps in
-    `docs/APPSTORE.md`.
+    `docs/APPSTORE.md`. Its snapshots
+    are where the portrait lock and wide
+    layouts on the inner screen get
+    checked (no Mac to look by hand).
 - **"Lower is better" challenges**, e.g.
   a faster mile time (shown as mm:ss) or
   less screen time. Targets step down,
