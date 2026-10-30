@@ -90,6 +90,25 @@ new feature (1.1.0), patch for fixes.
   - Reminders are scheduled per device:
     reschedule them when synced
     challenges change.
+  - Existing users: on the first launch
+    with sync, the data already on the
+    phone should upload by itself (no
+    migration). Check it on a phone with
+    real 1.0 data before release.
+  - There's no prompt: iCloud is on for
+    the app by default, and turned off
+    in iOS Settings. Decide whether the
+    app also needs its own switch.
+  - A device still on the old version
+    doesn't sync until it updates; a
+    full iCloud pauses sync. Both keep
+    working on the phone alone.
+  - Testing: CI can't sync between
+    devices. Test by hand through
+    TestFlight on two devices, including
+    the duplicates case (a phone with
+    data, plus a device restored from
+    its backup).
   - Release: privacy page (data saved in
     the user's iCloud, removed in iOS
     Settings), recheck App Privacy (the
