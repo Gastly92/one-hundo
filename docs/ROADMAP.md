@@ -82,7 +82,6 @@ new feature (1.1.0), patch for fixes.
     Settings), recheck App Privacy (the
     private database isn't visible to the
     developer), version 1.1.0.
-- **Ads or monetization**.
 - **iPhone Duo (foldable) support**: apps
   fill its inner screen only when built
   with Xcode 27.1 or later (older builds,
