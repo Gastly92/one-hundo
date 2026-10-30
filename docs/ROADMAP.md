@@ -82,12 +82,6 @@ new feature (1.1.0), patch for fixes.
     Settings), recheck App Privacy (the
     private database isn't visible to the
     developer), version 1.1.0.
-- **"Lower is better" challenges**, e.g.
-  a faster mile time (shown as mm:ss) or
-  less screen time. Targets step down,
-  hitting one means at or below it, and
-  new goals, progress, the chart and the
-  celebration all read the other way.
 - **Ads or monetization**.
 - **iPhone Duo (foldable) support**: apps
   fill its inner screen only when built
