@@ -9,7 +9,7 @@ it from this list. Versions: minor for a
 new feature (1.1.0), patch for fixes.
 
 - **Signing for capabilities** (needed
-  first by Health and iCloud): add a
+  first by iCloud sync): add a
   `.entitlements` file through
   `project.yml`, and turn the capability
   on for the App ID in the developer
@@ -21,38 +21,6 @@ new feature (1.1.0), patch for fixes.
   uploaded app with
   `codesign -d --entitlements`. CI's
   simulator builds can stay unsigned.
-- **Apple Health**: save each logged day
-  to the Health app, opt in from Settings.
-  - Health has no type for push-ups or
-    squats: save a strength workout
-    (`HKWorkout`), with the count and
-    challenge in its metadata. Timed
-    challenges (plank) give it a real
-    duration; rep counts need a chosen
-    one, since attempts store no time.
-  - Write only: needs
-    `NSHealthUpdateUsageDescription`
-    (`NSHealthShareUsageDescription` only
-    if it ever reads) and the HealthKit
-    entitlement. Ask for access when the
-    user turns it on, not at launch.
-  - Editing or deleting an attempt should
-    change or delete its workout, so the
-    attempt keeps the workout's ID: a new
-    stored field, so a new schema version
-    and migration (`Schema.swift`), kept
-    CloudKit-safe (optional, no unique).
-  - Health calls go behind a small
-    protocol that tests fake, like the
-    notifications.
-  - App Review: Health use must be
-    visible in the app, and the privacy
-    page must say what's written. Health
-    data must never be stored in iCloud
-    (fine while it's write only).
-  - App Privacy answers likely unchanged
-    (nothing reaches the developer);
-    recheck.
 - **iCloud sync** (CloudKit), so
   challenges come back after a reinstall
   and appear on a new phone or iPad. The
