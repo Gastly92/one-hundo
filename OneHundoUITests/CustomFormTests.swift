@@ -33,7 +33,10 @@ final class CustomFormTests: XCTestCase {
 
     let name = app.field("customName")
     name.tap()
-    name.typeText("Plank")
+    // Return closes the keyboard: open, it
+    // lifts Start to mid-screen, where the
+    // swipes below would land on it.
+    name.typeText("Plank\n")
     // The icon is last: scroll to the end.
     let form = app.collectionViews.firstMatch
     form.swipeUp(velocity: .fast)
