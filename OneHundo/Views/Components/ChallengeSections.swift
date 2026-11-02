@@ -37,6 +37,9 @@ struct CustomSections: View {
 /// then its shape drawn in that color, with
 /// the result next to the header.
 struct IconSection: View {
+  /// The shapes row's ID, to scroll to.
+  static let shapes = "iconShapes"
+
   @Binding var draft: ChallengeDraft
 
   private var color: Color {
@@ -52,6 +55,7 @@ struct IconSection: View {
         marker: $draft.marker,
         color: color
       )
+      .id(Self.shapes)
     } header: {
       header
     } footer: {

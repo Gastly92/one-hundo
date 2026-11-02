@@ -30,6 +30,19 @@ struct CustomChallengeView: View {
   }
 
   var body: some View {
+    ScrollViewReader { proxy in
+      form.onAppear {
+        if atEnd {
+          proxy.scrollTo(
+            IconSection.shapes,
+            anchor: .center
+          )
+        }
+      }
+    }
+  }
+
+  private var form: some View {
     Form {
       CustomSections(draft: $draft)
       test
@@ -41,9 +54,6 @@ struct CustomChallengeView: View {
       IconSection(draft: $draft)
     }
     .scrollDismissesKeyboard(.interactively)
-    .defaultScrollAnchor(
-      atEnd ? .bottom : nil
-    )
     .safeAreaInset(edge: .bottom) {
       startBar
     }
