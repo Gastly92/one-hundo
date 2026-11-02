@@ -2,24 +2,28 @@ import SwiftData
 import SwiftUI
 
 /// Starting a custom challenge, on one form:
-/// name, unit, today's test, shape, color,
-/// goal, daily step and reminder.
+/// name, unit, today's test, goal, daily
+/// step, reminder and icon.
 struct CustomChallengeView: View {
   /// Called after the challenge is saved, to
   /// close the Add challenge sheet.
   let onStarted: (() -> Void)?
+  /// Opens scrolled to the end (the icon).
+  let atEnd: Bool
 
   @Environment(\.modelContext)
   private var modelContext
   @State private var draft: ChallengeDraft
 
-  /// `unit` starts the form on another unit
-  /// (UI tests).
+  /// `unit` starts the form on another unit,
+  /// `atEnd` scrolled down (screen states).
   init(
     unit: CountUnit = .reps,
+    atEnd: Bool = false,
     onStarted: (() -> Void)? = nil
   ) {
     self.onStarted = onStarted
+    self.atEnd = atEnd
     var start = ChallengeDraft()
     start.unit = unit
     _draft = State(initialValue: start)
@@ -29,14 +33,17 @@ struct CustomChallengeView: View {
     Form {
       CustomSections(draft: $draft)
       test
-      LookSections(draft: $draft)
       PlanSections(
         draft: $draft,
         goals: draft.quickGoals,
         note: draft.paceText
       )
+      IconSection(draft: $draft)
     }
     .scrollDismissesKeyboard(.interactively)
+    .defaultScrollAnchor(
+      atEnd ? .bottom : nil
+    )
     .safeAreaInset(edge: .bottom) {
       startBar
     }

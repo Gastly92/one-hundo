@@ -171,14 +171,17 @@ form:
   is always better.
 - **Test yourself**: the starting count
   (today's test, default 1).
-- **Shape**: circle, square, triangle,
-  diamond, star or hexagon (star by
-  default), drawn in the chosen color.
-- **Color**: color swatches for the card
-  (violet, the app's accent, by default).
 - Then the same fields as the enroll flow:
   goal (default 100, with quick buttons),
   daily step (default 1), and reminder.
+- **Icon**, last as it's optional: color
+  swatches (violet, the app's accent, by
+  default), then shapes drawn in that color
+  (circle, square, triangle, diamond, star
+  or hexagon; star by default). The picked
+  icon shows next to the header, and a note
+  says it marks the challenge in the list
+  and calendar.
 - **Start** button at the bottom, enabled
   once the name is filled in and the goal is
   above the starting count. Like the enroll
@@ -207,7 +210,8 @@ Opened from a card or from the calendar.
 - **Settings** (the gear in the top bar, a
   sheet with Cancel and Save): edit goal,
   daily increase, reminder, and for custom
-  challenges name, unit, shape and color.
+  challenges name, unit and icon (last,
+  as in the form).
   Under
   the goal, the pace ("At this pace you'd
   hit 150 in about 140 days"). A red

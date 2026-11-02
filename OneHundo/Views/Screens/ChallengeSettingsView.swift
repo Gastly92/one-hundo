@@ -3,9 +3,8 @@ import SwiftUI
 
 /// A challenge's settings, from the gear on
 /// its screen: goal, daily step and
-/// reminder (plus name, unit, shape and
-/// color for custom ones), and Delete
-/// challenge.
+/// reminder (plus name, unit and icon for
+/// custom ones), and Delete challenge.
 struct ChallengeSettingsView: View {
   let challenge: Challenge
   /// Called once Delete is confirmed. The
@@ -69,13 +68,15 @@ struct ChallengeSettingsView: View {
     Form {
       if challenge.isCustom {
         CustomSections(draft: $draft)
-        LookSections(draft: $draft)
       }
       PlanSections(
         draft: $draft,
         goals: ChallengeDraft.goals,
         note: goalNote
       )
+      if challenge.isCustom {
+        IconSection(draft: $draft)
+      }
       Section {
         Button(
           "Delete challenge",
