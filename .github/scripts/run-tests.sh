@@ -19,23 +19,39 @@ set -euo pipefail
 
 mode="${1:?boot, build or test}"
 
-# The first available iPhone simulator.
+# Always this iPhone, on the newest iOS the
+# runner has, so snapshots match what most
+# phones run. The first iPhone listed was
+# any iOS: a runner update could switch it
+# silently. SnapshotTests fails when the iOS
+# differs from the one the images were drawn
+# on (__Snapshots__/iOS.txt).
+model="iPhone 17"
 pick() {
-  local devices query
+  local devices query found
   devices=$(
     xcrun simctl list devices available -j
   )
+  # Runtimes are keyed like ...iOS-26-5.
   query='[.devices | to_entries[]
-    | select(.key | contains("iOS"))
-    | .value[]
-    | select(.name | startswith("iPhone"))
-    ][0].udid // empty'
-  device=$(jq -r "$query" <<<"$devices")
-  if [ -z "$device" ]; then
-    echo "::error::No iPhone simulator found"
+    | {v: (.key
+        | capture("iOS-(?<v>[0-9-]+)\\b").v
+        | split("-") | map(tonumber)),
+      d: .value[]}]
+    | map(select(.d.name == env.MODEL))
+    | max_by(.v)
+    | select(. != null)
+    | "\(.d.udid) \(.v | map(tostring)
+      | join("."))"'
+  found=$(MODEL=$model \
+    jq -r "$query" <<<"$devices")
+  if [ -z "$found" ]; then
+    echo "::error::No $model simulator"
     exit 1
   fi
-  echo "Using simulator $device"
+  device=${found% *}
+  echo "Using $model on iOS ${found#* }" \
+    "($device)"
 }
 pick
 

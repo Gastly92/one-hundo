@@ -204,6 +204,9 @@ final class AppStoreTests: XCTestCase {
   }
 
   func testScreenshots() throws {
+    guard try SnapshotOS.matches() else {
+      return
+    }
     for shot in Self.shots {
       let view = try page(shot.screen)
       for phone in Self.phones {

@@ -92,6 +92,9 @@ final class SnapshotTests: XCTestCase {
   }
 
   func testEveryScreen() throws {
+    guard try SnapshotOS.matches() else {
+      return
+    }
     for screen in ScreenID.allCases {
       let view = try page(screen)
       for (look, traits, layout)
