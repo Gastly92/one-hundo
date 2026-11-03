@@ -224,16 +224,22 @@ finished record): `docs/HISTORY.md`.
   0.99 a changed date format passed.
   Re-record after Xcode, iOS or snapshot
   library updates.
-  CI tests on iPhone 17 with the newest
-  iOS the runner has (`run-tests.sh`
-  logs which). The images' iOS is saved
-  in `__Snapshots__/iOS.txt`; on another
-  iOS the snapshot tests fail and say to
-  add `record-snapshots` (iOS draws system
-  controls, e.g. the date picker's
-  format). Tests run in US English and
-  UTC whatever the simulator's settings
-  (`project.yml` scheme, `App.start`).
+  CI tests on iPhone 17 with the iOS the
+  images were drawn on, saved in
+  `__Snapshots__/iOS.txt` (`run-tests.sh`
+  logs which), so every run matches even
+  while GitHub rolls out a new runner
+  image. `record-snapshots` draws on the
+  newest iOS and saves it. A newer iOS on
+  the runner only warns on the PR: move
+  to it by adding `record-snapshots`. If
+  the saved iOS is gone, the snapshot
+  tests fail and say to record again (iOS
+  draws system controls, e.g. the date
+  picker's format). Tests run in US
+  English and UTC whatever the
+  simulator's settings (`project.yml`
+  scheme, `App.start`).
 - `AppStoreTests` draws the App Store
   screenshots the same way (large and
   medium iPhone sizes,

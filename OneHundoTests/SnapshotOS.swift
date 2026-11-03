@@ -8,10 +8,11 @@ import XCTest
 /// how a date picker shows its date), so on
 /// another iOS the images can differ for
 /// reasons the app didn't cause.
-/// CI uses the newest iOS the runner has
-/// (`run-tests.sh`); when that changes, the
-/// snapshot tests fail and say to record the
-/// images again.
+/// CI draws on this iOS (`run-tests.sh`),
+/// or on the newest one when recording
+/// every image; on any other iOS (the saved
+/// one gone from the runners), the snapshot
+/// tests fail and say to record again.
 enum SnapshotOS {
   private static let file = URL(
     filePath: #filePath
