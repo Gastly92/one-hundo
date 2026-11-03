@@ -106,7 +106,7 @@ final class AppStoreTests: XCTestCase {
     let look = traits(style)
     return .image(
       drawHierarchyInKeyWindow: true,
-      precision: 0.99999,
+      precision: 0.9999,
       perceptualPrecision: 0.98,
       layout: .device(
         config: ViewImageConfig(

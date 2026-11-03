@@ -216,10 +216,11 @@ finished record): `docs/HISTORY.md`.
   `record-snapshots` label to the PR to
   record all of them again; a failed
   comparison uploads `snapshot-diffs`.
-  `precision: 0.99999` lets only ~13
-  pixels of a phone image differ (runners
-  now and then draw 2–3 a shade off; 1
-  was flaky). Don't loosen it further: at
+  `precision: 0.9999` lets only 0.01% of
+  pixels differ (~130 on a phone image):
+  runners now and then draw up to ~36 a
+  shade off, so 1 and 0.99999 were
+  flaky. Don't loosen it further: at
   0.99 a changed date format passed.
   Re-record after Xcode, iOS or snapshot
   library updates.
