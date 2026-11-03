@@ -8,23 +8,24 @@ struct CustomChallengeView: View {
   /// Called after the challenge is saved, to
   /// close the Add challenge sheet.
   let onStarted: (() -> Void)?
-  /// Opens scrolled to the Icon section.
-  let atIcon: Bool
+  /// The ID of a row to open scrolled to,
+  /// e.g. `IconSection.shapes`.
+  let scrollTo: String?
 
   @Environment(\.modelContext)
   private var modelContext
   @State private var draft: ChallengeDraft
 
   /// `unit` starts the form on another unit,
-  /// `atIcon` scrolled to the icon (screen
+  /// `scrollTo` scrolled to that row (screen
   /// states).
   init(
     unit: CountUnit = .reps,
-    atIcon: Bool = false,
+    scrollTo: String? = nil,
     onStarted: (() -> Void)? = nil
   ) {
     self.onStarted = onStarted
-    self.atIcon = atIcon
+    self.scrollTo = scrollTo
     var start = ChallengeDraft()
     start.unit = unit
     _draft = State(initialValue: start)
@@ -33,10 +34,9 @@ struct CustomChallengeView: View {
   var body: some View {
     ScrollViewReader { proxy in
       form.onAppear {
-        if atIcon {
+        if let scrollTo {
           proxy.scrollTo(
-            IconSection.shapes,
-            anchor: .center
+            scrollTo, anchor: .center
           )
         }
       }

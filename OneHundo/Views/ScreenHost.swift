@@ -110,7 +110,9 @@ struct ScreenHost: View {
     case .customIcon:
       // Scrolled to the Icon section.
       NavigationStack {
-        CustomChallengeView(atIcon: true)
+        CustomChallengeView(
+          scrollTo: IconSection.shapes
+        )
       }
     case .tabs:
       // The app as it opens, with its tab
