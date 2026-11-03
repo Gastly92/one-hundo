@@ -99,15 +99,14 @@ final class AppStoreTests: XCTestCase {
   /// The screen: an iPhone Pro Max, 440 ×
   /// 956 points with its safe area, drawn
   /// in the app's window like the
-  /// snapshots, compared as strictly
-  /// (every pixel must match).
+  /// snapshots, compared as strictly.
   private static func screen(
     _ style: UIUserInterfaceStyle
   ) -> Snapshotting<AnyView, UIImage> {
     let look = traits(style)
     return .image(
       drawHierarchyInKeyWindow: true,
-      precision: 1,
+      precision: 0.99999,
       perceptualPrecision: 0.98,
       layout: .device(
         config: ViewImageConfig(

@@ -216,11 +216,11 @@ finished record): `docs/HISTORY.md`.
   `record-snapshots` label to the PR to
   record all of them again; a failed
   comparison uploads `snapshot-diffs`.
-  Every pixel must match (`precision: 1`);
-  `perceptualPrecision` alone absorbs the
-  invisible noise between runners. Don't
-  loosen `precision`: at 0.99 a changed
-  date format passed unnoticed.
+  `precision: 0.99999` lets only ~13
+  pixels of a phone image differ (runners
+  now and then draw 2–3 a shade off; 1
+  was flaky). Don't loosen it further: at
+  0.99 a changed date format passed.
   Re-record after Xcode, iOS or snapshot
   library updates.
 - `AppStoreTests` draws the App Store

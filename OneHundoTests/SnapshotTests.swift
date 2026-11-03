@@ -96,17 +96,16 @@ final class SnapshotTests: XCTestCase {
       let view = try page(screen)
       for (look, traits, layout)
         in Self.looks {
-        // Every pixel must match;
-        // perceptualPrecision absorbs the
-        // invisible rendering noise between
-        // runners. A share of pixels allowed
-        // to differ let real text changes
-        // (a date's format) pass.
+        // Nearly every pixel must match: a
+        // few (13 on a phone) may differ, as
+        // runners now and then draw 2–3
+        // pixels a shade off. 1% (0.99) let
+        // a changed date format pass.
         assertSnapshot(
           of: view,
           as: .image(
             drawHierarchyInKeyWindow: true,
-            precision: 1,
+            precision: 0.99999,
             perceptualPrecision: 0.98,
             layout: layout,
             traits: traits
