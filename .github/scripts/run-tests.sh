@@ -28,9 +28,14 @@ mode="${1:?boot, build or test}"
 # Recording every image (RECORD_ALL) uses
 # the newest iOS, which the snapshot tests
 # then save. A newer iOS than the saved one
-# only adds a warning; without the saved
-# one, the newest is used and the snapshot
-# tests fail, saying to record again.
+# only adds a warning (and, on main, opens
+# a PR to move to it: ios-update.sh);
+# without the saved one, the newest is used
+# and the snapshot tests fail, saying to
+# record again. Recording for an iOS newer
+# than the runner has (that PR, on a runner
+# the new image hasn't reached) fails
+# rather than record on an older iOS.
 model="iPhone 17"
 saved=OneHundoTests/__Snapshots__/iOS.txt
 pick() {
@@ -68,6 +73,19 @@ pick() {
   newest=$(tail -n 1 <<<"$list")
   want=$(cat "$saved" 2>/dev/null || true)
   chosen=$newest
+  if [ "${RECORD_ALL:-false}" = true ] \
+    && [ -n "$want" ] \
+    && [ "$want" != "${newest% *}" ] \
+    && [ "$(printf '%s\n' "$want" \
+      "${newest% *}" | sort -V \
+      | tail -n 1)" = "$want" ]; then
+    echo "::error::iOS $want isn't on" \
+      "this runner yet (newest: iOS" \
+      "${newest% *}); GitHub is still" \
+      "rolling out the image that has it." \
+      "Re-run the failed jobs later."
+    exit 1
+  fi
   if [ "${RECORD_ALL:-false}" != true ] \
     && [ -n "$want" ]; then
     # As text: as numbers, 26.10 == 26.1.
@@ -85,6 +103,13 @@ pick() {
         "the snapshots use iOS $want. To" \
         "move to it, add the" \
         "record-snapshots label."
+      # For the build job's output (the
+      # main branch opens a PR for it).
+      if [ "$mode" = build ] \
+        && [ -n "${GITHUB_OUTPUT:-}" ]; then
+        echo "newer=${newest% *}" \
+          >> "$GITHUB_OUTPUT"
+      fi
     fi
   fi
   device=${chosen#* }

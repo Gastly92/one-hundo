@@ -1,0 +1,3 @@
+# For snapshot-pairs.py (snapshot-review.yml),
+# pinned.
+pillow==11.3.0
