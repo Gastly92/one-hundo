@@ -77,7 +77,8 @@ def share(
 def fit(image: Image.Image) -> Image.Image:
     if image.height <= HEIGHT:
         return image
-    width = image.width * HEIGHT // image.height
+    scale = HEIGHT / image.height
+    width = round(image.width * scale)
     return image.resize((width, HEIGHT))
 
 
@@ -99,7 +100,8 @@ def pair(
     )
     if left:
         out.paste(left, (0, 0))
-        out.paste(right, (left.width + GAP, 0))
+        right_x = left.width + GAP
+        out.paste(right, (right_x, 0))
     else:
         out.paste(right, (0, 0))
     return out
@@ -125,9 +127,10 @@ def main() -> None:
         name = Path(path).stem
         shown = ""
         if n <= SHOWN:
-            shown = f"pairs/{n:02}-{name}.png"
+            file = f"{n:02}-{name}.png"
+            shown = "pairs/" + file
             pair(old, new).save(out / shown)
-        note = " (new)" if old is None else ""
+        note = " (new)" * (old is None)
         lines.append(
             f"| `{name}`{note} "
             f"| {part:.2%} | {shown} |"

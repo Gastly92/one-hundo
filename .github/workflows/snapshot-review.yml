@@ -18,11 +18,16 @@ permissions:
   pull-requests: write
   id-token: write
 
+env:
+  OUT: build/review
+  SCRIPTS: .github/scripts
+
 jobs:
   review:
     name: Snapshot review
     if: >-
-      github.event_name == 'workflow_dispatch'
+      github.event_name
+      == 'workflow_dispatch'
       || startsWith(
       github.event.head_commit.message,
       'Record snapshot images')
@@ -30,10 +35,10 @@ jobs:
     timeout-minutes: 30
     env:
       HAS_CLAUDE: >-
-        ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN
-        != '' || secrets.ANTHROPIC_API_KEY
-        != '' }}
-      OUT: build/review
+        ${{
+        secrets.CLAUDE_CODE_OAUTH_TOKEN != ''
+        || secrets.ANTHROPIC_API_KEY != ''
+        }}
     steps:
     - uses: actions/checkout@v7
       with:
@@ -48,17 +53,19 @@ jobs:
     - name: Before and after pictures
       run: |
         pip install -q -r \
-          .github/scripts/review-requirements.txt
-        python .github/scripts/snapshot-pairs.py \
+          "$SCRIPTS/review-requirements.txt"
+        python "$SCRIPTS/snapshot-pairs.py" \
           "$OUT"
 
     - name: Review
+      id: review
       if: env.HAS_CLAUDE == 'true'
       continue-on-error: true
       uses: anthropics/claude-code-action@v1
       with:
         claude_code_oauth_token: >-
-          ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ${{
+          secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         anthropic_api_key: >-
           ${{ secrets.ANTHROPIC_API_KEY }}
         github_token: ${{ github.token }}
@@ -67,54 +74,52 @@ jobs:
           --allowedTools Read,Write
         prompt: |
           This repo's CI just drew every
-          snapshot image of an iOS app again
-          on a newer iOS simulator. Review the
-          changes for the owner, who decides
-          whether to merge.
+          snapshot image of an iOS app
+          again on a newer iOS simulator.
+          Review the changes for the
+          owner, who decides whether to
+          merge.
 
           build/review/list.md lists every
-          changed image with the share of its
-          pixels that changed. The most
-          changed are drawn in
-          build/review/pairs/: before on the
-          left, after on the right. Read
-          list.md and look at every pair.
+          changed image with the share of
+          its pixels that changed. The
+          most changed are drawn in
+          build/review/pairs/: before on
+          the left, after on the right.
+          Read list.md and look at every
+          pair.
 
           Write build/review/review.md in
-          GitHub Markdown, under 300 words:
-          - one line: does this look safe to
-            merge?
-          - what iOS changed, grouped (e.g.
-            "the date picker shows 1/15/26
-            instead of Jan 15, 2026: log
-            screens"), naming the images;
-          - anything that looks like a bug in
-            the app rather than a new system
-            look (clipped, overlapping or
-            missing text, wrong colors, a
-            control gone), naming the images;
-          - which changed images you didn't
-            see (listed but not drawn).
+          GitHub Markdown, under 300
+          words:
+          - one line: does this look safe
+            to merge?
+          - what iOS changed, grouped
+            (e.g. "the date picker shows
+            1/15/26 instead of Jan 15,
+            2026: log screens"), naming
+            the images;
+          - anything that looks like a
+            bug in the app rather than a
+            new system look (clipped,
+            overlapping or missing text,
+            wrong colors, a control
+            gone), naming the images;
+          - which changed images you
+            didn't see (listed but not
+            drawn).
           Change no other file.
 
     - name: Comment on the PR
       env:
         GH_TOKEN: ${{ github.token }}
         BRANCH: ${{ github.ref_name }}
-      run: |
-        {
-          if [ -f "$OUT/review.md" ]; then
-            echo "## Claude's review"
-            echo
-            cat "$OUT/review.md"
-          else
-            echo "No Claude review (no secret," \
-              "or it failed: see the run)."
-          fi
-          echo
-          echo "## Changed images"
-          echo
-          cat "$OUT/list.md"
-        } > "$OUT/comment.md"
-        gh pr comment "$BRANCH" \
-          --body-file "$OUT/comment.md"
+        RAN: ${{ steps.review.outcome }}
+        RUN: >-
+          ${{ github.server_url }}/${{
+          github.repository
+          }}/actions/runs/${{
+          github.run_id }}
+      run: >-
+        "$SCRIPTS/snapshot-comment.sh"
+        "$OUT"
