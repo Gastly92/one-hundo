@@ -236,10 +236,12 @@ finished record): `docs/HISTORY.md`.
   the saved iOS is gone, the snapshot
   tests fail and say to record again (iOS
   draws system controls, e.g. the date
-  picker's format). Tests run in US
-  English and UTC whatever the
-  simulator's settings (`project.yml`
-  scheme, `App.start`).
+  picker's format). On `main`, a newer
+  iOS opens a PR moving to it, assigned
+  to the owner (`docs/IOS-UPDATES.md`).
+  Tests run in US English and UTC
+  whatever the simulator's settings
+  (`project.yml` scheme, `App.start`).
 - `AppStoreTests` draws the App Store
   screenshots the same way (large and
   medium iPhone sizes,
