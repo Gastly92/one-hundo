@@ -8,8 +8,7 @@
 # record-snapshots label (CI draws every
 # image again on the new iOS) and is
 # assigned to the repo's owner, whom
-# GitHub then emails. Once CI commits the
-# images, snapshot-review.yml compares them.
+# GitHub then emails.
 # One PR per iOS version, ever: closing it
 # without merging declines that version.
 # Needs NEWER, OWNER and GH_TOKEN (the
@@ -42,8 +41,6 @@ than the iOS the snapshots were drawn on.
 This PR moves them to it: the
 \`record-snapshots\` label draws every image
 again on iOS $NEWER and commits them here.
-A summary of what changed follows as a
-comment (\`snapshot-review.yml\`).
 
 Look at the changed images, then merge to
 move every PR to iOS $NEWER, or close this

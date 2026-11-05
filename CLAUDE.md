@@ -238,8 +238,7 @@ finished record): `docs/HISTORY.md`.
   draws system controls, e.g. the date
   picker's format). On `main`, a newer
   iOS opens a PR moving to it, assigned
-  to the owner, with Claude's review of
-  the images (`docs/IOS-UPDATES.md`).
+  to the owner (`docs/IOS-UPDATES.md`).
   Tests run in US English and UTC
   whatever the simulator's settings
   (`project.yml` scheme, `App.start`).

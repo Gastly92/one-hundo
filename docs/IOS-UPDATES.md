@@ -23,46 +23,15 @@ review, never on its own.
    fails with "isn't on this runner yet".
    Re-run the failed jobs a day or two
    later.
-3. `snapshot-review.yml` pairs each changed
-   image with its old version, most
-   changed first, and Claude comments on
-   the PR: what iOS changed, and anything
-   that looks like a bug in the app.
-4. You look at the images and merge (every
-   PR then draws on the new iOS) or close
-   the PR to stay on the current one.
+3. You look at the changed images (Files
+   changed) and merge (every PR then
+   draws on the new iOS), or close the PR
+   to stay on the current one.
 
 ## Setup (once)
-- **Snapshot app:** it needs **Pull
-  requests: Read and write** to open the
-  PR (docs/SNAPSHOT-APP.md). Without it,
-  the `iOS update` job's "Open the PR"
-  step fails (without failing the run),
-  and the build log only warns.
-- **Claude:** add one repo secret (Settings
-  → Secrets and variables → Actions → New
-  repository secret):
-  - `ANTHROPIC_API_KEY` (recommended): a
-    key from console.anthropic.com (API
-    Keys), billed per use to that
-    account. It never expires; it only
-    stops if revoked or out of credit
-    (set auto-reload or a balance, and a
-    spending limit). Works from a
-    phone's browser.
-  - or `CLAUDE_CODE_OAUTH_TOKEN`: from
-    `claude setup-token`, billed to a
-    Claude subscription. Expires after
-    about a year.
-
-  Either can be replaced later to bill
-  another account. Without a secret, the
-  comment only lists the changed images.
-  If the secret stops working, the
-  comment on the update PR (which GitHub
-  emails you about) starts with a
-  warning that Claude's review failed,
-  linking the run: fix the secret, then
-  run Snapshot review on that branch
-  again (Actions → Snapshot review → Run
-  workflow).
+The snapshot app needs **Pull requests:
+Read and write** to open the PR
+(docs/SNAPSHOT-APP.md). Without it, the
+`iOS update` job's "Open the PR" step
+fails (without failing the run), and the
+build log only warns.
