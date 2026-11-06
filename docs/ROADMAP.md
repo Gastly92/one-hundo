@@ -8,24 +8,37 @@ ships, update `docs/PRODUCT.md` and remove
 it from this list. Versions: minor for a
 new feature (1.1.0), patch for fixes.
 
-- **Signing for capabilities** (needed
-  first by iCloud sync): add a
-  `.entitlements` file through
-  `project.yml`, and turn the capability
-  on for the App ID in the developer
-  portal (owner, by hand). The TestFlight
-  workflow archives with
-  `CODE_SIGNING_ALLOWED=NO`, which leaves
-  entitlements out; sign the archive (or
-  make export add them) and check the
-  uploaded app with
-  `codesign -d --entitlements`. CI's
-  simulator builds can stay unsigned.
 - **iCloud sync** (CloudKit), so
   challenges come back after a reinstall
   and appear on a new phone or iPad. The
   models are already CloudKit-ready
   (PR 1).
+  - PRs (in progress):
+    - [ ] PR 1: signing. iCloud
+      (CloudKit) and push entitlements,
+      the remote-notification background
+      mode, and the TestFlight workflow
+      signs them in (it archived with
+      `CODE_SIGNING_ALLOWED=NO`, which
+      left them out). Its `upload` input
+      off builds and checks the signed
+      app with `codesign` without
+      uploading. Owner first: the
+      container and App ID steps in
+      `docs/TESTFLIGHT.md` (step 9).
+      Sync stays off.
+    - [ ] PR 2: merge duplicates (rules
+      in `Models/`, unit tested), run on
+      launch. Harmless without sync.
+    - [ ] PR 3: sync on (1.1.0).
+      `.automatic`, merge and reschedule
+      reminders after remote changes.
+      Test by hand on two devices through
+      TestFlight.
+    - [ ] PR 4: release. CloudKit schema
+      to Production, privacy page, App
+      Privacy, `docs/PRODUCT.md`, the
+      check with real 1.0 data.
   - Needs the iCloud entitlement with a
     CloudKit container
     (`iCloud.com.gastly92.onehundo`), and

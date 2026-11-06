@@ -8,6 +8,14 @@ name: TestFlight
 # repo.
 on:
   workflow_dispatch:
+    inputs:
+      upload:
+        description: >-
+          Upload to TestFlight (off: only
+          build, sign and check the
+          entitlements)
+        type: boolean
+        default: true
 
 # Write access to push the build's tag.
 permissions:
@@ -32,6 +40,12 @@ jobs:
         ${{ secrets.ASC_ISSUER_ID }}
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       ARCHIVE: build/OneHundo.xcarchive
+      APP: Products/Applications/OneHundo.app
+      ENTITLEMENTS:
+        OneHundo/OneHundo.entitlements
+      DESTINATION: >-
+        ${{ inputs.upload
+        && 'upload' || 'export' }}
     steps:
     - name: Check secrets
       run: |
@@ -70,10 +84,11 @@ jobs:
         echo "KEY_PATH=$KEY_PATH" \
           >> "$GITHUB_ENV"
 
-    # Archive unsigned; the export step below
-    # signs with Apple's cloud-managed
-    # distribution certificate and uploads to
-    # App Store Connect.
+    # Archive unsigned (no certificate on the
+    # runner); the export step below signs
+    # with Apple's cloud-managed distribution
+    # certificate and uploads to App Store
+    # Connect.
     - name: Archive
       run: |
         set -o pipefail
@@ -89,6 +104,21 @@ jobs:
           CODE_SIGNING_ALLOWED=NO \
           | tail -n 30
 
+    # An unsigned archive carries no
+    # entitlements, and export signs with the
+    # ones it finds in the app. Sign it
+    # ad hoc with them first.
+    - name: Add entitlements
+      run: |
+        app="$ARCHIVE/$APP"
+        codesign --force --sign - \
+          --entitlements "$ENTITLEMENTS" \
+          --generate-entitlement-der \
+          "$app"
+        codesign -d --entitlements - \
+          --xml "$app" \
+          | plutil -p -
+
     - name: Sign & upload
       run: |
         options=build/ExportOptions.plist
@@ -100,7 +130,7 @@ jobs:
           <key>method</key>
           <string>app-store-connect</string>
           <key>destination</key>
-          <string>upload</string>
+          <string>$DESTINATION</string>
           <key>signingStyle</key>
           <string>automatic</string>
           <key>teamID</key>
@@ -124,10 +154,33 @@ jobs:
           -authenticationKeyIssuerID \
           "$ASC_ISSUER_ID"
 
+    # Without upload, the signed app is kept
+    # here: check it got every entitlement.
+    - name: Check entitlements
+      if: ${{ !inputs.upload }}
+      run: |
+        unzip -q build/export/*.ipa \
+          -d build/ipa
+        app=build/ipa/Payload/OneHundo.app
+        codesign -d --entitlements - \
+          --xml "$app" > build/signed.plist
+        plutil -p build/signed.plist
+        container=iCloud.com.gastly92.onehundo
+        for key in aps-environment \
+          "$container" CloudKit; do
+          grep -q "$key" build/signed.plist \
+            || { echo "::error::Signed" \
+              "app lacks $key"; exit 1; }
+        done
+        echo "Signed app has iCloud and" \
+          "push entitlements." \
+          >> "$GITHUB_STEP_SUMMARY"
+
     # Marks the uploaded commit, e.g.
     # v0.4.6-build12, so it's clear what each
     # TestFlight build contains.
     - name: Tag the build
+      if: ${{ inputs.upload }}
       run: |
         pattern='s/.*"([^"]+)".*/\1/'
         key=MARKETING_VERSION
@@ -142,6 +195,7 @@ jobs:
         echo "TAG=$tag" >> "$GITHUB_ENV"
 
     - name: Summary
+      if: ${{ inputs.upload }}
       run: |
         num="$GITHUB_RUN_NUMBER"
         {

@@ -358,11 +358,17 @@ finished record): `docs/HISTORY.md`.
   iPhone only, portrait.
   `ITSAppUsesNonExemptEncryption` is NO; keep
   it that way unless adding real encryption.
-- Adding capabilities that need entitlements
-  (HealthKit, push, iCloud, App Groups) needs
-  extra signing setup: add a `.entitlements`
-  file via `project.yml`, and the capability
-  may need enabling on the App ID in the
-  developer portal. Expect to adjust the
-  TestFlight workflow, which currently
-  archives with `CODE_SIGNING_ALLOWED=NO`.
+- Entitlements live in
+  `OneHundo/OneHundo.entitlements` (iCloud
+  with CloudKit, push); Info.plist keys
+  `INFOPLIST_KEY_*` can't set go in
+  `OneHundo/Info.plist`. CI builds
+  unsigned. The TestFlight workflow
+  archives unsigned, signs the
+  entitlements in ad hoc, and export
+  re-signs with them. A new capability
+  goes in that file and on the App ID in
+  the developer portal (owner, by hand;
+  `docs/TESTFLIGHT.md`). Check it with
+  the workflow's `upload` input off,
+  which checks the signed app.

@@ -43,6 +43,17 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER:
           com.gastly92.onehundo
         GENERATE_INFOPLIST_FILE: YES
+        # Keys INFOPLIST_KEY_* can't set (the
+        # background mode iCloud sync uses to
+        # hear about changes); Xcode merges
+        # them with the generated ones.
+        INFOPLIST_FILE: OneHundo/Info.plist
+        # iCloud (CloudKit) and push. CI
+        # builds unsigned and leaves them
+        # out; the TestFlight workflow signs
+        # them in.
+        CODE_SIGN_ENTITLEMENTS:
+          OneHundo/OneHundo.entitlements
         INFOPLIST_KEY_CFBundleDisplayName:
           One Hundo
         INFOPLIST_KEY_UILaunchScreen_Generation:
