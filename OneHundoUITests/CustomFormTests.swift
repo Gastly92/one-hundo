@@ -21,8 +21,7 @@ final class CustomFormTests: XCTestCase {
     XCTAssertTrue(start.appears())
     XCTAssertFalse(start.isEnabled)
 
-    // Top of the form first: tapping a
-    // shape or color scrolls down, and rows
+    // Top of the form first: rows
     // scrolled away can't be found.
     app.button("Seconds").tap()
     // Test yourself: 1 + 4 = 5 seconds.
@@ -34,9 +33,16 @@ final class CustomFormTests: XCTestCase {
 
     let name = app.field("customName")
     name.tap()
-    name.typeText("Plank")
-    app.button("shape.hexagon").tap()
+    // Return closes the keyboard: open, it
+    // lifts Start to mid-screen, where the
+    // swipes below would land on it.
+    name.typeText("Plank\n")
+    // The icon is last: scroll to the end.
+    let form = app.collectionViews.firstMatch
+    form.swipeUp(velocity: .fast)
+    form.swipeUp(velocity: .fast)
     app.button("color.blue").tap()
+    app.button("shape.hexagon").tap()
     XCTAssertTrue(start.isEnabled)
     start.tap()
 

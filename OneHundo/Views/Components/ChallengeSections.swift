@@ -33,28 +33,49 @@ struct CustomSections: View {
   }
 }
 
-/// A custom challenge's shape and color,
-/// which tell it apart from the others.
-struct LookSections: View {
+/// A custom challenge's icon: its color,
+/// then its shape drawn in that color, with
+/// the result next to the header.
+struct IconSection: View {
+  /// The shapes row's ID, to scroll to.
+  static let shapes = "iconShapes"
+
   @Binding var draft: ChallengeDraft
 
+  private var color: Color {
+    Color(paletteName: draft.colorName)
+  }
+
   var body: some View {
-    Section {
-      MarkerPicker(
-        marker: $draft.marker,
-        color: Color(
-          paletteName: draft.colorName
-        )
-      )
-    } header: {
-      SectionTitle("Shape")
-    }
     Section {
       ColorSwatches(
         colorName: $draft.colorName
       )
+      MarkerPicker(
+        marker: $draft.marker,
+        color: color
+      )
+      .id(Self.shapes)
     } header: {
-      SectionTitle("Color")
+      header
+    } footer: {
+      Text("""
+        Marks this challenge in your list \
+        and calendar.
+        """)
+    }
+  }
+
+  /// "Icon", then the picked icon. The
+  /// pickers above say what's picked, so
+  /// VoiceOver skips the preview.
+  private var header: some View {
+    HStack {
+      SectionTitle("Icon")
+      Image(systemName: draft.marker.symbol)
+        .font(.headline)
+        .foregroundStyle(color)
+        .accessibilityHidden(true)
     }
   }
 }

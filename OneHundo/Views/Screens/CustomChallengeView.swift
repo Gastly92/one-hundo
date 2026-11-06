@@ -2,39 +2,57 @@ import SwiftData
 import SwiftUI
 
 /// Starting a custom challenge, on one form:
-/// name, unit, today's test, shape, color,
-/// goal, daily step and reminder.
+/// name, unit, today's test, goal, daily
+/// step, reminder and icon.
 struct CustomChallengeView: View {
   /// Called after the challenge is saved, to
   /// close the Add challenge sheet.
   let onStarted: (() -> Void)?
+  /// The ID of a row to open scrolled to,
+  /// e.g. `IconSection.shapes`.
+  let scrollTo: String?
 
   @Environment(\.modelContext)
   private var modelContext
   @State private var draft: ChallengeDraft
 
-  /// `unit` starts the form on another unit
-  /// (UI tests).
+  /// `unit` starts the form on another unit,
+  /// `scrollTo` scrolled to that row (screen
+  /// states).
   init(
     unit: CountUnit = .reps,
+    scrollTo: String? = nil,
     onStarted: (() -> Void)? = nil
   ) {
     self.onStarted = onStarted
+    self.scrollTo = scrollTo
     var start = ChallengeDraft()
     start.unit = unit
     _draft = State(initialValue: start)
   }
 
   var body: some View {
+    ScrollViewReader { proxy in
+      form.onAppear {
+        if let scrollTo {
+          proxy.scrollTo(
+            scrollTo, anchor: .center
+          )
+        }
+      }
+    }
+  }
+
+  private var form: some View {
     Form {
       CustomSections(draft: $draft)
       test
-      LookSections(draft: $draft)
       PlanSections(
         draft: $draft,
         goals: draft.quickGoals,
         note: draft.paceText
       )
+      IconSection(draft: $draft)
     }
     .scrollDismissesKeyboard(.interactively)
     .safeAreaInset(edge: .bottom) {

@@ -107,6 +107,13 @@ struct ScreenHost: View {
       NavigationStack {
         CustomChallengeView(unit: .seconds)
       }
+    case .customIcon:
+      // Scrolled to the Icon section.
+      NavigationStack {
+        CustomChallengeView(
+          scrollTo: IconSection.shapes
+        )
+      }
     case .tabs:
       // The app as it opens, with its tab
       // bar.
