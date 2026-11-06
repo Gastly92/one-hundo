@@ -270,8 +270,8 @@ success haptic, then two choices:
 - A month calendar you can swipe between
   months (or use the arrows), up to the
   current month; days with logged attempts
-  show a marker (one per challenge, its
-  shape in its color, up to 3). A month
+  show a marker (one per challenge: its
+  icon, up to 3). A month
   with nothing logged says so, and what
   the markers mean. Away from the current
   month, Today jumps back to it.

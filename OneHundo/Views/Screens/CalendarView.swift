@@ -121,7 +121,7 @@ struct CalendarView: View {
   private var hint: some View {
     Text("""
       Nothing logged this month. Each day \
-      you log shows your challenges' shapes.
+      you log shows your challenges' icons.
       """)
       .font(.footnote)
       .foregroundStyle(.secondary)
