@@ -95,9 +95,12 @@ final class StoreTests: XCTestCase {
       try old.mainContext.save()
     }
 
-    let context = try AppStore.open(
+    // Kept: a context outlives its store
+    // only by crashing.
+    let store = try AppStore.open(
       ModelConfiguration(url: url)
-    ).mainContext
+    )
+    let context = store.mainContext
     let challenges = try context.fetch(
       FetchDescriptor<Challenge>()
     )
