@@ -107,7 +107,8 @@ jobs:
     # An unsigned archive carries no
     # entitlements, and export signs with the
     # ones it finds in the app. Sign it
-    # ad hoc with them first.
+    # ad hoc with them first, and check it
+    # got them (uploads too).
     - name: Add entitlements
       run: |
         app="$ARCHIVE/$APP"
@@ -115,9 +116,8 @@ jobs:
           --entitlements "$ENTITLEMENTS" \
           --generate-entitlement-der \
           "$app"
-        codesign -d --entitlements - \
-          --xml "$app" \
-          | plutil -p -
+        .github/scripts/entitlements.sh \
+          "$app"
 
     - name: Sign & upload
       run: |
@@ -161,17 +161,8 @@ jobs:
       run: |
         unzip -q build/export/*.ipa \
           -d build/ipa
-        app=build/ipa/Payload/OneHundo.app
-        codesign -d --entitlements - \
-          --xml "$app" > build/signed.plist
-        plutil -p build/signed.plist
-        container=iCloud.com.gastly92.onehundo
-        for key in aps-environment \
-          "$container" CloudKit; do
-          grep -q "$key" build/signed.plist \
-            || { echo "::error::Signed" \
-              "app lacks $key"; exit 1; }
-        done
+        .github/scripts/entitlements.sh \
+          build/ipa/Payload/OneHundo.app
         echo "Signed app has iCloud and" \
           "push entitlements." \
           >> "$GITHUB_STEP_SUMMARY"
