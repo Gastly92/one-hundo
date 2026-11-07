@@ -62,17 +62,115 @@ final class StoreTests: XCTestCase {
     )
   }
 
-  /// The plan starts at 1.0, with nothing
-  /// to migrate yet.
-  func testPlanStartsAtVersion1() {
+  /// Migrating 1.0 data tags every record
+  /// with its own `copyID` (`Duplicates`).
+  func testVersion1DataGetsTags() throws {
+    defer { removeStore() }
+    try autoreleasepool {
+      let old = try ModelContainer(
+        for: Schema(
+          versionedSchema: SchemaV1.self
+        ),
+        configurations: ModelConfiguration(
+          url: url
+        )
+      )
+      for name in ["Push-ups", "Squats"] {
+        let challenge = SchemaV1.Challenge(
+          name: name,
+          colorName: "violet",
+          startingCount: 5,
+          in: utc
+        )
+        old.mainContext.insert(challenge)
+        challenge.attempts = [1, 2].map {
+          SchemaV1.Attempt(
+            date: day($0),
+            count: 6,
+            target: 6,
+            in: utc
+          )
+        }
+      }
+      try old.mainContext.save()
+    }
+
+    // Kept: a context outlives its store
+    // only by crashing.
+    let store = try AppStore.open(
+      ModelConfiguration(url: url)
+    )
+    let context = store.mainContext
+    let challenges = try context.fetch(
+      FetchDescriptor<Challenge>()
+    )
+    let attempts = try context.fetch(
+      FetchDescriptor<Attempt>()
+    )
+    let tags =
+      challenges.compactMap(\.copyID)
+      + attempts.compactMap(\.copyID)
+    XCTAssertEqual(tags.count, 6)
+    XCTAssertEqual(Set(tags).count, 6)
+  }
+
+  /// Opening the store merges copies (here
+  /// two of one challenge).
+  func testOpeningMergesCopies() throws {
+    defer { removeStore() }
+    try autoreleasepool {
+      let store = try ModelContainer(
+        for: Schema(
+          versionedSchema: SchemaV2.self
+        ),
+        configurations: ModelConfiguration(
+          url: url
+        )
+      )
+      let first = Challenge(
+        name: "Push-ups",
+        colorName: "violet",
+        startingCount: 5,
+        in: utc
+      )
+      let second = Challenge(
+        name: "Push-ups",
+        colorName: "violet",
+        startingCount: 5,
+        in: utc
+      )
+      second.id = first.id
+      store.mainContext.insert(first)
+      store.mainContext.insert(second)
+      try store.mainContext.save()
+    }
+
+    let store = try AppStore.open(
+      ModelConfiguration(url: url)
+    )
+    let all = FetchDescriptor<Challenge>()
+    let count = try store.mainContext
+      .fetchCount(all)
+    XCTAssertEqual(count, 1)
+  }
+
+  /// 1.0's schema, then 1.1's with tags,
+  /// one step between them.
+  func testPlanVersions() {
     XCTAssertEqual(
       SchemaV1.versionIdentifier,
       Schema.Version(1, 0, 0)
     )
     XCTAssertEqual(
-      Migrations.schemas.count, 1
+      SchemaV2.versionIdentifier,
+      Schema.Version(2, 0, 0)
     )
-    XCTAssertTrue(Migrations.stages.isEmpty)
+    XCTAssertEqual(
+      Migrations.schemas.count, 2
+    )
+    XCTAssertEqual(
+      Migrations.stages.count, 1
+    )
   }
 
   /// The store and SQLite's side files.
