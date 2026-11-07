@@ -38,7 +38,10 @@ new feature (1.1.0), patch for fixes.
       to each record for that: the lowest
       is kept. Migrating tags 1.0 data,
       on each device before it syncs, so
-      copies never share one.
+      copies never share one. It also
+      adds `loggedAt` to attempts, so a
+      day's later log or edit wins (1.0
+      data falls back to `date`).
     - [ ] PR 3: sync on (1.1.0).
       `.automatic`, merge and reschedule
       reminders after remote changes.
@@ -77,7 +80,7 @@ new feature (1.1.0), patch for fixes.
     same challenge twice (same `id`).
     Merge on launch and after sync, with
     unit tests for the rules. A same-day
-    pair keeps the later log's count; a
+    pair keeps the later-logged count; a
     challenge's copies keep one copy's
     settings (no edit times to compare).
   - Reminders are scheduled per device:

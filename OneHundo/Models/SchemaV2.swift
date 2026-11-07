@@ -5,8 +5,9 @@ import SwiftData
 /// models plus a `copyID` on each record,
 /// so merging the duplicates iCloud sync
 /// can bring keeps the same copy on every
-/// device (`Duplicates`). Frozen once
-/// released.
+/// device, and when each attempt was
+/// logged, so the later log wins
+/// (`Duplicates`). Frozen once released.
 enum SchemaV2: VersionedSchema {
   static var versionIdentifier:
     Schema.Version {
@@ -142,14 +143,21 @@ extension SchemaV2 {
     /// This copy's own tag (see
     /// `Duplicates`). Never changed.
     var copyID: UUID?
+    /// When it was last logged or edited,
+    /// so merging two devices' logs of a
+    /// day keeps the later one. None in
+    /// 1.0 data.
+    var loggedAt: Date?
 
     init(
       date: Date,
       count: Int,
       target: Int,
-      in cal: Calendar = .current
+      in cal: Calendar = .current,
+      at now: Date = .now
     ) {
       copyID = UUID()
+      loggedAt = now
       self.date = date
       day = cal.day(of: date)
       self.count = count

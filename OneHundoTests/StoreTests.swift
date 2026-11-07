@@ -63,7 +63,8 @@ final class StoreTests: XCTestCase {
   }
 
   /// Migrating 1.0 data tags every record
-  /// with its own `copyID` (`Duplicates`).
+  /// with its own `copyID` (`Duplicates`),
+  /// and leaves `loggedAt` empty.
   func testVersion1DataGetsTags() throws {
     defer { removeStore() }
     try autoreleasepool {
@@ -112,6 +113,12 @@ final class StoreTests: XCTestCase {
       + attempts.compactMap(\.copyID)
     XCTAssertEqual(tags.count, 6)
     XCTAssertEqual(Set(tags).count, 6)
+    // No log time to make up: merging
+    // falls back to each attempt's date.
+    let untimed = attempts.allSatisfy {
+      $0.loggedAt == nil
+    }
+    XCTAssertTrue(untimed)
   }
 
   /// Opening the store merges copies (here

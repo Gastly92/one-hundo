@@ -67,8 +67,8 @@ enum Duplicates {
 
   /// One attempt a day for each of
   /// `challenges`. The kept copy takes the
-  /// latest log's count (as logging a day
-  /// again would), and the rest go.
+  /// last-logged copy's count (as logging
+  /// a day again would), and the rest go.
   private static func mergeDays(
     of challenges: [Challenge],
     in context: ModelContext
@@ -97,6 +97,7 @@ enum Duplicates {
     keep.count = last.count
     keep.date = last.date
     keep.target = last.target
+    keep.loggedAt = last.loggedAt
     let extra = copies.filter {
       $0 !== keep
     }
@@ -109,14 +110,21 @@ enum Duplicates {
     }
   }
 
-  /// Logged earlier, or the same moment
-  /// with a lower count.
+  /// Logged earlier (by `loggedAt`, or
+  /// for 1.0 data the moment it's for), or
+  /// at the same moment with a lower count.
   private static func isEarlier(
     _ first: Attempt,
     _ second: Attempt
   ) -> Bool {
-    (first.date, first.count)
-      < (second.date, second.count)
+    (logged(first), first.count)
+      < (logged(second), second.count)
+  }
+
+  private static func logged(
+    _ attempt: Attempt
+  ) -> Date {
+    attempt.loggedAt ?? attempt.date
   }
 
   /// The copy to keep: the lowest `copyID`.

@@ -35,10 +35,40 @@ final class DuplicatesTests: XCTestCase {
     )
   }
 
-  /// Two attempts on one day become one:
-  /// the lowest tag's, with the later log's
-  /// count.
-  func testSameDayKeepsLaterLog() throws {
+  /// Your phone logs 20 at 8 pm; at 9 pm
+  /// the iPad edits the day to 25 (an edit
+  /// is stored at noon). The edit wins:
+  /// it was logged later.
+  func testLaterEditWins() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    add(
+      20,
+      day: 2,
+      to: pushUps,
+      hour: 20,
+      loggedAt: day(2, hour: 20)
+    )
+    add(
+      25,
+      day: 2,
+      to: pushUps,
+      loggedAt: day(2, hour: 21)
+    )
+
+    try Duplicates.merge(in: store.context)
+
+    let left = pushUps.allAttempts
+    XCTAssertEqual(left.map(\.count), [25])
+    XCTAssertEqual(
+      left.first?.loggedAt, day(2, hour: 21)
+    )
+  }
+
+  /// Two 1.0 attempts on one day (no log
+  /// time) become one: the lowest tag's,
+  /// with the later moment's count.
+  func testOldDataKeepsLaterMoment() throws {
     let store = try TestStore()
     let pushUps = store.pushUps()
     let morning = add(
@@ -144,6 +174,32 @@ final class DuplicatesTests: XCTestCase {
     )
   }
 
+  /// Logging stamps the time, and logging
+  /// the day again moves it.
+  func testLoggingStampsTime() throws {
+    let store = try TestStore()
+    let pushUps = store.pushUps()
+    let first = pushUps.logAttempt(
+      count: 6,
+      on: day(2),
+      in: utc,
+      at: day(2, hour: 20)
+    )
+    XCTAssertEqual(
+      first.loggedAt, day(2, hour: 20)
+    )
+    let again = pushUps.logAttempt(
+      count: 7,
+      on: day(2),
+      in: utc,
+      at: day(3, hour: 9)
+    )
+    XCTAssertIdentical(again, first)
+    XCTAssertEqual(
+      first.loggedAt, day(3, hour: 9)
+    )
+  }
+
   /// A new copy of `challenge` (same `id`,
   /// its own tag), as another device's
   /// upload would bring.
@@ -164,7 +220,8 @@ final class DuplicatesTests: XCTestCase {
     _ count: Int,
     day number: Int,
     to challenge: Challenge,
-    hour: Int = 12
+    hour: Int = 12,
+    loggedAt: Date? = nil
   ) -> Attempt {
     let attempt = Attempt(
       date: day(number, hour: hour),
@@ -172,6 +229,7 @@ final class DuplicatesTests: XCTestCase {
       target: count,
       in: utc
     )
+    attempt.loggedAt = loggedAt
     challenge.modelContext?.insert(attempt)
     challenge.attempts =
       challenge.allAttempts + [attempt]
