@@ -93,3 +93,27 @@ Files.
 
 Each later build: just repeat step 8.1. Build
 numbers go up automatically.
+
+## 9. Turn on iCloud for the app
+Needed once for iCloud sync, before the
+first TestFlight run that signs in iCloud
+(else signing fails).
+1. Open
+   developer.apple.com/account/resources/identifiers.
+2. Tap **+** → **iCloud Containers** →
+   Continue. Description: `One Hundo`.
+   Identifier:
+   `iCloud.com.gastly92.onehundo`. Tap
+   Continue → **Register**.
+3. Back in the list (filter: **App
+   IDs**), open `com.gastly92.onehundo`.
+4. Tick **iCloud**, choose **Include
+   CloudKit support**, then tap **Edit**
+   (or **Configure**) next to it, tick
+   the container from step 2 and
+   Continue.
+5. Tick **Push Notifications** (iCloud
+   uses it to send changes; no
+   certificate needed).
+6. Tap **Save** → **Confirm**. Signing
+   picks up the new profile by itself.
