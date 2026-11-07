@@ -14,7 +14,7 @@ new feature (1.1.0), patch for fixes.
   models are already CloudKit-ready
   (PR 1).
   - PRs (in progress):
-    - [ ] PR 1: signing. iCloud
+    - [x] PR 1: signing. iCloud
       (CloudKit) and push entitlements,
       the remote-notification background
       mode, and the TestFlight workflow
