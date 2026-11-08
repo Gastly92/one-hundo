@@ -63,9 +63,21 @@ deployed from Cloudflare's dashboard:
 3. **Continue** → **Register**.
 
 ## 4. Build and install it
-Coming next (PR 5): an ad hoc build for
-Development and a page to install it from
-in Safari.
+1. Claude runs the **Schema build**
+   workflow (`schema-build.yml`). It
+   builds ad hoc for Development with the
+   schema upload compiled in, checks the
+   signed app uses Development, and
+   publishes it as the `schema-build`
+   release. A device registered after the
+   last run needs a new run.
+2. In Safari open the device ID page's
+   `/install` (e.g.
+   `onehundo-udid.<name>.workers.dev/install`)
+   and tap **Install**. It replaces the
+   TestFlight app and keeps your data.
+   That build doesn't sync your data: it
+   only uploads the schema samples.
 
 ## 5. Run it once
 Open the app on Wi-Fi, signed in to
@@ -87,6 +99,6 @@ iCloud, and keep it open for a minute.
    record types are there.
 
 ## 7. Back to normal builds
-Install a normal TestFlight build (the
-next one from `main`) over the ad hoc
-one. Sync now works.
+In TestFlight, install the latest build
+again over the ad hoc one (or a new one
+from `main`). Sync now works.

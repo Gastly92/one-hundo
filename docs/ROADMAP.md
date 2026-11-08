@@ -58,7 +58,7 @@ new feature (1.1.0), patch for fixes.
       with 1.0 data (the V1 → V2
       migration with CloudKit on is only
       checked there).
-    - [ ] PR 4: the CloudKit schema,
+    - [x] PR 4: the CloudKit schema,
       part 1. No Mac to make it, and
       TestFlight always signs for
       Production (tried), so a one-off ad
@@ -70,9 +70,10 @@ new feature (1.1.0), patch for fixes.
     - [ ] PR 5: the schema, part 2. An ad
       hoc build for Development that runs
       `initializeCloudKitSchema` (built
-      with `CLOUDKIT_SCHEMA`; the code is
-      in PR #101's first commit), and a
-      page to install it in Safari. The
+      with `CLOUDKIT_SCHEMA`;
+      `schema-build.yml`), and the
+      Worker's `/install` page serving it
+      from the `schema-build` release. The
       owner deploys the schema.
     - [ ] PR 6: release. Privacy page,
       App Privacy, the hand checks on two

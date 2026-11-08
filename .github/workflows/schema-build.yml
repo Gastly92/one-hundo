@@ -1,0 +1,171 @@
+name: Schema build
+
+# Run from the GitHub app: Actions → Schema
+# build → Run workflow. A one-off ad hoc
+# build for the owner's registered iPhone,
+# signed for iCloud's Development
+# environment, that makes the CloudKit
+# schema (docs/CLOUDKIT.md). TestFlight
+# can't: it always signs for Production.
+# It's published as the `schema-build`
+# release, which the device ID page serves
+# to install (tools/udid, /install).
+on:
+  workflow_dispatch:
+
+# Write access for the release.
+permissions:
+  contents: write
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+# Steps sit at the same indent as `steps:`
+# (valid YAML), so lines fit in 45.
+jobs:
+  build:
+    name: Build ad hoc for Development
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      APPLE_TEAM_ID:
+        ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID:
+        ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      ARCHIVE: build/OneHundo.xcarchive
+      APP: Products/Applications/OneHundo.app
+      ENTITLEMENTS: build/schema.entitlements
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install XcodeGen
+      run: brew install xcodegen
+
+    - name: Generate Xcode project
+      run: xcodegen generate
+
+    - name: Write API key
+      run: |
+        dir="$RUNNER_TEMP/keys"
+        mkdir -p "$dir"
+        KEY_PATH="$dir/AuthKey_$ASC_KEY_ID.p8"
+        printf '%s\n' "$ASC_KEY_P8" \
+          > "$KEY_PATH"
+        echo "KEY_PATH=$KEY_PATH" \
+          >> "$GITHUB_ENV"
+
+    # Unsigned, with the schema upload
+    # compiled in (CloudKitSchema.swift).
+    - name: Archive
+      env:
+        CONDITIONS: >-
+          $(inherited) CLOUDKIT_SCHEMA
+      run: |
+        set -o pipefail
+        num="$GITHUB_RUN_NUMBER"
+        flags="SWIFT_ACTIVE_COMPILATION_CONDITIONS=$CONDITIONS"
+        xcodebuild archive \
+          -project OneHundo.xcodeproj \
+          -scheme OneHundo \
+          -configuration Release \
+          -destination generic/platform=iOS \
+          -archivePath "$ARCHIVE" \
+          DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+          CURRENT_PROJECT_VERSION="$num" \
+          CODE_SIGNING_ALLOWED=NO \
+          "$flags" \
+          | tail -n 30
+
+    # Export signs with the entitlements it
+    # finds in the app (see testflight.yml),
+    # here asking for Development.
+    - name: Add entitlements
+      run: |
+        cp OneHundo/OneHundo.entitlements \
+          "$ENTITLEMENTS"
+        key=com.apple.developer.icloud-container-environment
+        /usr/libexec/PlistBuddy -c \
+          "Add :$key string Development" \
+          "$ENTITLEMENTS"
+        app="$ARCHIVE/$APP"
+        codesign --force --sign - \
+          --entitlements "$ENTITLEMENTS" \
+          --generate-entitlement-der \
+          "$app"
+        .github/scripts/entitlements.sh \
+          "$app" Development
+
+    # Ad hoc ("Release Testing"): installs
+    # on registered devices only, and may
+    # use Development.
+    - name: Sign
+      run: |
+        options=build/ExportOptions.plist
+        cat > "$options" <<PLIST
+        <?xml version="1.0"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+          <key>method</key>
+          <string>release-testing</string>
+          <key>destination</key>
+          <string>export</string>
+          <key>signingStyle</key>
+          <string>automatic</string>
+          <key>teamID</key>
+          <string>$APPLE_TEAM_ID</string>
+          <key>iCloudContainerEnvironment</key>
+          <string>Development</string>
+          <key>thinning</key>
+          <string>&lt;none&gt;</string>
+        </dict>
+        </plist>
+        PLIST
+        xcodebuild -exportArchive \
+          -archivePath "$ARCHIVE" \
+          -exportOptionsPlist "$options" \
+          -exportPath build/export \
+          -allowProvisioningUpdates \
+          -authenticationKeyPath \
+          "$KEY_PATH" \
+          -authenticationKeyID \
+          "$ASC_KEY_ID" \
+          -authenticationKeyIssuerID \
+          "$ASC_ISSUER_ID"
+
+    - name: Check entitlements
+      run: |
+        unzip -q build/export/*.ipa \
+          -d build/ipa
+        .github/scripts/entitlements.sh \
+          build/ipa/Payload/OneHundo.app \
+          Development
+
+    # Replaces the last one. The ipa installs
+    # only on registered devices.
+    - name: Publish
+      run: |
+        tag=schema-build
+        gh release delete "$tag" --yes \
+          --cleanup-tag || true
+        cp build/export/*.ipa \
+          build/OneHundo.ipa
+        gh release create "$tag" \
+          build/OneHundo.ipa \
+          --prerelease \
+          --target "$GITHUB_SHA" \
+          --title "Schema build" \
+          --notes "See docs/CLOUDKIT.md."
+        {
+          echo "Published the schema build."
+          echo "Install it from the" \
+            "device ID page's /install."
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Remove API key
+      if: always()
+      run: rm -rf "$RUNNER_TEMP/keys"

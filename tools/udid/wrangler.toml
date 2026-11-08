@@ -1,8 +1,14 @@
-# A one-off page that shows an iPhone's
-# device ID (UDID), to register it for an
-# ad hoc build (docs/CLOUDKIT.md). Deployed
+# One-off pages for the CloudKit schema
+# (docs/CLOUDKIT.md): one shows an iPhone's
+# device ID (UDID) to register it, and
+# /install installs the ad hoc build. Deployed
 # by Cloudflare's GitHub integration with
 # this folder as its root directory.
 name = "onehundo-udid"
 main = "index.js"
 compatibility_date = "2026-10-01"
+
+# Cloudflare's preview builds for pull
+# requests (`wrangler preview`) need this
+# block, even empty.
+[previews]
