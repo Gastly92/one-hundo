@@ -3,8 +3,6 @@
 # iCloud (CloudKit) or push entitlements, so
 # a TestFlight build never ships without
 # them (CI builds unsigned and can't tell).
-# With $2 (Development), also fails unless
-# it uses iCloud's Development environment.
 set -euo pipefail
 
 app="$1"
@@ -14,7 +12,7 @@ codesign -d --entitlements - --xml "$app" \
 plutil -p "$list"
 container=iCloud.com.gastly92.onehundo
 for key in aps-environment "$container" \
-  CloudKit ${2:+"<string>$2</string>"}; do
+  CloudKit; do
   grep -q "$key" "$list" || {
     echo "::error::$app lacks $key"
     exit 1

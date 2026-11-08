@@ -58,17 +58,27 @@ new feature (1.1.0), patch for fixes.
       with 1.0 data (the V1 → V2
       migration with CloudKit on is only
       checked there).
-    - [ ] PR 4: the CloudKit schema. No
-      Mac to make it, so a one-off
-      TestFlight build (`cloudkit:
-      Development`, built with
-      `CLOUDKIT_SCHEMA`) uploads every
-      field to Development; the owner
-      deploys it to Production
-      (`docs/CLOUDKIT.md`).
-    - [ ] PR 5: release. Privacy page,
-      App Privacy, the hand checks on
-      two devices and with real 1.0 data.
+    - [ ] PR 4: the CloudKit schema,
+      part 1. No Mac to make it, and
+      TestFlight always signs for
+      Production (tried), so a one-off ad
+      hoc build will. This PR: the plan
+      (`docs/CLOUDKIT.md`) and
+      `tools/udid`, a Cloudflare Worker
+      that shows the iPhone's device ID
+      to register it.
+    - [ ] PR 5: the schema, part 2. An ad
+      hoc build for Development that runs
+      `initializeCloudKitSchema` (built
+      with `CLOUDKIT_SCHEMA`; the code is
+      in PR #101's first commit), and a
+      page to install it in Safari. The
+      owner deploys the schema.
+    - [ ] PR 6: release. Privacy page,
+      App Privacy, the hand checks on two
+      devices. (1.0 data opening with
+      sync on: checked on the owner's
+      phone, build 28.)
   - Needs the iCloud entitlement with a
     CloudKit container
     (`iCloud.com.gastly92.onehundo`), and

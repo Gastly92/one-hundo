@@ -16,17 +16,6 @@ on:
           entitlements)
         type: boolean
         default: true
-      cloudkit:
-        description: >-
-          iCloud environment. Development
-          only for the one-off build that
-          creates the schema
-          (docs/CLOUDKIT.md)
-        type: choice
-        options:
-          - Production
-          - Development
-        default: Production
 
 # Write access to push the build's tag.
 permissions:
@@ -57,9 +46,6 @@ jobs:
       DESTINATION: >-
         ${{ inputs.upload
         && 'upload' || 'export' }}
-      SCHEMA: >-
-        ${{ inputs.cloudkit
-        == 'Development' }}
     steps:
     - name: Check secrets
       run: |
@@ -104,18 +90,9 @@ jobs:
     # certificate and uploads to App Store
     # Connect.
     - name: Archive
-      env:
-        CONDITIONS: >-
-          $(inherited) CLOUDKIT_SCHEMA
       run: |
         set -o pipefail
         num="$GITHUB_RUN_NUMBER"
-        # The schema build also uploads every
-        # field (CloudKitSchema.swift).
-        schema=()
-        if [ "$SCHEMA" = true ]; then
-          schema=("SWIFT_ACTIVE_COMPILATION_CONDITIONS=$CONDITIONS")
-        fi
         xcodebuild archive \
           -project OneHundo.xcodeproj \
           -scheme OneHundo \
@@ -125,7 +102,6 @@ jobs:
           DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
           CURRENT_PROJECT_VERSION="$num" \
           CODE_SIGNING_ALLOWED=NO \
-          "${schema[@]}" \
           | tail -n 30
 
     # An unsigned archive carries no
@@ -136,25 +112,12 @@ jobs:
     - name: Add entitlements
       run: |
         app="$ARCHIVE/$APP"
-        list="$ENTITLEMENTS"
-        want=""
-        # Export sets Production unless the
-        # app asks for Development.
-        if [ "$SCHEMA" = true ]; then
-          list=build/schema.entitlements
-          cp "$ENTITLEMENTS" "$list"
-          key=com.apple.developer.icloud-container-environment
-          /usr/libexec/PlistBuddy -c \
-            "Add :$key string Development" \
-            "$list"
-          want=Development
-        fi
         codesign --force --sign - \
-          --entitlements "$list" \
+          --entitlements "$ENTITLEMENTS" \
           --generate-entitlement-der \
           "$app"
         .github/scripts/entitlements.sh \
-          "$app" $want
+          "$app"
 
     - name: Sign & upload
       run: |
@@ -198,12 +161,8 @@ jobs:
       run: |
         unzip -q build/export/*.ipa \
           -d build/ipa
-        want=""
-        [ "$SCHEMA" = true ] \
-          && want=Development
         .github/scripts/entitlements.sh \
-          build/ipa/Payload/OneHundo.app \
-          $want
+          build/ipa/Payload/OneHundo.app
         echo "Signed app has iCloud and" \
           "push entitlements." \
           >> "$GITHUB_STEP_SUMMARY"
@@ -222,8 +181,6 @@ jobs:
         )
         num="$GITHUB_RUN_NUMBER"
         tag="v$version-build$num"
-        [ "$SCHEMA" = true ] \
-          && tag+="-schema"
         git tag "$tag"
         git push origin "$tag"
         echo "TAG=$tag" >> "$GITHUB_ENV"

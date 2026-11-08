@@ -379,7 +379,8 @@ finished record): `docs/HISTORY.md`.
   Store builds sync with CloudKit's
   Production environment, which only
   takes fields made in Development and
-  deployed. A schema version that adds a
-  field needs the one-off build again
-  (`cloudkit: Development`) and the
-  owner's deploy (`docs/CLOUDKIT.md`).
+  deployed. TestFlight can't sign for
+  Development, so a schema version that
+  adds a field needs the one-off ad hoc
+  build again and the owner's deploy
+  (`docs/CLOUDKIT.md`).
