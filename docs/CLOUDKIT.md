@@ -62,6 +62,20 @@ deployed from Cloudflare's dashboard:
    (e.g. "My iPhone"), and paste the ID.
 3. **Continue** → **Register**.
 
+Once, also register the schema app's ID:
+1. Open
+   developer.apple.com/account/resources/identifiers,
+   tap **+** → **App IDs** → **App**.
+2. Description `One Hundo Schema`, Bundle
+   ID **Explicit**:
+   `com.gastly92.onehundo.schema`.
+3. Tick **iCloud** with **Include
+   CloudKit support**, and under
+   **Edit**/**Configure** tick the
+   container `iCloud.com.gastly92.onehundo`.
+4. Tick **Push Notifications**.
+5. **Continue** → **Register**.
+
 ## 4. Build and install it
 1. Claude runs the **Schema build**
    workflow (`schema-build.yml`). It
@@ -74,10 +88,13 @@ deployed from Cloudflare's dashboard:
 2. In Safari open the device ID page's
    `/install` (e.g.
    `onehundo-udid.<name>.workers.dev/install`)
-   and tap **Install**. It replaces the
-   TestFlight app and keeps your data.
-   That build doesn't sync your data: it
-   only uploads the schema samples.
+   and tap **Install**. It's a separate
+   app, **One Hundo Schema**
+   (`com.gastly92.onehundo.schema`, same
+   iCloud container), since iOS won't put
+   an ad hoc build over the TestFlight
+   app without deleting it and its data.
+   It only uploads the schema samples.
 
 ## 5. Run it once
 Open the app on Wi-Fi, signed in to
@@ -98,7 +115,7 @@ iCloud, and keep it open for a minute.
 4. Switch to **Production**: the same
    record types are there.
 
-## 7. Back to normal builds
-In TestFlight, install the latest build
-again over the ad hoc one (or a new one
-from `main`). Sync now works.
+## 7. Clean up
+Delete **One Hundo Schema** from the
+phone. One Hundo itself was never
+touched, and syncs from now on.
