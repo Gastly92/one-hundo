@@ -29,8 +29,8 @@ Everything works from the phone.
 Once. Ad hoc builds install only on
 registered devices, and iPhones don't show
 their device ID (UDID). `tools/udid` is a
-tiny Cloudflare Worker that shows it, like
-the adventure tracker's:
+tiny Cloudflare Worker that shows it,
+deployed from Cloudflare's dashboard:
 1. In the Cloudflare dashboard: **Workers &
    Pages** → **Create** → import the
    `one-hundo` repository.
