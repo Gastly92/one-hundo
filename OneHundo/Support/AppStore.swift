@@ -1,13 +1,23 @@
 import SwiftData
 
 enum AppStore {
-  /// Opens the data store: on disk normally,
-  /// in memory for UI tests.
+  /// Opens the data store: on disk with
+  /// iCloud sync normally, in memory and
+  /// never synced for UI tests.
+  ///
+  /// `.automatic` syncs with the private
+  /// database of the iCloud container the
+  /// app is signed with. Builds without
+  /// it (CI's), no iCloud account, or
+  /// iCloud off for the app in iOS
+  /// Settings: it works on the phone alone.
   static func open(
     inMemory: Bool
   ) throws -> ModelContainer {
     try open(ModelConfiguration(
-      isStoredInMemoryOnly: inMemory
+      isStoredInMemoryOnly: inMemory,
+      cloudKitDatabase: inMemory
+        ? .none : .automatic
     ))
   }
 

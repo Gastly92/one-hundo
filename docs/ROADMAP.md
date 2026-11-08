@@ -27,7 +27,7 @@ new feature (1.1.0), patch for fixes.
       container and App ID steps in
       `docs/TESTFLIGHT.md` (step 9).
       Sync stays off.
-    - [ ] PR 2: merge duplicates
+    - [x] PR 2: merge duplicates
       (`Models/Duplicates.swift`, unit
       tested), run when the store opens.
       Harmless without sync. Devices
@@ -43,10 +43,21 @@ new feature (1.1.0), patch for fixes.
       day's later log or edit wins (1.0
       data falls back to `date`).
     - [ ] PR 3: sync on (1.1.0).
-      `.automatic`, merge and reschedule
-      reminders after remote changes.
+      `AppStore.open` sets `.automatic`
+      (in-memory stores `.none`; it was
+      the default already, so a signed
+      build would have synced without
+      this). `SyncWatcher` merges and
+      reschedules reminders after each
+      change iCloud brings, in the
+      background too. Decided: reminder
+      settings sync, and there's no
+      switch in the app (iOS Settings).
       Test by hand on two devices through
-      TestFlight.
+      TestFlight, starting from a phone
+      with 1.0 data (the V1 → V2
+      migration with CloudKit on is only
+      checked there).
     - [ ] PR 4: release. CloudKit schema
       to Production, privacy page, App
       Privacy, `docs/PRODUCT.md`, the
@@ -93,8 +104,8 @@ new feature (1.1.0), patch for fixes.
     real 1.0 data before release.
   - There's no prompt: iCloud is on for
     the app by default, and turned off
-    in iOS Settings. Decide whether the
-    app also needs its own switch.
+    in iOS Settings. No switch in the app
+    (decided).
   - A device still on the old version
     doesn't sync until it updates; a
     full iCloud pauses sync. Both keep

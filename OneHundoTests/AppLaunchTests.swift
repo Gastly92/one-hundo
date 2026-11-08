@@ -41,6 +41,8 @@ final class AppLaunchTests: XCTestCase {
     XCTAssertFalse(launch.isUITesting)
     XCTAssertEqual(asked, [false])
     XCTAssertEqual(try count(launch), 0)
+    // Watches for iCloud's changes.
+    XCTAssertNotNil(launch.sync)
   }
 
   func testUITestingIsInMemory() throws {
@@ -79,6 +81,7 @@ final class AppLaunchTests: XCTestCase {
     XCTAssertThrowsError(
       try launch.store.get()
     ) { XCTAssertTrue($0 is StoreDown) }
+    XCTAssertNil(launch.sync)
   }
 
   func testShowScreenWithItsData() throws {
