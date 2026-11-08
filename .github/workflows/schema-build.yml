@@ -66,6 +66,8 @@ jobs:
           $(inherited) CLOUDKIT_SCHEMA
       run: |
         set -o pipefail
+        num="$GITHUB_RUN_NUMBER"
+        flags="SWIFT_ACTIVE_COMPILATION_CONDITIONS=$CONDITIONS"
         xcodebuild archive \
           -project OneHundo.xcodeproj \
           -scheme OneHundo \
@@ -73,9 +75,9 @@ jobs:
           -destination generic/platform=iOS \
           -archivePath "$ARCHIVE" \
           DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-          CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+          CURRENT_PROJECT_VERSION="$num" \
           CODE_SIGNING_ALLOWED=NO \
-          "SWIFT_ACTIVE_COMPILATION_CONDITIONS=$CONDITIONS" \
+          "$flags" \
           | tail -n 30
 
     # Export signs with the entitlements it
@@ -150,17 +152,18 @@ jobs:
         tag=schema-build
         gh release delete "$tag" --yes \
           --cleanup-tag || true
-        cp build/export/*.ipa build/OneHundo.ipa
+        cp build/export/*.ipa \
+          build/OneHundo.ipa
         gh release create "$tag" \
           build/OneHundo.ipa \
           --prerelease \
           --target "$GITHUB_SHA" \
           --title "Schema build" \
-          --notes "One-off ad hoc build that makes the CloudKit schema (docs/CLOUDKIT.md)."
+          --notes "See docs/CLOUDKIT.md."
         {
           echo "Published the schema build."
-          echo "Install it from the device ID" \
-            "page's /install."
+          echo "Install it from the" \
+            "device ID page's /install."
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Remove API key
