@@ -384,3 +384,12 @@ finished record): `docs/HISTORY.md`.
   adds a field needs the one-off ad hoc
   build again and the owner's deploy
   (`docs/CLOUDKIT.md`).
+- `tools/udid` is a Cloudflare Worker
+  (deployed by Cloudflare from `main`,
+  root directory `tools/udid`): it shows
+  an iPhone's device ID to register it,
+  and `/install` serves the schema build.
+  Test changes with `node` and sample
+  requests before pushing. Pull requests
+  that change it get a preview (a bot
+  comment) to try on the phone.
