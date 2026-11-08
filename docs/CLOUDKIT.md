@@ -36,11 +36,17 @@ deployed from Cloudflare's dashboard:
    `one-hundo` repository.
 2. Root directory: `tools/udid`. Keep the
    default deploy command.
-3. If offered, set the build watch paths
-   to `tools/udid/*`, so other pushes
-   don't redeploy it.
+3. Set the build watch paths (Settings →
+   Build) to `tools/udid/*`, so other
+   pushes don't redeploy it. Pull
+   requests get a preview of the page
+   (a comment with its address); a new
+   branch's first push builds one
+   anyway.
 4. Deploy, and note its `workers.dev`
-   address.
+   address. Worker name
+   `onehundo-udid` (must match
+   `wrangler.toml`).
 
 ## 2. Get the device ID
 1. Open that address in Safari and tap
