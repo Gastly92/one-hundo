@@ -103,13 +103,13 @@ const manifest = (origin) =>
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.gastly92.onehundo</string>
+        <string>com.gastly92.onehundo.schema</string>
         <key>bundle-version</key>
         <string>1.1.0</string>
         <key>kind</key>
         <string>software</string>
         <key>title</key>
-        <string>One Hundo (schema build)</string>
+        <string>One Hundo Schema</string>
       </dict>
     </dict>
   </array>
@@ -167,9 +167,10 @@ export default {
         );
       return page(`<h1>Schema build</h1>
 <p>The one-off build that makes iCloud's
-  schema (docs/CLOUDKIT.md). It installs
-  over the App Store or TestFlight app and
-  keeps your data.</p>
+  schema (docs/CLOUDKIT.md). It installs as
+  a separate app, <b>One Hundo Schema</b>,
+  next to One Hundo, and doesn't touch its
+  data. Delete it when you're done.</p>
 <p><a href="${link}">Install</a></p>
 <p>Then open it once, on Wi-Fi and signed
   in to iCloud, for a minute.</p>`);

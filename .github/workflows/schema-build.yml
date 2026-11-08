@@ -10,6 +10,12 @@ name: Schema build
 # It's published as the `schema-build`
 # release, which the device ID page serves
 # to install (tools/udid, /install).
+#
+# It's a separate app (its own bundle ID,
+# same iCloud container): iOS won't put an
+# ad hoc build over the TestFlight or App
+# Store app without deleting it, and its
+# data with it.
 on:
   workflow_dispatch:
 
@@ -64,10 +70,14 @@ jobs:
       env:
         CONDITIONS: >-
           $(inherited) CLOUDKIT_SCHEMA
+        BUNDLE: com.gastly92.onehundo.schema
+        NAME: One Hundo Schema
       run: |
         set -o pipefail
         num="$GITHUB_RUN_NUMBER"
         flags="SWIFT_ACTIVE_COMPILATION_CONDITIONS=$CONDITIONS"
+        id="PRODUCT_BUNDLE_IDENTIFIER=$BUNDLE"
+        name="INFOPLIST_KEY_CFBundleDisplayName=$NAME"
         xcodebuild archive \
           -project OneHundo.xcodeproj \
           -scheme OneHundo \
@@ -76,6 +86,7 @@ jobs:
           -archivePath "$ARCHIVE" \
           DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
           CURRENT_PROJECT_VERSION="$num" \
+          "$id" "$name" \
           CODE_SIGNING_ALLOWED=NO \
           "$flags" \
           | tail -n 30
