@@ -37,8 +37,13 @@ final class SyncWatcher {
     let changes = Self.names.map {
       center.publisher(for: $0)
     }
+    // Core Data and iCloud post from
+    // background threads, so the handler
+    // runs anywhere (`@Sendable`; it'd
+    // crash if tied to the main actor)
+    // and hops to the main actor itself.
     Publishers.MergeMany(changes)
-      .sink { _ in
+      .sink { @Sendable _ in
         Task { @MainActor in
           try? Self.update(
             store, notifier, now: clock()

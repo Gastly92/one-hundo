@@ -60,7 +60,8 @@ final class SyncWatcherTests: XCTestCase {
   }
 
   /// iCloud's own sync steps (an import
-  /// finishing) do the same.
+  /// finishing) do the same. Posted from a
+  /// background thread, as iCloud does.
   func testSyncEventReschedules() throws {
     let store = try TestStore()
     _ = store.pushUps()
@@ -69,18 +70,21 @@ final class SyncWatcherTests: XCTestCase {
     let updates = changes(
       in: store,
       posting: NSPersistentCloudKitContainer
-        .eventChangedNotification
+        .eventChangedNotification,
+      inBackground: true
     )
 
     XCTAssertEqual(updates.count, 1)
   }
 
   /// Posts `name` to a watcher on `store`
-  /// and returns the reminder updates once
-  /// the first arrives.
+  /// (on a background thread if asked) and
+  /// returns the reminder updates once the
+  /// first arrives.
   private func changes(
     in store: TestStore,
-    posting name: Notification.Name
+    posting name: Notification.Name,
+    inBackground: Bool = false
   ) -> [[UNNotificationRequest]] {
     let center = NotificationCenter()
     let recorder = Recorder()
@@ -94,7 +98,15 @@ final class SyncWatcherTests: XCTestCase {
       center: center
     ) { day(1, hour: 8) }
     withExtendedLifetime(watcher) {
-      center.post(name: name, object: nil)
+      if inBackground {
+        DispatchQueue.global().async {
+          center.post(
+            name: name, object: nil
+          )
+        }
+      } else {
+        center.post(name: name, object: nil)
+      }
       wait(for: [done], timeout: 10)
     }
     return recorder.updates
