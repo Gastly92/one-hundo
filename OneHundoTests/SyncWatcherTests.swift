@@ -33,14 +33,14 @@ final class SyncWatcherTests: XCTestCase {
   /// copies it brought and reschedules
   /// reminders.
   func testChangeMergesAndReschedules()
-    throws {
+    async throws {
     let store = try TestStore()
     let first = store.pushUps()
     let copy = store.pushUps()
     copy.id = first.id
     try store.context.save()
 
-    let updates = changes(
+    let updates = await changes(
       in: store,
       posting: .NSPersistentStoreRemoteChange
     )
@@ -62,12 +62,13 @@ final class SyncWatcherTests: XCTestCase {
   /// iCloud's own sync steps (an import
   /// finishing) do the same. Posted from a
   /// background thread, as iCloud does.
-  func testSyncEventReschedules() throws {
+  func testSyncEventReschedules()
+    async throws {
     let store = try TestStore()
     _ = store.pushUps()
     try store.context.save()
 
-    let updates = changes(
+    let updates = await changes(
       in: store,
       posting: NSPersistentCloudKitContainer
         .eventChangedNotification,
@@ -80,12 +81,15 @@ final class SyncWatcherTests: XCTestCase {
   /// Posts `name` to a watcher on `store`
   /// (on a background thread if asked) and
   /// returns the reminder updates once the
-  /// first arrives.
+  /// first arrives. Waits with `await`,
+  /// which frees the main actor for the
+  /// watcher's work (a blocking `wait`
+  /// could hold it until the timeout).
   private func changes(
     in store: TestStore,
     posting name: Notification.Name,
     inBackground: Bool = false
-  ) -> [[UNNotificationRequest]] {
+  ) async -> [[UNNotificationRequest]] {
     let center = NotificationCenter()
     let recorder = Recorder()
     let done = expectation(
@@ -97,17 +101,19 @@ final class SyncWatcherTests: XCTestCase {
       notifier: recorder,
       center: center
     ) { day(1, hour: 8) }
-    withExtendedLifetime(watcher) {
-      if inBackground {
-        DispatchQueue.global().async {
-          center.post(
-            name: name, object: nil
-          )
-        }
-      } else {
+    if inBackground {
+      DispatchQueue.global().async {
         center.post(name: name, object: nil)
       }
-      wait(for: [done], timeout: 10)
+    } else {
+      center.post(name: name, object: nil)
+    }
+    await fulfillment(
+      of: [done], timeout: 10
+    )
+    // Watching ends when it's let go.
+    withExtendedLifetime(watcher) {
+      // Kept until here.
     }
     return recorder.updates
   }

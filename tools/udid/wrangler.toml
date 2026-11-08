@@ -1,0 +1,8 @@
+# A one-off page that shows an iPhone's
+# device ID (UDID), to register it for an
+# ad hoc build (docs/CLOUDKIT.md). Deployed
+# by Cloudflare's GitHub integration with
+# this folder as its root directory.
+name = "onehundo-udid"
+main = "index.js"
+compatibility_date = "2026-10-01"
