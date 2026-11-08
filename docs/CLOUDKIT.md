@@ -97,8 +97,15 @@ Once, also register the schema app's ID:
    It only uploads the schema samples.
 
 ## 5. Run it once
-Open the app on Wi-Fi, signed in to
-iCloud, and keep it open for a minute.
+1. iOS opens ad hoc apps only with
+   **Developer Mode** on: Settings →
+   Privacy & Security → Developer Mode
+   (it shows once such an app is
+   installed), then restart and confirm.
+2. Open **One Hundo Schema** on Wi-Fi,
+   signed in to iCloud, and keep it open
+   for a minute. It looks empty: it has
+   none of your data.
 
 ## 6. Check and deploy
 1. In Safari open icloud.developer.apple.com
@@ -117,5 +124,7 @@ iCloud, and keep it open for a minute.
 
 ## 7. Clean up
 Delete **One Hundo Schema** from the
-phone. One Hundo itself was never
-touched, and syncs from now on.
+phone, and turn Developer Mode off again
+if you like (another restart). One Hundo
+itself was never touched, and syncs from
+now on.

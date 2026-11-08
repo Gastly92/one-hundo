@@ -106,8 +106,15 @@ Pick a challenge and test yourself: how many can you do today without stopping? 
 • A calendar showing the days you trained
 • A daily reminder at the time you choose, which skips the days you've already logged
 • Reach your goal, then set a bigger one
+• Syncs through your own iCloud, so your challenges are on all your devices and come back on a new phone
 
-No account, no ads, no tracking. Your progress stays on your iPhone.
+No account, no ads, no tracking. Your progress stays on your iPhone and in your own iCloud.
+```
+
+What's New in 1.1:
+
+```
+Your challenges now sync through your own iCloud: they appear on your other devices and come back after a reinstall or on a new phone. Nothing to set up. To turn it off, go to Settings, your name, iCloud.
 ```
 
 Keywords (100, commas, no spaces after
@@ -129,7 +136,10 @@ push ups,pushups,sit ups,pull ups,plank,workout,fitness,training,reps,calistheni
   every question (4+).
 - App Privacy: "Data Not Collected" (see
   `site/privacy.html`; Apple's own crash
-  reports don't count).
+  reports don't count). iCloud sync
+  doesn't change it: the data goes to the
+  user's private iCloud database, which
+  the developer can't see.
 - Price: Free.
 
 ## Adding them from an iPhone
@@ -200,7 +210,7 @@ Availability, and App Privacy pages.
 Notes for App Review:
 
 ```
-No account or sign-in. Tap "Start your first challenge", pick Push-ups, enter how many you can do, set a goal and tap Start. Tap the card to see its screen and log an attempt; long-press a card for a quick menu. Daily reminders are optional local notifications. The app collects no data.
+No account or sign-in. Tap "Start your first challenge", pick Push-ups, enter how many you can do, set a goal and tap Start. Tap the card to see its screen and log an attempt; long-press a card for a quick menu. Daily reminders are optional local notifications. Data syncs through the user's private iCloud database (CloudKit); with iCloud off it works on the device alone. The app collects no data.
 ```
 
 ## First review (Guideline 2.1)

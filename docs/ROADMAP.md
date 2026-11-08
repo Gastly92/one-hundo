@@ -67,7 +67,7 @@ new feature (1.1.0), patch for fixes.
       `tools/udid`, a Cloudflare Worker
       that shows the iPhone's device ID
       to register it.
-    - [ ] PR 5: the schema, part 2. An ad
+    - [x] PR 5: the schema, part 2. An ad
       hoc build for Development that runs
       `initializeCloudKitSchema` (built
       with `CLOUDKIT_SCHEMA`;
@@ -75,11 +75,16 @@ new feature (1.1.0), patch for fixes.
       Worker's `/install` page serving it
       from the `schema-build` release. The
       owner deploys the schema.
+      Schema deployed to Production
+      (2026-11-08). Also needed: a
+      separate app ID for the schema app
+      (#103) and Developer Mode.
     - [ ] PR 6: release. Privacy page,
-      App Privacy, the hand checks on two
-      devices. (1.0 data opening with
-      sync on: checked on the owner's
-      phone, build 28.)
+      listing text and App Privacy note
+      (`docs/APPSTORE.md`). Hand checks:
+      1.0 data opens with sync on, and a
+      log saves (owner's phone, build
+      28); two devices sync (pending).
   - Needs the iCloud entitlement with a
     CloudKit container
     (`iCloud.com.gastly92.onehundo`), and
