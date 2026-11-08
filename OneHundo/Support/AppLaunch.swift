@@ -21,6 +21,10 @@ struct AppLaunch {
   /// (no permission prompt), unless they
   /// launch with -notifications.
   let notifier: any Notifier
+  /// Handles what iCloud sync brings in,
+  /// for as long as the app runs (none if
+  /// the store didn't open).
+  let sync: SyncWatcher?
 
   /// Screens shown with the sample
   /// challenges; the rest show an empty app.
@@ -87,6 +91,10 @@ struct AppLaunch {
       )
     } else {
       store = Result { try open(inMemory) }
+    }
+    let notes = notifier
+    sync = (try? store.get()).map {
+      SyncWatcher(store: $0, notifier: notes)
     }
     let seeded = Self.seededScreens
     let needsData = seeded.contains {

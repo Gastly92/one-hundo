@@ -37,7 +37,10 @@ day to remind you to try your challenges,
 e.g. "Push-ups: try for 6 today." You choose
 the time, and can turn reminders off per
 challenge. Once you've logged a day, that
-day's reminder doesn't come.
+day's reminder doesn't come, even if you
+logged it on another device. Reminder
+settings sync like the rest, so they're
+the same on every device.
 
 ## Challenges
 
@@ -296,8 +299,22 @@ success haptic, then two choices:
 
 ## Data
 
-- Stored on the phone only, with no account
-  or server.
+- Stored on the phone, and synced through
+  your own iCloud (from 1.1), so challenges
+  appear on your other devices and come
+  back after a reinstall. No account or
+  server of ours: it's iCloud's private
+  database, which only you can see.
+- iCloud is on for the app by default; turn
+  it off in iOS Settings (your name →
+  iCloud). There's no switch in the app.
+  Without iCloud (signed out, off, or
+  full) the app works on the phone alone.
+- The same challenge or day arriving twice
+  (two devices, a restored backup) is
+  merged: one copy of each challenge with
+  all its days, and one attempt a day, the
+  last logged.
 - Saved with SwiftData in the app's normal
   storage, which iCloud Backup includes
   automatically. Restoring a phone from
@@ -305,8 +322,6 @@ success haptic, then two choices:
   put user data in `Caches` or `tmp`, or mark
   it excluded from backup, since iCloud
   Backup skips those.
-- This is backup, not sync: data doesn't move
-  live between devices.
 - No analytics or tracking in the app: it
   collects nothing. Crash reports and usage
   numbers come from Apple (App Store
