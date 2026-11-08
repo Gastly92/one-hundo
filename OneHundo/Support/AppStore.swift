@@ -13,16 +13,23 @@ enum AppStore {
 
   /// Opens the store at the latest schema,
   /// migrating older data first (see
-  /// `SchemaV1`).
+  /// `SchemaV1`), and merges duplicates
+  /// (`Duplicates`).
   static func open(
     _ configuration: ModelConfiguration
   ) throws -> ModelContainer {
-    try ModelContainer(
+    let store = try ModelContainer(
       for: Schema(
-        versionedSchema: SchemaV1.self
+        versionedSchema: SchemaV2.self
       ),
       migrationPlan: Migrations.self,
       configurations: configuration
     )
+    // A failed merge leaves the copies;
+    // the app still opens.
+    try? Duplicates.merge(
+      in: ModelContext(store)
+    )
+    return store
   }
 }

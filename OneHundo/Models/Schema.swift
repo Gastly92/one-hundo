@@ -4,11 +4,14 @@ import SwiftData
 /// The stored data as the 1.0 release
 /// wrote it. Frozen: never edit these
 /// models. To change a stored model, copy
-/// them into a `SchemaV2` (the new shape),
-/// point the `Challenge` and `Attempt`
-/// aliases at it, add it and a V1 → V2
-/// stage to `Migrations`, and keep the test
-/// that a V1 store opens (`StoreTests`).
+/// the latest schema into a new one (the
+/// new shape), point the `Challenge` and
+/// `Attempt` aliases at it, add it and a
+/// stage to `Migrations`, and keep the
+/// tests that older stores open
+/// (`StoreTests`). With iCloud sync, only
+/// add optional properties or ones with a
+/// default; never rename or remove one.
 enum SchemaV1: VersionedSchema {
   static var versionIdentifier:
     Schema.Version {
@@ -23,29 +26,36 @@ enum SchemaV1: VersionedSchema {
 
 /// The models the app uses: the latest
 /// schema's.
-typealias Challenge = SchemaV1.Challenge
-typealias Attempt = SchemaV1.Attempt
+typealias Challenge = SchemaV2.Challenge
+typealias Attempt = SchemaV2.Attempt
 
 /// Every stored-data version, oldest first,
 /// and the steps between them.
 enum Migrations: SchemaMigrationPlan {
   static var schemas:
     [any VersionedSchema.Type] {
-    [SchemaV1.self]
+    [SchemaV1.self, SchemaV2.self]
   }
 
-  static var stages: [MigrationStage] { [] }
+  static var stages: [MigrationStage] {
+    [
+      .custom(
+        fromVersion: SchemaV1.self,
+        toVersion: SchemaV2.self,
+        willMigrate: nil,
+        didMigrate: SchemaV2.tag
+      ),
+    ]
+  }
 }
 
 extension SchemaV1 {
   /// A challenge the user has started, e.g.
   /// Push-ups from 5 to 100.
   ///
-  /// Follows CloudKit's rules so iCloud sync
-  /// can be added later without a migration:
-  /// every property has a default,
-  /// relationships are optional, and nothing
-  /// is unique.
+  /// Follows CloudKit's rules: every
+  /// property has a default, relationships
+  /// are optional, and nothing is unique.
   @Model
   final class Challenge {
     var id = UUID()

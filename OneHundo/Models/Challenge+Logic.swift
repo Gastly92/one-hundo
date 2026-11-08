@@ -285,27 +285,31 @@ extension Challenge {
   }
 
   /// Logs a count for the day of `date`,
-  /// with that day's target. Logging the
-  /// same day again replaces that day's
-  /// count, keeping one attempt per day.
+  /// with that day's target, at `now`.
+  /// Logging the same day again replaces
+  /// that day's count, keeping one attempt
+  /// per day.
   @discardableResult
   func logAttempt(
     count: Int,
     on date: Date = Date(),
-    in cal: Calendar = .current
+    in cal: Calendar = .current,
+    at now: Date = .now
   ) -> Attempt {
     let aim = target(on: date, in: cal)
     if let old = attempt(on: date, in: cal) {
       old.count = count
       old.date = date
       old.target = aim
+      old.loggedAt = now
       return old
     }
     let new = Attempt(
       date: date,
       count: count,
       target: aim,
-      in: cal
+      in: cal,
+      at: now
     )
     modelContext?.insert(new)
     if attempts == nil { attempts = [] }

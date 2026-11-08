@@ -27,9 +27,21 @@ new feature (1.1.0), patch for fixes.
       container and App ID steps in
       `docs/TESTFLIGHT.md` (step 9).
       Sync stays off.
-    - [ ] PR 2: merge duplicates (rules
-      in `Models/`, unit tested), run on
-      launch. Harmless without sync.
+    - [ ] PR 2: merge duplicates
+      (`Models/Duplicates.swift`, unit
+      tested), run when the store opens.
+      Harmless without sync. Devices
+      merge on their own, maybe at once,
+      so all must keep the same copy (two
+      keeping different ones would delete
+      both). `SchemaV2` adds a `copyID`
+      to each record for that: the lowest
+      is kept. Migrating tags 1.0 data,
+      on each device before it syncs, so
+      copies never share one. It also
+      adds `loggedAt` to attempts, so a
+      day's later log or edit wins (1.0
+      data falls back to `date`).
     - [ ] PR 3: sync on (1.1.0).
       `.automatic`, merge and reschedule
       reminders after remote changes.
@@ -67,7 +79,10 @@ new feature (1.1.0), patch for fixes.
     can bring the same day twice, or the
     same challenge twice (same `id`).
     Merge on launch and after sync, with
-    unit tests for the rules.
+    unit tests for the rules. A same-day
+    pair keeps the later-logged count; a
+    challenge's copies keep one copy's
+    settings (no edit times to compare).
   - Reminders are scheduled per device:
     reschedule them when synced
     challenges change.

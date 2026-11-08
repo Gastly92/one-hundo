@@ -282,8 +282,11 @@ finished record): `docs/HISTORY.md`.
 - Stored data is versioned
   (`Models/Schema.swift`): the 1.0 models
   are in `SchemaV1` (frozen from the 1.0
-  release on), and the app uses
-  them through the `Challenge` and
+  release on), 1.1's in `SchemaV2` (adds
+  `copyID` and `loggedAt`; frozen once a
+  build with it reaches TestFlight), and
+  the app uses
+  the latest through the `Challenge` and
   `Attempt` aliases. Never edit a released
   schema. To change a stored model, follow
   the steps in that file: a new schema
