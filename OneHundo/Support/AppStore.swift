@@ -16,10 +16,19 @@ enum AppStore {
   ) throws -> ModelContainer {
     try open(ModelConfiguration(
       isStoredInMemoryOnly: inMemory,
-      cloudKitDatabase: inMemory
-        ? .none : .automatic
+      cloudKitDatabase: syncs && !inMemory
+        ? .automatic : .none
     ))
   }
+
+  #if CLOUDKIT_SCHEMA
+  /// The schema build (`CloudKitSchema`)
+  /// keeps the user's data off iCloud's
+  /// Development environment.
+  private static let syncs = false
+  #else
+  private static let syncs = true
+  #endif
 
   /// Opens the store at the latest schema,
   /// migrating older data first (see

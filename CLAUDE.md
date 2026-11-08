@@ -375,3 +375,11 @@ finished record): `docs/HISTORY.md`.
   `docs/TESTFLIGHT.md`). Check it with
   the workflow's `upload` input off,
   which checks the signed app.
+- iCloud's schema: TestFlight and App
+  Store builds sync with CloudKit's
+  Production environment, which only
+  takes fields made in Development and
+  deployed. A schema version that adds a
+  field needs the one-off build again
+  (`cloudkit: Development`) and the
+  owner's deploy (`docs/CLOUDKIT.md`).

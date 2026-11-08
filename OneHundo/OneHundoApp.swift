@@ -11,6 +11,9 @@ struct OneHundoApp: App {
     launch = AppLaunch(
       arguments: info.arguments
     )
+    #if CLOUDKIT_SCHEMA
+    CloudKitSchema.start()
+    #endif
     if launch.isUITesting {
       // No UIKit animations (screen pushes,
       // sheets, menus): a long-press that

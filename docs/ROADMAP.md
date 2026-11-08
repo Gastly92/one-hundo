@@ -42,7 +42,7 @@ new feature (1.1.0), patch for fixes.
       adds `loggedAt` to attempts, so a
       day's later log or edit wins (1.0
       data falls back to `date`).
-    - [ ] PR 3: sync on (1.1.0).
+    - [x] PR 3: sync on (1.1.0).
       `AppStore.open` sets `.automatic`
       (in-memory stores `.none`; it was
       the default already, so a signed
@@ -58,10 +58,17 @@ new feature (1.1.0), patch for fixes.
       with 1.0 data (the V1 → V2
       migration with CloudKit on is only
       checked there).
-    - [ ] PR 4: release. CloudKit schema
-      to Production, privacy page, App
-      Privacy, `docs/PRODUCT.md`, the
-      check with real 1.0 data.
+    - [ ] PR 4: the CloudKit schema. No
+      Mac to make it, so a one-off
+      TestFlight build (`cloudkit:
+      Development`, built with
+      `CLOUDKIT_SCHEMA`) uploads every
+      field to Development; the owner
+      deploys it to Production
+      (`docs/CLOUDKIT.md`).
+    - [ ] PR 5: release. Privacy page,
+      App Privacy, the hand checks on
+      two devices and with real 1.0 data.
   - Needs the iCloud entitlement with a
     CloudKit container
     (`iCloud.com.gastly92.onehundo`), and
