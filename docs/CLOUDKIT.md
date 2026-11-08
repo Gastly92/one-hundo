@@ -38,11 +38,14 @@ deployed from Cloudflare's dashboard:
    default deploy command.
 3. Set the build watch paths (Settings →
    Build) to `tools/udid/*`, so other
-   pushes don't redeploy it. Pull
-   requests get a preview of the page
-   (a comment with its address); a new
-   branch's first push builds one
-   anyway.
+   pushes to `main` don't redeploy it.
+   Pull requests get a preview of the
+   page (a comment with its address) on
+   every push, even ones that don't touch
+   `tools/udid`: Cloudflare's preview
+   builds ignore watch paths (tried in
+   #104; others report it too). Harmless;
+   Branch control turns previews off.
 4. Deploy, and note its `workers.dev`
    address. Worker name
    `onehundo-udid` (must match
