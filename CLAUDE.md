@@ -8,6 +8,7 @@ Code; there is no Mac. What the app does:
 `docs/ROADMAP.md`. Keep both updated as
 features land. How 1.0 was built (a
 finished record): `docs/HISTORY.md`.
+iCloud sync (1.1): `docs/ICLOUD.md`.
 
 ## Building
 - This container is Linux: nothing

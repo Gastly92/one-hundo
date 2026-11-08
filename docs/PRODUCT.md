@@ -299,6 +299,9 @@ success haptic, then two choices:
 
 ## Data
 
+How sync works inside, and what was
+learned building it: `docs/ICLOUD.md`.
+
 - Stored on the phone, and synced through
   your own iCloud (from 1.1), so challenges
   appear on your other devices and come
