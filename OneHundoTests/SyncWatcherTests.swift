@@ -1,5 +1,6 @@
 import CoreData
 @testable import OneHundo
+import SwiftData
 import UserNotifications
 import XCTest
 
