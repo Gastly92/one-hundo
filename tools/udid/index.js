@@ -10,7 +10,7 @@ const page = (body) =>
     `<!doctype html>
 <meta name="viewport"
   content="width=device-width">
-<title>Device ID</title>
+<title>One Hundo</title>
 <style>
   body { font: 17px -apple-system,
     sans-serif; margin: 24px; }
@@ -72,6 +72,50 @@ const field = (text, key) => {
   return found ? found[1] : "";
 };
 
+// The schema build (docs/CLOUDKIT.md),
+// published by schema-build.yml.
+const release =
+  "https://github.com/Gastly92/one-hundo/" +
+  "releases/download/schema-build/" +
+  "OneHundo.ipa";
+
+// What iOS reads to install an ad hoc
+// build over the air.
+const manifest = (origin) =>
+  `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC
+  "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>items</key>
+  <array>
+    <dict>
+      <key>assets</key>
+      <array>
+        <dict>
+          <key>kind</key>
+          <string>software-package</string>
+          <key>url</key>
+          <string>${origin}/app.ipa</string>
+        </dict>
+      </array>
+      <key>metadata</key>
+      <dict>
+        <key>bundle-identifier</key>
+        <string>com.gastly92.onehundo</string>
+        <key>bundle-version</key>
+        <string>1.1.0</string>
+        <key>kind</key>
+        <string>software</string>
+        <key>title</key>
+        <string>One Hundo (schema build)</string>
+      </dict>
+    </dict>
+  </array>
+</dict>
+</plist>`;
+
 const escape = (text) =>
   text.replace(/[^A-Za-z0-9,.-]/g, "");
 
@@ -113,6 +157,50 @@ export default {
       // iOS opens a 301's address in
       // Safari.
       return Response.redirect(done, 301);
+    }
+    if (url.pathname === "/install") {
+      const link =
+        "itms-services://?action=" +
+        "download-manifest&url=" +
+        encodeURIComponent(
+          `${url.origin}/manifest.plist`,
+        );
+      return page(`<h1>Schema build</h1>
+<p>The one-off build that makes iCloud's
+  schema (docs/CLOUDKIT.md). It installs
+  over the App Store or TestFlight app and
+  keeps your data.</p>
+<p><a href="${link}">Install</a></p>
+<p>Then open it once, on Wi-Fi and signed
+  in to iCloud, for a minute.</p>`);
+    }
+    if (url.pathname === "/manifest.plist") {
+      return new Response(
+        manifest(url.origin),
+        {
+          headers: {
+            "content-type": "application/xml",
+          },
+        },
+      );
+    }
+    if (url.pathname === "/app.ipa") {
+      // GitHub redirects to its file
+      // storage; serve it from here so iOS
+      // gets it from one https address.
+      const file = await fetch(release);
+      if (!file.ok) {
+        return new Response(
+          "No schema build yet.",
+          { status: 404 },
+        );
+      }
+      return new Response(file.body, {
+        headers: {
+          "content-type":
+            "application/octet-stream",
+        },
+      });
     }
     if (url.pathname === "/done") {
       const get = (key) =>
