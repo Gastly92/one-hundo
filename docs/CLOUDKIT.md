@@ -40,14 +40,17 @@ deployed from Cloudflare's dashboard:
    Build) to `tools/udid/*` on both
    tabs, **Production** and **Previews
    Base**. `main` then deploys only on
-   changes to `tools/udid`. Previews
-   still build on every pull request
-   push (tried in #104, with both set;
-   others report it too): a comment
-   with the preview's address. Harmless,
-   and handy to try Worker changes;
-   **Builds for Preview branches** turns
-   them off.
+   changes to `tools/udid`. Turn off
+   **Builds for Preview branches**:
+   Cloudflare's previews ignore watch
+   paths and built on every pull request
+   (tried in #104). Instead,
+   `worker-preview.yml` tests and
+   previews the Worker for pull requests
+   that change it, and comments the
+   address (needs the
+   `CLOUDFLARE_API_TOKEN` and
+   `CLOUDFLARE_ACCOUNT_ID` secrets).
 4. Deploy, and note its `workers.dev`
    address. Worker name
    `onehundo-udid` (must match

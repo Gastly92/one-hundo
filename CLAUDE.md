@@ -390,6 +390,8 @@ finished record): `docs/HISTORY.md`.
   an iPhone's device ID to register it,
   and `/install` serves the schema build.
   Test changes with `node` and sample
-  requests before pushing. Pull requests
-  that change it get a preview (a bot
-  comment) to try on the phone.
+  requests before pushing (CI runs
+  `tools/udid/test.mjs`). Pull requests
+  that change it get a preview from
+  `worker-preview.yml` (a comment with
+  its address) to try on the phone.
