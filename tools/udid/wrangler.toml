@@ -7,3 +7,8 @@
 name = "onehundo-udid"
 main = "index.js"
 compatibility_date = "2026-10-01"
+
+# Cloudflare's preview builds for pull
+# requests (`wrangler preview`) need this
+# block, even empty.
+[previews]
