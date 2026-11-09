@@ -25,6 +25,11 @@ struct AppLaunch {
   /// for as long as the app runs (none if
   /// the store didn't open).
   let sync: SyncWatcher?
+  /// Whether a fresh install is still
+  /// checking iCloud for challenges. Only
+  /// when the store opened empty, and never
+  /// in UI tests.
+  let restore: RestoreCheck
 
   /// Screens shown with the sample
   /// challenges; the rest show an empty app.
@@ -96,6 +101,12 @@ struct AppLaunch {
     sync = (try? store.get()).map {
       SyncWatcher(store: $0, notifier: notes)
     }
+    let all = FetchDescriptor<Challenge>()
+    let count = try? store.get().mainContext
+      .fetchCount(all)
+    restore = RestoreCheck(
+      active: !isUITesting && count == 0
+    )
     let seeded = Self.seededScreens
     let needsData = seeded.contains {
       $0 == shown

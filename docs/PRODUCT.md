@@ -315,6 +315,17 @@ success haptic, then two choices:
   merged: one copy of each challenge with
   all its days, and one attempt a day, the
   last logged.
+- First launch with no challenges on the
+  phone (a reinstall, a new device): a
+  spinner, "Checking iCloud for your
+  challenges…", until iCloud's first
+  import finishes (at most 4 s), so a
+  returning user isn't invited to start
+  over. Then the welcome screen, with a
+  quiet note while iCloud is still
+  checking (up to 30 s) or while offline.
+  Challenges that arrive replace it.
+  (1.1.1)
 - Saved with SwiftData in the app's normal
   storage, which iCloud Backup includes
   automatically. Restoring a phone from

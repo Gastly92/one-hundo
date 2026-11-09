@@ -43,6 +43,34 @@ final class AppLaunchTests: XCTestCase {
     XCTAssertEqual(try count(launch), 0)
     // Watches for iCloud's changes.
     XCTAssertNotNil(launch.sync)
+    // Empty: checks iCloud for challenges.
+    XCTAssertEqual(
+      launch.restore.phase, .checking
+    )
+  }
+
+  /// Challenges on the phone already: no
+  /// iCloud check.
+  func testDataSkipsRestore() {
+    let launch = AppLaunch(
+      arguments: ["OneHundo"]
+    ) { _ in
+      let store = try AppStore.open(
+        inMemory: true
+      )
+      store.mainContext.insert(
+        Challenge(
+          name: "Push-ups",
+          colorName: "violet",
+          startingCount: 5
+        )
+      )
+      try store.mainContext.save()
+      return store
+    }
+    XCTAssertEqual(
+      launch.restore.phase, .done
+    )
   }
 
   func testUITestingIsInMemory() throws {
@@ -56,6 +84,10 @@ final class AppLaunchTests: XCTestCase {
     XCTAssertTrue(launch.isUITesting)
     XCTAssertEqual(asked, [true])
     XCTAssertEqual(try count(launch), 0)
+    // UI tests never check iCloud.
+    XCTAssertEqual(
+      launch.restore.phase, .done
+    )
   }
 
   func testSampleDataOnlyInUITests() throws {
@@ -82,6 +114,9 @@ final class AppLaunchTests: XCTestCase {
       try launch.store.get()
     ) { XCTAssertTrue($0 is StoreDown) }
     XCTAssertNil(launch.sync)
+    XCTAssertEqual(
+      launch.restore.phase, .done
+    )
   }
 
   func testShowScreenWithItsData() throws {

@@ -2,13 +2,17 @@ import SwiftUI
 
 /// The challenge list before any challenge
 /// exists: what the app does in three steps,
-/// and one button to start.
+/// and one button to start. A note on top
+/// while iCloud is still checked for
+/// challenges (`RestorePhase`).
 struct WelcomeView: View {
+  let phase: RestorePhase
   let onStart: () -> Void
 
   var body: some View {
     ScrollView {
       LeadingStack(spacing: 28) {
+        note
         header
         steps
         startButton
@@ -30,6 +34,44 @@ struct WelcomeView: View {
         .font(.title3)
         .foregroundStyle(.secondary)
     }
+  }
+
+  /// Quiet, not blocking: the button still
+  /// works.
+  @ViewBuilder
+  private var note: some View {
+    switch phase {
+    case .slow:
+      noteLabel(
+        """
+        Still checking iCloud for your \
+        challenges…
+        """,
+        icon: "icloud"
+      )
+    case .offline:
+      noteLabel(
+        """
+        You're offline. Challenges you've \
+        synced will appear once you're \
+        connected.
+        """,
+        icon: "wifi.slash"
+      )
+    case .checking, .done:
+      EmptyView()
+    }
+  }
+
+  private func noteLabel(
+    _ text: LocalizedStringKey,
+    icon: String
+  ) -> some View {
+    Label(text, systemImage: icon)
+      .font(.subheadline)
+      .foregroundStyle(.secondary)
+      .wrapsText()
+      .testID("restoreNote")
   }
 
   private var steps: some View {
