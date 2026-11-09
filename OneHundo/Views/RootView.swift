@@ -4,6 +4,9 @@ import SwiftUI
 struct RootView: View {
   /// Where reminders go.
   let notifier: any Notifier
+  /// Whether a fresh install is still
+  /// checking iCloud for challenges.
+  let restore: RestoreCheck
 
   @Query private var challenges: [Challenge]
   @Environment(\.now)
@@ -11,8 +14,12 @@ struct RootView: View {
   @Environment(\.scenePhase)
   private var phase
 
-  init(notifier: any Notifier) {
+  init(
+    notifier: any Notifier,
+    restore: RestoreCheck
+  ) {
     self.notifier = notifier
+    self.restore = restore
   }
 
   /// The reminders to schedule, or nil while
@@ -38,6 +45,10 @@ struct RootView: View {
       CalendarView()
         .tabItem { calendarTab }
     }
+    .overlay { LaunchCover() }
+    .environment(
+      \.restorePhase, restore.phase
+    )
     .task(id: plan) {
       if let plan {
         await ReminderSync.update(

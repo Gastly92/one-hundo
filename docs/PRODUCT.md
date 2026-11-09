@@ -318,6 +318,28 @@ learned building it: `docs/ICLOUD.md`.
   merged: one copy of each challenge with
   all its days, and one attempt a day, the
   last logged.
+- First launch with no challenges on the
+  phone: the launch screen's logo stays
+  while the app asks iCloud whether this
+  account has used One Hundo (at most
+  3 s). A new user, or no answer
+  (offline, signed out): the welcome
+  screen, no message. A returning user (a
+  reinstall, a new device): the logo
+  stays until iCloud's first import
+  brings their challenges, so they aren't
+  invited to start over. After 4 s, the
+  welcome screen with a quiet note that
+  it's still checking iCloud (up to
+  30 s); a "yes" after the logo's 3 s
+  adds the note too.
+- The launch screen shows the app's ring
+  and "100": in light mode on the icon's
+  blue-to-purple gradient filling the
+  screen, in dark mode as the dark icon
+  on black.
+  Challenges that arrive replace it.
+  (1.1.1)
 - Saved with SwiftData in the app's normal
   storage, which iCloud Backup includes
   automatically. Restoring a phone from

@@ -22,8 +22,16 @@ echo "$changes"
 
 # The tests ran on the PR merged into main;
 # put the images on the PR branch itself.
+# Only the images they recorded: that
+# merge can be older than the branch (#106
+# got back images it had deleted).
 saved=$(mktemp -d)
-cp -R "$dir" "$saved/"
+{
+  git ls-files -z --others \
+    --exclude-standard -- "$dir"
+  git diff -z --name-only \
+    --diff-filter=M -- "$dir"
+} | xargs -0 tar -cf "$saved/new.tar"
 # (Undo them here first; the folder may not
 # be in git yet.)
 if [ -n "$(git ls-files -- "$dir")" ]; then
@@ -32,8 +40,7 @@ fi
 git clean -fdq -- "$dir"
 git fetch -q --depth=1 origin "$BRANCH"
 git checkout -q -B "$BRANCH" FETCH_HEAD
-rm -rf "$dir"
-cp -R "$saved/__Snapshots__" "$dir"
+tar -xf "$saved/new.tar"
 
 git config user.name "github-actions[bot]"
 git config user.email \

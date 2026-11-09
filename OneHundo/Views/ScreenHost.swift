@@ -77,6 +77,13 @@ struct ScreenHost: View {
     case .welcome:
       // The list with no challenges yet.
       ChallengeListView()
+    case .launchCover:
+      // A fresh install asking iCloud.
+      LaunchCover().environment(
+        \.restorePhase, .deciding
+      )
+    case .welcomeSlow:
+      welcome(.slow)
     case .challengeList:
       ChallengeListView()
     case .calendar:
@@ -117,7 +124,12 @@ struct ScreenHost: View {
     case .tabs:
       // The app as it opens, with its tab
       // bar.
-      RootView(notifier: SilentNotifier())
+      RootView(
+        notifier: SilentNotifier(),
+        restore: RestoreCheck(
+          active: false, cloud: nil
+        )
+      )
     case .enrollIntro:
       enroll(at: .intro)
     case .enrollTest:
@@ -216,6 +228,15 @@ struct ScreenHost: View {
     case .storeError:
       StoreErrorView(details: Self.error)
     }
+  }
+
+  /// The empty list while a fresh install
+  /// checks iCloud.
+  private func welcome(
+    _ phase: RestorePhase
+  ) -> some View {
+    ChallengeListView()
+      .environment(\.restorePhase, phase)
   }
 
   private func enroll(
