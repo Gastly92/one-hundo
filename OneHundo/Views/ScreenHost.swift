@@ -77,9 +77,11 @@ struct ScreenHost: View {
     case .welcome:
       // The list with no challenges yet.
       ChallengeListView()
-    case .welcomeDeciding:
+    case .launchCover:
       // A fresh install asking iCloud.
-      welcome(.deciding)
+      LaunchCover().environment(
+        \.restorePhase, .deciding
+      )
     case .welcomeChecking:
       welcome(.checking)
     case .welcomeSlow:

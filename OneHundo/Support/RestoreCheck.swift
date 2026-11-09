@@ -9,16 +9,20 @@ import Observation
 /// Active only when the store was empty at
 /// launch and the build can reach iCloud.
 /// It asks iCloud whether this account has
-/// used the app (`CloudCheck`): no, and the
+/// used the app (`CloudCheck`), showing the
+/// launch logo meanwhile: no, and the
 /// welcome screen shows; yes, and it shows
 /// "Checking…" until iCloud's first import
-/// finishes. Two waits keep it from ever
+/// finishes. Waits keep it from ever
 /// hanging.
 @MainActor
 @Observable
 final class RestoreCheck {
   private(set) var phase: RestorePhase
 
+  /// How long the logo waits for iCloud's
+  /// answer.
+  static let decideBy = Duration.seconds(3)
   /// How long before the welcome screen
   /// shows anyway (with a note, if iCloud
   /// said there's data).
@@ -33,6 +37,8 @@ final class RestoreCheck {
     active: Bool,
     cloud: (any CloudContainer)?,
     center: NotificationCenter = .default,
+    decideBy: Duration = RestoreCheck
+      .decideBy,
     wait: Duration = RestoreCheck.wait,
     giveUp: Duration = RestoreCheck.giveUp
   ) {
@@ -61,6 +67,7 @@ final class RestoreCheck {
         .hasSynced(cloud)
       self?.update { $0.decided(synced) }
     }
+    later(decideBy) { $0.timedOut() }
     later(wait) { $0.waited() }
     later(wait + giveUp) { $0.gaveUp() }
   }

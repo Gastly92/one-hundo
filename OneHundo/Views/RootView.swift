@@ -45,6 +45,7 @@ struct RootView: View {
       CalendarView()
         .tabItem { calendarTab }
     }
+    .overlay { LaunchCover() }
     .environment(
       \.restorePhase, restore.phase
     )

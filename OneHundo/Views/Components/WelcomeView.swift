@@ -49,7 +49,8 @@ struct WelcomeView: View {
         """,
         icon: "icloud"
       )
-    case .deciding, .checking, .done:
+    case .deciding, .checking, .unsure,
+      .done:
       EmptyView()
     }
   }

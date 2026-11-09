@@ -32,24 +32,29 @@ private struct FakeZones: CloudZones {
 }
 
 /// An iCloud account: its status (nil:
-/// iCloud can't be asked, e.g. offline) and
-/// whether the app has synced to it.
+/// iCloud can't be asked, e.g. offline),
+/// whether the app has synced to it, and
+/// how long it takes to answer.
 private struct FakeCloud: CloudContainer {
   let status: CKAccountStatus?
   let privateCloudDatabase: FakeZones
+  let delay: Duration
 
   init(
     _ status: CKAccountStatus?,
-    synced: Bool = false
+    synced: Bool = false,
+    after delay: Duration = .zero
   ) {
     self.status = status
     privateCloudDatabase = FakeZones(
       exists: synced
     )
+    self.delay = delay
   }
 
-  func accountStatus() throws
+  func accountStatus() async throws
     -> CKAccountStatus {
+    try await Task.sleep(for: delay)
     guard let status else {
       throw CKError(.networkUnavailable)
     }
@@ -71,6 +76,8 @@ final class RestoreTests: XCTestCase {
 
   func testPhaseSteps() {
     let deciding = RestorePhase.deciding
+    let unsure = RestorePhase.unsure
+    let checking = RestorePhase.checking
     XCTAssertEqual(
       deciding.decided(true), .checking
     )
@@ -78,21 +85,30 @@ final class RestoreTests: XCTestCase {
       deciding.decided(false), .done
     )
     XCTAssertEqual(
+      unsure.decided(true), .slow
+    )
+    XCTAssertEqual(
+      unsure.decided(false), .done
+    )
+    XCTAssertEqual(
       RestorePhase.done.decided(true), .done
     )
-    XCTAssertEqual(deciding.waited(), .done)
     XCTAssertEqual(
-      RestorePhase.checking.waited(), .slow
+      deciding.timedOut(), .unsure
     )
     XCTAssertEqual(
-      RestorePhase.slow.waited(), .slow
+      checking.timedOut(), .checking
+    )
+    XCTAssertEqual(checking.waited(), .slow)
+    XCTAssertEqual(
+      deciding.waited(), .deciding
     )
     XCTAssertEqual(
       RestorePhase.slow.gaveUp(), .done
     )
+    XCTAssertEqual(unsure.gaveUp(), .done)
     XCTAssertEqual(
-      RestorePhase.checking.gaveUp(),
-      .checking
+      checking.gaveUp(), .checking
     )
     XCTAssertEqual(
       RestorePhase.slow.imported(), .done
@@ -203,6 +219,25 @@ final class RestoreTests: XCTestCase {
       to: center
     )
     await until(check, is: .done)
+  }
+
+  /// iCloud answers after the logo's time:
+  /// the welcome screen, then a late yes
+  /// adds the note.
+  func testLateAnswer() async {
+    let check = RestoreCheck(
+      active: true,
+      cloud: FakeCloud(
+        .available,
+        synced: true,
+        after: .milliseconds(300)
+      ),
+      center: NotificationCenter(),
+      decideBy: .milliseconds(50),
+      wait: .seconds(60)
+    )
+    await until(check, is: .unsure)
+    await until(check, is: .slow)
   }
 
   /// No import: the welcome screen with a

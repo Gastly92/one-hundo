@@ -1,31 +1,40 @@
-/// What the empty challenge list shows on a
-/// fresh install while iCloud may still be
-/// bringing challenges in
+/// What a fresh install shows while iCloud
+/// may still be bringing challenges in
 /// (`RestoreCheck`). Challenges that arrive
 /// show in any phase: the list replaces it.
 enum RestorePhase: Equatable, Sendable {
   /// Asking iCloud whether this account has
-  /// used the app: a blank screen, so a new
-  /// user sees no message.
+  /// used the app: the launch screen's logo
+  /// stays (`LaunchCover`), so a new user
+  /// sees no message.
   case deciding
   /// It has: "Checking iCloud for your
   /// challenges…" in place of the welcome
   /// screen, so a returning user isn't
   /// invited to start over.
   case checking
-  /// Still no answer: the welcome screen,
-  /// with a note that it's still checking.
+  /// Still no challenges: the welcome
+  /// screen, with a note that it's still
+  /// checking.
   case slow
+  /// iCloud hasn't answered in time: the
+  /// welcome screen, and the note if it
+  /// later says there's data.
+  case unsure
   /// The welcome screen as usual.
   case done
 
   /// iCloud answered: `synced` if this
   /// account has used the app before.
   func decided(_ synced: Bool) -> Self {
-    guard self == .deciding else {
-      return self
+    switch self {
+    case .deciding:
+      synced ? .checking : .done
+    case .unsure:
+      synced ? .slow : .done
+    case .checking, .slow, .done:
+      self
     }
-    return synced ? .checking : .done
   }
 
   /// iCloud finished bringing changes in.
@@ -33,21 +42,23 @@ enum RestorePhase: Equatable, Sendable {
     .done
   }
 
-  /// The first wait is over. No answer yet
-  /// counts as a new user.
+  /// The logo's time is up.
+  func timedOut() -> Self {
+    self == .deciding ? .unsure : self
+  }
+
+  /// "Checking…"'s time is up.
   func waited() -> Self {
-    switch self {
-    case .deciding:
-      .done
-    case .checking:
-      .slow
-    case .slow, .done:
-      self
-    }
+    self == .checking ? .slow : self
   }
 
   /// Waited long enough: the note goes.
   func gaveUp() -> Self {
-    self == .slow ? .done : self
+    switch self {
+    case .slow, .unsure:
+      .done
+    case .deciding, .checking, .done:
+      self
+    }
   }
 }

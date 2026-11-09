@@ -4,6 +4,11 @@
 <dict>
   <key>OneHundoCloudKit</key>
   <string>$(ONEHUNDO_CLOUDKIT)</string>
+  <key>UILaunchScreen</key>
+  <dict>
+    <key>UIImageName</key>
+    <string>LaunchLogo</string>
+  </dict>
   <key>UIBackgroundModes</key>
   <array>
     <string>remote-notification</string>
