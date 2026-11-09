@@ -8,10 +8,9 @@ enum RestorePhase: Equatable, Sendable {
   /// stays (`LaunchCover`), so a new user
   /// sees no message.
   case deciding
-  /// It has: "Checking iCloud for your
-  /// challenges…" in place of the welcome
-  /// screen, so a returning user isn't
-  /// invited to start over.
+  /// It has: the logo stays until the
+  /// challenges arrive, so a returning
+  /// user isn't invited to start over.
   case checking
   /// Still no challenges: the welcome
   /// screen, with a note that it's still
@@ -23,6 +22,12 @@ enum RestorePhase: Equatable, Sendable {
   case unsure
   /// The welcome screen as usual.
   case done
+
+  /// Whether the launch logo covers the
+  /// app (`LaunchCover`).
+  var showsLogo: Bool {
+    self == .deciding || self == .checking
+  }
 
   /// iCloud answered: `synced` if this
   /// account has used the app before.
@@ -47,7 +52,7 @@ enum RestorePhase: Equatable, Sendable {
     self == .deciding ? .unsure : self
   }
 
-  /// "Checking…"'s time is up.
+  /// The returning user's wait is up.
   func waited() -> Self {
     self == .checking ? .slow : self
   }

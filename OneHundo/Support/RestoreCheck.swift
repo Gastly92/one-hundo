@@ -11,8 +11,8 @@ import Observation
 /// It asks iCloud whether this account has
 /// used the app (`CloudCheck`), showing the
 /// launch logo meanwhile: no, and the
-/// welcome screen shows; yes, and it shows
-/// "Checking…" until iCloud's first import
+/// welcome screen shows; yes, and the logo
+/// stays until iCloud's first import
 /// finishes. Waits keep it from ever
 /// hanging.
 @MainActor

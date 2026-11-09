@@ -68,17 +68,13 @@ struct ChallengeListView: View {
       .sheet(item: $logging) { logSheet($0) }
   }
 
-  /// No challenges: the welcome screen, or
-  /// "Checking…" while a fresh install
-  /// waits for iCloud's (`RestorePhase`).
-  /// While it asks whether there are any,
-  /// `LaunchCover` hides this.
+  /// No challenges: the welcome screen
+  /// (`LaunchCover` hides it while a fresh
+  /// install waits for iCloud's).
   @ViewBuilder
   private var content: some View {
     if !challenges.isEmpty {
       ScrollView { grid }
-    } else if restore == .checking {
-      RestoreView()
     } else {
       WelcomeView(phase: restore) {
         isAdding = true

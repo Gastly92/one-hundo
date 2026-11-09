@@ -14,12 +14,10 @@
 /// shown there.
 enum ScreenID: String, CaseIterable {
   case welcome, challengeList
-  // A fresh install asking iCloud: the
-  // launch logo, then (data there)
-  // "Checking…", then the welcome screen
-  // with a note.
-  case launchCover, welcomeChecking
-  case welcomeSlow
+  // A fresh install waiting for iCloud:
+  // the launch logo, then (data there, but
+  // slow) the welcome screen with a note.
+  case launchCover, welcomeSlow
   case calendar, calendarDay
   case calendarEmpty
   case addChallenge, customChallenge

@@ -115,6 +115,20 @@ final class RestoreTests: XCTestCase {
     )
   }
 
+  /// The logo stays while iCloud is asked
+  /// and while a returning user's
+  /// challenges arrive.
+  func testShowsLogo() {
+    let shown = [
+      RestorePhase.deciding, .checking,
+      .slow, .unsure, .done,
+    ].map(\.showsLogo)
+    XCTAssertEqual(
+      shown,
+      [true, true, false, false, false]
+    )
+  }
+
   /// Only builds signed for iCloud ask it.
   func testSignedBuildsOnly() {
     let key = CloudCheck.signedKey
@@ -183,8 +197,8 @@ final class RestoreTests: XCTestCase {
     await until(check, is: .done)
   }
 
-  /// A returning user: "Checking…" until
-  /// a finished import (nothing else) ends
+  /// A returning user: the logo until a
+  /// finished import (nothing else) ends
   /// it.
   func testReturningUntilImport() async {
     let center = NotificationCenter()

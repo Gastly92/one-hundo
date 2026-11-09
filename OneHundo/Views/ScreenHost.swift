@@ -82,8 +82,6 @@ struct ScreenHost: View {
       LaunchCover().environment(
         \.restorePhase, .deciding
       )
-    case .welcomeChecking:
-      welcome(.checking)
     case .welcomeSlow:
       welcome(.slow)
     case .challengeList:
