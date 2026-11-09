@@ -316,8 +316,8 @@ success haptic, then two choices:
   all its days, and one attempt a day, the
   last logged.
 - First launch with no challenges on the
-  phone (a reinstall, a new device): a
-  spinner, "Checking iCloud for your
+  phone (a reinstall, a new device): an
+  iCloud icon and "Checking iCloud for your
   challenges…", until iCloud's first
   import finishes (at most 4 s), so a
   returning user isn't invited to start

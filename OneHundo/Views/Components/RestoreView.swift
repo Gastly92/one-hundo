@@ -23,8 +23,13 @@ extension EnvironmentValues {
 struct RestoreView: View {
   var body: some View {
     VStack(spacing: 16) {
-      ProgressView()
-        .controlSize(.large)
+      // Still, not a spinner: a spinner's
+      // frame differs from run to run, which
+      // snapshots can't compare.
+      Image(systemName: "icloud")
+        .font(.largeTitle)
+        .foregroundStyle(.secondary)
+        .accessibilityHidden(true)
       Text("""
         Checking iCloud for your \
         challenges…
