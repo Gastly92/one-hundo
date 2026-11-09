@@ -36,11 +36,25 @@ deployed from Cloudflare's dashboard:
    `one-hundo` repository.
 2. Root directory: `tools/udid`. Keep the
    default deploy command.
-3. If offered, set the build watch paths
-   to `tools/udid/*`, so other pushes
-   don't redeploy it.
+3. Set the build watch paths (Settings →
+   Build) to `tools/udid/*` on both
+   tabs, **Production** and **Previews
+   Base**. `main` then deploys only on
+   changes to `tools/udid`. Turn off
+   **Builds for Preview branches**:
+   Cloudflare's previews ignore watch
+   paths and built on every pull request
+   (tried in #104). Instead,
+   `worker-preview.yml` tests and
+   previews the Worker for pull requests
+   that change it, and comments the
+   address (needs the
+   `CLOUDFLARE_API_TOKEN` and
+   `CLOUDFLARE_ACCOUNT_ID` secrets).
 4. Deploy, and note its `workers.dev`
-   address.
+   address. Worker name
+   `onehundo-udid` (must match
+   `wrangler.toml`).
 
 ## 2. Get the device ID
 1. Open that address in Safari and tap
@@ -97,8 +111,15 @@ Once, also register the schema app's ID:
    It only uploads the schema samples.
 
 ## 5. Run it once
-Open the app on Wi-Fi, signed in to
-iCloud, and keep it open for a minute.
+1. iOS opens ad hoc apps only with
+   **Developer Mode** on: Settings →
+   Privacy & Security → Developer Mode
+   (it shows once such an app is
+   installed), then restart and confirm.
+2. Open **One Hundo Schema** on Wi-Fi,
+   signed in to iCloud, and keep it open
+   for a minute. It looks empty: it has
+   none of your data.
 
 ## 6. Check and deploy
 1. In Safari open icloud.developer.apple.com
@@ -117,5 +138,7 @@ iCloud, and keep it open for a minute.
 
 ## 7. Clean up
 Delete **One Hundo Schema** from the
-phone. One Hundo itself was never
-touched, and syncs from now on.
+phone, and turn Developer Mode off again
+if you like (another restart). One Hundo
+itself was never touched, and syncs from
+now on.

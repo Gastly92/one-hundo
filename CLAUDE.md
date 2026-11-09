@@ -8,6 +8,7 @@ Code; there is no Mac. What the app does:
 `docs/ROADMAP.md`. Keep both updated as
 features land. How 1.0 was built (a
 finished record): `docs/HISTORY.md`.
+iCloud sync (1.1): `docs/ICLOUD.md`.
 
 ## Building
 - This container is Linux: nothing
@@ -384,3 +385,14 @@ finished record): `docs/HISTORY.md`.
   adds a field needs the one-off ad hoc
   build again and the owner's deploy
   (`docs/CLOUDKIT.md`).
+- `tools/udid` is a Cloudflare Worker
+  (deployed by Cloudflare from `main`,
+  root directory `tools/udid`): it shows
+  an iPhone's device ID to register it,
+  and `/install` serves the schema build.
+  Test changes with `node` and sample
+  requests before pushing (CI runs
+  `tools/udid/test.mjs`). Pull requests
+  that change it get a preview from
+  `worker-preview.yml` (a comment with
+  its address) to try on the phone.

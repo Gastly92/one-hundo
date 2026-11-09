@@ -117,3 +117,8 @@ first TestFlight run that signs in iCloud
    certificate needed).
 6. Tap **Save** → **Confirm**. Signing
    picks up the new profile by itself.
+
+The one-off schema build is a second app
+ID with the same container
+(`com.gastly92.onehundo.schema`); its
+steps are in `docs/CLOUDKIT.md`.
