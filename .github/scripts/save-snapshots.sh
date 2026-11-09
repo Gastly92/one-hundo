@@ -13,25 +13,28 @@
 set -euo pipefail
 
 dir=OneHundoTests/__Snapshots__
-changes=$(git status --porcelain -- "$dir")
-if [ -z "$changes" ]; then
-  echo "No new snapshot images."
-  exit 0
-fi
-echo "$changes"
-
-# The tests ran on the PR merged into main;
-# put the images on the PR branch itself.
-# Only the images they recorded: that
-# merge can be older than the branch (#106
-# got back images it had deleted).
-saved=$(mktemp -d)
+# Only the images the tests recorded (new
+# or changed). Not the whole folder: the
+# tests ran on the PR merged into main,
+# which can be older than the branch, and
+# copying it all brought back images the
+# branch had just deleted (#106).
+list=$(mktemp)
 {
   git ls-files -z --others \
     --exclude-standard -- "$dir"
   git diff -z --name-only \
     --diff-filter=M -- "$dir"
-} | xargs -0 tar -cf "$saved/new.tar"
+} > "$list"
+if [ ! -s "$list" ]; then
+  echo "No new snapshot images."
+  exit 0
+fi
+tr '\0' '\n' < "$list"
+
+# Put them on the PR branch itself.
+saved=$(mktemp -d)
+xargs -0 tar -cf "$saved/new.tar" < "$list"
 # (Undo them here first; the folder may not
 # be in git yet.)
 if [ -n "$(git ls-files -- "$dir")" ]; then
