@@ -25,6 +25,8 @@ struct ChallengeListView: View {
   private var now
   @Environment(\.dynamicTypeSize)
   private var textSize
+  @Environment(\.restorePhase)
+  private var restore
 
   private static let tile = RoundedRectangle(
     cornerRadius: 16
@@ -66,12 +68,17 @@ struct ChallengeListView: View {
       .sheet(item: $logging) { logSheet($0) }
   }
 
+  /// No challenges: the welcome screen
+  /// (`LaunchCover` hides it while a fresh
+  /// install waits for iCloud's).
   @ViewBuilder
   private var content: some View {
-    if challenges.isEmpty {
-      WelcomeView { isAdding = true }
-    } else {
+    if !challenges.isEmpty {
       ScrollView { grid }
+    } else {
+      WelcomeView(phase: restore) {
+        isAdding = true
+      }
     }
   }
 

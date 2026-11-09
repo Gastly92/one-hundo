@@ -11,7 +11,7 @@ options:
   usesTabs: false
 settings:
   base:
-    MARKETING_VERSION: "1.1.0"
+    MARKETING_VERSION: "1.1.1"
     CURRENT_PROJECT_VERSION: "1"
     # Swift 6: data races are compile errors
     # in every target, tests included.
@@ -54,10 +54,15 @@ targets:
         # them in.
         CODE_SIGN_ENTITLEMENTS:
           OneHundo/OneHundo.entitlements
+        # YES only in builds signed for
+        # iCloud (TestFlight): the app then
+        # asks iCloud, on a fresh install,
+        # whether there's data to restore
+        # (`CloudCheck`). CloudKit crashes
+        # unsigned builds (CI's).
+        ONEHUNDO_CLOUDKIT: NO
         INFOPLIST_KEY_CFBundleDisplayName:
           One Hundo
-        INFOPLIST_KEY_UILaunchScreen_Generation:
-          YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents:
           YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
@@ -68,6 +73,9 @@ targets:
           AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME:
           AccentColor
+        # `Image(.launchLogo)` and the like.
+        ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS:
+          YES
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
   OneHundoTests:
