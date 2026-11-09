@@ -19,7 +19,7 @@ extension EnvironmentValues {
 /// asks iCloud whether it has challenges,
 /// and while they arrive
 /// (`RestorePhase.showsLogo`): the launch
-/// screen's logo, in the same place, so
+/// screen's picture, in the same place, so
 /// opening the app and waiting look like
 /// one screen. Still, not a spinner: the
 /// wait is short, and a spinner that comes
@@ -30,12 +30,15 @@ struct LaunchCover: View {
 
   var body: some View {
     if phase.showsLogo {
-      Image(.launchLogo)
-        .accessibilityHidden(true)
-        .frame(
-          maxWidth: .infinity,
-          maxHeight: .infinity
-        )
+      // Like the launch screen: centred at
+      // its own size. In light mode it's
+      // the full-screen gradient, bigger
+      // than most phones, which crop it.
+      Color.clear
+        .overlay {
+          Image(.launchLogo)
+            .accessibilityHidden(true)
+        }
         .background(.background)
         .ignoresSafeArea()
         // VoiceOver says why it waits.

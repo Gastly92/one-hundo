@@ -330,7 +330,11 @@ success haptic, then two choices:
   it's still checking iCloud (up to
   30 s); a "yes" after the logo's 3 s
   adds the note too.
-- The launch screen shows the app icon.
+- The launch screen shows the app's ring
+  and "100": in light mode on the icon's
+  blue-to-purple gradient filling the
+  screen, in dark mode as the dark icon
+  on black.
   Challenges that arrive replace it.
   (1.1.1)
 - Saved with SwiftData in the app's normal
