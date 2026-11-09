@@ -117,6 +117,12 @@ What's New in 1.1:
 Your challenges now sync through your own iCloud: they appear on your other devices and come back after a reinstall or on a new phone. Nothing to set up. To turn it off, go to Settings, your name, iCloud.
 ```
 
+What's New in 1.1.1:
+
+```
+A new launch screen. When you reinstall One Hundo or set up a new phone, it now waits for your challenges to arrive from iCloud instead of showing the welcome screen.
+```
+
 Keywords (100, commas, no spaces after
 them):
 

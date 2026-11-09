@@ -40,6 +40,36 @@ CloudKit schema: `docs/CLOUDKIT.md`.
   Core Data posts from background
   threads, and a main-actor handler
   crashed the app under Swift 6.
+- **Fresh install** (1.1.1,
+  `RestoreCheck`, `CloudCheck`): with an
+  empty store at launch, the app asks
+  iCloud whether this account has the
+  app's zone (the account must be
+  available, then it looks the zone up).
+  Meanwhile `LaunchCover` keeps the
+  launch screen's picture over the app.
+  "No" (or an error, offline, signed
+  out): the welcome screen. "Yes": the
+  picture stays until CloudKit's first
+  import ends (an `eventChangedNotification`
+  import event with an end date). Limits:
+  3 s for the answer, 4 s for a returning
+  user's data; past those, the welcome
+  screen, with a "Still checking
+  iCloud…" note when the answer was yes
+  (gone after 30 s). Challenges that
+  arrive replace any of it.
+- **Testing the check**: CloudKit
+  crashes builds without the
+  entitlement, so only builds with
+  `OneHundoCloudKit` = YES in Info.plist
+  ask (`ONEHUNDO_CLOUDKIT`, `NO` in
+  `project.yml`, `YES` in the TestFlight
+  archive). Tests pass fake accounts
+  through two small protocols that
+  `CKContainer` and `CKDatabase` already
+  meet (`CloudContainer`, `CloudZones`),
+  so no app line needs real iCloud.
 - **Duplicates** (`Models/Duplicates.swift`,
   also run when the store opens): the
   same challenge twice (same `id`)
@@ -77,11 +107,17 @@ CloudKit schema: `docs/CLOUDKIT.md`.
   iCloud). No switch in the app.
 - Reminder settings sync (not per
   device).
-- No restore screen on first launch (for
-  now): a reinstall shows the welcome
-  screen for a second or two until the
-  data arrives. Candidate design on the
-  roadmap.
+- A fresh install shows no message while
+  it waits, just the launch picture (the
+  icon's gradient with the ring in light
+  mode, the dark icon on black in dark).
+  Most apps don't mention syncing for a
+  second or two; iCloud only comes up in
+  the slow case's note. No buttons to
+  choose from. Offline counts as a new
+  user. The launch screen shows on every
+  cold start, like Spotify's: kept on
+  purpose.
 - App Privacy stays "Data Not
   Collected": the private database isn't
   visible to the developer.
@@ -91,7 +127,9 @@ CI builds unsigned. The TestFlight
 workflow archives unsigned, signs the
 entitlements in ad hoc, and export
 re-signs with them (it keeps what it
-finds in the app). Every run checks the
+finds in the app). The archive sets
+`ONEHUNDO_CLOUDKIT=YES`, turning on the
+fresh-install check. Every run checks the
 entitlements
 (`.github/scripts/entitlements.sh`);
 with `upload` off it builds, signs and
@@ -139,6 +177,13 @@ means the app has synced at least once.
   the same container.
 - iOS opens ad hoc apps only with
   Developer Mode on.
+- The launch screen centres its picture
+  at its own size (never stretched), so
+  the light one is a 440×956 pt picture
+  that smaller phones crop, and
+  `LaunchCover` draws it the same way.
+  iOS keeps an old launch screen until
+  the app is reinstalled.
 - iPhones don't show their UDID; the
   device ID page (`tools/udid`) gets it
   through a profile service.
@@ -160,6 +205,12 @@ means the app has synced at least once.
   brought it all back within seconds,
   and reminders asked for permission
   again.
+- Done (build 30, 1.1.1): installed
+  over 1.1.0 with the data kept; deleting
+  and reinstalling showed the launch
+  picture, then the challenges, with no
+  welcome screen in between; dark mode
+  checked.
 - Pending: two phones (an iPhone 12 on
   the same Apple ID): first download,
   changes both ways, and the same day
@@ -180,3 +231,5 @@ means the app has synced at least once.
 - #104: release docs (privacy page, App
   Store text) and this file.
 - #105: Worker previews from CI.
+- #106: the fresh-install check and the
+  launch picture (1.1.1).

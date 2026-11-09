@@ -8,26 +8,6 @@ ships, update `docs/PRODUCT.md` and remove
 it from this list. Versions: minor for a
 new feature (1.1.0), patch for fixes.
 
-- **Restore screen on first launch**
-  (candidate, after 1.1.0's iCloud sync,
-  `docs/ICLOUD.md`): a reinstall shows the
-  welcome screen for a second or two
-  until the data arrives, and a returning
-  user could start a duplicate challenge
-  in that moment. If it comes up in use:
-  - Returning user (iCloud on, the app's
-    zone exists): "Restoring your
-    challenges from iCloud…" until the
-    first import finishes; after ~5 s,
-    the welcome screen with a small
-    "Still restoring…" note, replaced
-    once the data arrives.
-  - Offline: the welcome screen with a
-    note that synced challenges appear
-    once connected (Network framework).
-  - New user or iCloud off: welcome
-    screen at once, no note. No buttons
-    to choose from in any case.
 - **iPhone Duo (foldable) support**: apps
   fill its inner screen only when built
   with Xcode 27.1 or later (older builds,
