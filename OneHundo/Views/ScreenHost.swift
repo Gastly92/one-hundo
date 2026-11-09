@@ -77,13 +77,13 @@ struct ScreenHost: View {
     case .welcome:
       // The list with no challenges yet.
       ChallengeListView()
+    case .welcomeDeciding:
+      // A fresh install asking iCloud.
+      welcome(.deciding)
     case .welcomeChecking:
-      // A fresh install checking iCloud.
       welcome(.checking)
     case .welcomeSlow:
       welcome(.slow)
-    case .welcomeOffline:
-      welcome(.offline)
     case .challengeList:
       ChallengeListView()
     case .calendar:
@@ -126,7 +126,9 @@ struct ScreenHost: View {
       // bar.
       RootView(
         notifier: SilentNotifier(),
-        restore: RestoreCheck(active: false)
+        restore: RestoreCheck(
+          active: false, cloud: nil
+        )
       )
     case .enrollIntro:
       enroll(at: .intro)

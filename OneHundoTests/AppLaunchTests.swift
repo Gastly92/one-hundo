@@ -43,9 +43,10 @@ final class AppLaunchTests: XCTestCase {
     XCTAssertEqual(try count(launch), 0)
     // Watches for iCloud's changes.
     XCTAssertNotNil(launch.sync)
-    // Empty: checks iCloud for challenges.
+    // Empty, but tests aren't signed for
+    // iCloud: no iCloud check.
     XCTAssertEqual(
-      launch.restore.phase, .checking
+      launch.restore.phase, .done
     )
   }
 

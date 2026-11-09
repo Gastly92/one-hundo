@@ -316,14 +316,19 @@ success haptic, then two choices:
   all its days, and one attempt a day, the
   last logged.
 - First launch with no challenges on the
-  phone (a reinstall, a new device): an
-  iCloud icon and "Checking iCloud for your
-  challenges…", until iCloud's first
-  import finishes (at most 4 s), so a
-  returning user isn't invited to start
-  over. Then the welcome screen, with a
-  quiet note while iCloud is still
-  checking (up to 30 s) or while offline.
+  phone: the app asks iCloud whether this
+  account has used One Hundo (a blank
+  screen for a moment). A new user, or
+  no answer (offline, signed out): the
+  welcome screen, no message. A
+  returning user (a reinstall, a new
+  device): an iCloud icon and "Checking
+  iCloud for your challenges…" until
+  iCloud's first import finishes, so
+  they aren't invited to start over.
+  After 4 s, the welcome screen with a
+  quiet note that it's still checking
+  (up to 30 s).
   Challenges that arrive replace it.
   (1.1.1)
 - Saved with SwiftData in the app's normal

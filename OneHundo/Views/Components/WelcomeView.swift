@@ -49,16 +49,7 @@ struct WelcomeView: View {
         """,
         icon: "icloud"
       )
-    case .offline:
-      noteLabel(
-        """
-        You're offline. Challenges you've \
-        synced will appear once you're \
-        connected.
-        """,
-        icon: "wifi.slash"
-      )
-    case .checking, .done:
+    case .deciding, .checking, .done:
       EmptyView()
     }
   }

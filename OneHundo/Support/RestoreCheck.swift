@@ -1,45 +1,46 @@
 import Combine
 import CoreData
 import Foundation
-import Network
 import Observation
 
 /// Follows a fresh install while iCloud may
 /// still be bringing challenges in, for the
 /// empty challenge list (`RestorePhase`).
 /// Active only when the store was empty at
-/// launch. It ends when iCloud's first
-/// import finishes, and two waits keep it
-/// from ever hanging (iCloud signed out,
-/// slow, or not posting its events).
+/// launch and the build can reach iCloud.
+/// It asks iCloud whether this account has
+/// used the app (`CloudCheck`): no, and the
+/// welcome screen shows; yes, and it shows
+/// "Checking…" until iCloud's first import
+/// finishes. Two waits keep it from ever
+/// hanging.
 @MainActor
 @Observable
 final class RestoreCheck {
   private(set) var phase: RestorePhase
 
-  /// How long the spinner shows before the
-  /// welcome screen (with a note).
+  /// How long before the welcome screen
+  /// shows anyway (with a note, if iCloud
+  /// said there's data).
   static let wait = Duration.seconds(4)
   /// How much longer the note shows.
   static let giveUp = Duration.seconds(26)
 
-  private let giveUp: Duration
-  /// The connection, as it changes.
-  private let net = NWPathMonitor()
   @ObservationIgnored private var watching =
     Set<AnyCancellable>()
 
   init(
     active: Bool,
+    cloud: (any CloudContainer)?,
     center: NotificationCenter = .default,
     wait: Duration = RestoreCheck.wait,
     giveUp: Duration = RestoreCheck.giveUp
   ) {
-    phase = active ? .checking : .done
-    self.giveUp = giveUp
-    guard active else {
+    guard active, let cloud else {
+      phase = .done
       return
     }
+    phase = .deciding
     let name = NSPersistentCloudKitContainer
       .eventChangedNotification
     // iCloud posts from background threads,
@@ -55,26 +56,13 @@ final class RestoreCheck {
         }
       }
       .store(in: &watching)
-    net.pathUpdateHandler = { [weak self] in
-      let isUp = $0.status == .satisfied
-      Task { @MainActor in
-        self?.connection(isUp)
-      }
+    Task { [weak self] in
+      let synced = await CloudCheck
+        .hasSynced(cloud)
+      self?.update { $0.decided(synced) }
     }
-    net.start(queue: .main)
     later(wait) { $0.waited() }
     later(wait + giveUp) { $0.gaveUp() }
-  }
-
-  /// The connection came or went. Back
-  /// online, the "still checking" note
-  /// gets a wait of its own.
-  func connection(_ isOnline: Bool) {
-    let before = phase
-    update { $0.online(isOnline) }
-    if before == .offline, phase == .slow {
-      later(giveUp) { $0.gaveUp() }
-    }
   }
 
   /// Whether `note` says an import finished.
@@ -117,7 +105,6 @@ final class RestoreCheck {
   private func update(_ change: Change) {
     phase = change(phase)
     if phase == .done {
-      net.cancel()
       watching.removeAll()
     }
   }

@@ -54,6 +54,13 @@ targets:
         # them in.
         CODE_SIGN_ENTITLEMENTS:
           OneHundo/OneHundo.entitlements
+        # YES only in builds signed for
+        # iCloud (TestFlight): the app then
+        # asks iCloud, on a fresh install,
+        # whether there's data to restore
+        # (`CloudCheck`). CloudKit crashes
+        # unsigned builds (CI's).
+        ONEHUNDO_CLOUDKIT: NO
         INFOPLIST_KEY_CFBundleDisplayName:
           One Hundo
         INFOPLIST_KEY_UILaunchScreen_Generation:

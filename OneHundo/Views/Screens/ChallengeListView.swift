@@ -69,12 +69,17 @@ struct ChallengeListView: View {
   }
 
   /// No challenges: the welcome screen, or
-  /// a spinner while a fresh install checks
-  /// iCloud for some (`RestorePhase`).
+  /// while a fresh install asks iCloud for
+  /// some, a blank screen, then
+  /// "Checking…" if there are
+  /// (`RestorePhase`).
   @ViewBuilder
   private var content: some View {
     if !challenges.isEmpty {
       ScrollView { grid }
+    } else if restore == .deciding {
+      // No message: it may be a new user.
+      Color.clear
     } else if restore == .checking {
       RestoreView()
     } else {

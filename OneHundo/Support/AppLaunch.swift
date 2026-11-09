@@ -27,8 +27,8 @@ struct AppLaunch {
   let sync: SyncWatcher?
   /// Whether a fresh install is still
   /// checking iCloud for challenges. Only
-  /// when the store opened empty, and never
-  /// in UI tests.
+  /// when the store opened empty in a build
+  /// signed for iCloud, never in UI tests.
   let restore: RestoreCheck
 
   /// Screens shown with the sample
@@ -104,8 +104,13 @@ struct AppLaunch {
     let all = FetchDescriptor<Challenge>()
     let count = try? store.get().mainContext
       .fetchCount(all)
+    let info = Bundle.main.infoDictionary
+    let signed = CloudCheck.isSigned(info)
     restore = RestoreCheck(
-      active: !isUITesting && count == 0
+      active: !isUITesting && count == 0,
+      cloud: CloudCheck.container(
+        signed: signed
+      )
     )
     let seeded = Self.seededScreens
     let needsData = seeded.contains {
