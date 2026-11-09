@@ -1,6 +1,8 @@
 # iCloud sync
 
-Since 1.1.0, challenges and attempts sync
+Since 1.1 (1.1.0 on TestFlight, 1.1.1
+the first App Store release with it),
+challenges and attempts sync
 through the user's own private iCloud
 database (CloudKit), so they appear on
 their other devices and come back after a

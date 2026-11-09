@@ -111,16 +111,12 @@ Pick a challenge and test yourself: how many can you do today without stopping? 
 No account, no ads, no tracking. Your progress stays on your iPhone and in your own iCloud.
 ```
 
-What's New in 1.1:
+What's New in 1.1.1 (the first App Store
+release after 1.0; 1.1.0 was TestFlight
+only):
 
 ```
-Your challenges now sync through your own iCloud: they appear on your other devices and come back after a reinstall or on a new phone. Nothing to set up. To turn it off, go to Settings, your name, iCloud.
-```
-
-What's New in 1.1.1:
-
-```
-A new launch screen. When you reinstall One Hundo or set up a new phone, it now waits for your challenges to arrive from iCloud instead of showing the welcome screen.
+Your challenges now sync through your own iCloud: they appear on your other devices and come back after a reinstall or on a new phone. Nothing to set up. To turn it off, go to Settings, your name, iCloud. Plus a new launch screen.
 ```
 
 Keywords (100, commas, no spaces after
