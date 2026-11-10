@@ -12,15 +12,17 @@ struct DayView: View {
   private var challenges: [Challenge]
   @Environment(\.calendar)
   private var cal
+  @Environment(\.now)
+  private var now
 
   init(_ day: Date) {
     self.day = day
   }
 
   /// E.g. "Monday, January 5".
-  private static let dayFormat =
-    Date.FormatStyle.dateTime
-      .weekday(.wide).month(.wide).day()
+  private var title: Date.FormatStyle {
+    .dayText(day, now: now, in: cal)
+  }
 
   var body: some View {
     List {
@@ -32,7 +34,7 @@ struct DayView: View {
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
       ToolbarItem(placement: .principal) {
-        Text(day, format: Self.dayFormat)
+        Text(day, format: title)
           .font(.headline)
           .testID("dayTitle")
       }

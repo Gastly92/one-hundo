@@ -43,7 +43,7 @@ struct AppLaunch {
     .noHistory, .logMissed, .logReplace,
     .newGoalLow, .addInProgress, .dayMissed,
     .detailToday, .settingsNoReminder,
-    .tabs,
+    .tabs, .logCalendar,
   ]
 
   /// How the sample data differs for
