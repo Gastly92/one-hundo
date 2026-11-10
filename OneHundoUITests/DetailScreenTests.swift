@@ -152,6 +152,21 @@ final class DetailScreenTests: XCTestCase {
     XCTAssertTrue(tip.appears())
   }
 
+  /// The log sheet's day opens a calendar
+  /// below it, and closes it again.
+  @MainActor
+  func testDayOpensCalendar() {
+    let app = App.start(screen: .logAttempt)
+    let day = app.button("logDate")
+    XCTAssertTrue(day.appears(within: 10))
+    let calendar = app.datePickers.firstMatch
+    XCTAssertFalse(calendar.exists)
+    day.tap()
+    XCTAssertTrue(calendar.appears())
+    day.tap()
+    XCTAssertTrue(calendar.disappears())
+  }
+
   /// Long-presses `row`, then taps `label`
   /// in its menu.
   @MainActor

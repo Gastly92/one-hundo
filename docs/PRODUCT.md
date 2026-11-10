@@ -229,8 +229,14 @@ Opened from a card or from the calendar.
 
 - "How many did you do?" with the number
   entry, prefilled with today's target.
-- Date: today by default; can be changed to
-  log a past day.
+- Date: today by default, written out
+  ("Thursday, January 15"); tapping it
+  opens a calendar to log a past day, and
+  tapping again closes it. (1.1.2)
+- Days read the same way everywhere (this
+  sheet, History, a calendar day), in the
+  phone's region format, with the year
+  added for a day in another year. (1.1.2)
 - **Save**. One attempt per challenge per
   day: logging the same day again replaces
   that day's count.

@@ -134,8 +134,9 @@ EnrollFlowView.swift
 GoalChips.swift
   goal = choice
 
-# Taps: Save and Cancel (the
-# result is pictured).
+# Taps: Save, Cancel and the day (the
+# result and open calendar are
+# pictured).
 LogAttemptView.swift
   count: count,
   on: attempt?.noon() ?? date
@@ -144,6 +145,7 @@ LogAttemptView.swift
   private func save() {
   try? modelContext.save()
   withAnimation { outcome = result }
+  withAnimation { picking.toggle() }
 
 # Tap: picks a shape.
 MarkerPicker.swift

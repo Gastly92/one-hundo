@@ -20,26 +20,26 @@ struct LogAttemptView: View {
   @State private var count: Int
   @State private var date: Date
   @State private var outcome: LogOutcome?
+  /// Whether the calendar under the day is
+  /// open.
+  @State private var picking: Bool
   @State private var bounce = 0
   @ScaledMetric(relativeTo: .largeTitle)
   private var iconSize: CGFloat = 72
-
-  /// E.g. "Monday, January 5".
-  private static let dayFormat =
-    Date.FormatStyle.dateTime
-      .weekday(.wide).month().day()
 
   /// The latest day that can be picked.
   private let today: Date
 
   /// `now` is today (a new attempt's default
-  /// day). `outcome` lets UI tests open the
-  /// result directly (see `ScreenHost`).
+  /// day). `outcome` and `picking` let UI
+  /// tests open the result or the calendar
+  /// directly (see `ScreenHost`).
   init(
     _ challenge: Challenge,
     editing attempt: Attempt? = nil,
     on now: Date = Date(),
-    outcome: LogOutcome? = nil
+    outcome: LogOutcome? = nil,
+    picking: Bool = false
   ) {
     self.challenge = challenge
     self.attempt = attempt
@@ -50,6 +50,7 @@ struct LogAttemptView: View {
     let day = attempt?.noon() ?? now
     _date = State(initialValue: day)
     _outcome = State(initialValue: outcome)
+    _picking = State(initialValue: picking)
   }
 
   private var color: Color {
@@ -142,18 +143,58 @@ struct LogAttemptView: View {
   @ViewBuilder
   private var dateRow: some View {
     if attempt == nil {
-      DatePicker(
-        "Date",
-        selection: $date,
-        in: ...today,
-        displayedComponents: .date
-      )
+      dayButton
+      if picking { dayPicker }
     } else {
+      LabeledContent("Date") { dayText }
+    }
+  }
+
+  /// The day in our own words: the system's
+  /// compact picker chose its own format,
+  /// which changed between runs.
+  private var dayText: some View {
+    let style = Date.FormatStyle.dayText(
+      date, now: today
+    )
+    return Text(date, format: style)
+      .wrapsText()
+      .testID("attemptDate")
+  }
+
+  /// The day; a tap opens or closes the
+  /// calendar below it.
+  private var dayButton: some View {
+    Button {
+      withAnimation { picking.toggle() }
+    } label: {
       LabeledContent("Date") {
-        Text(date, format: Self.dayFormat)
-          .testID("attemptDate")
+        dayText
+          .foregroundStyle(
+            picking ? color : Color.primary
+          )
+          .padding(.horizontal, 12)
+          .padding(.vertical, 6)
+          .background(
+            .fill.tertiary, in: Capsule()
+          )
       }
     }
+    .buttonStyle(.plain)
+    .testID("logDate")
+  }
+
+  private var dayPicker: some View {
+    DatePicker(
+      "Date",
+      selection: $date,
+      in: ...today,
+      displayedComponents: .date
+    )
+    .datePickerStyle(.graphical)
+    .labelsHidden()
+    .tint(color)
+    .testID("logCalendar")
   }
 
   private func result(

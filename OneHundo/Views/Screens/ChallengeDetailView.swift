@@ -52,13 +52,6 @@ struct ChallengeDetailView: View {
     lineWidth: 14, lineCap: .round
   )
 
-  /// E.g. "Mon, Jan 5".
-  private static let dayFormat =
-    Date.FormatStyle.dateTime
-      .weekday(.abbreviated)
-      .month(.abbreviated)
-      .day()
-
   private var color: Color {
     challenge.color
   }
@@ -309,15 +302,17 @@ extension ChallengeDetailView {
     _ attempt: Attempt
   ) -> some View {
     let unit = challenge.unit
+    let day = attempt.noon()
+    // E.g. "Mon, Jan 5".
+    let style = Date.FormatStyle.dayText(
+      day, now: now, short: true
+    )
     return Button {
       openLog(attempt)
     } label: {
       HStack {
-        Text(
-          attempt.noon(),
-          format: Self.dayFormat
-        )
-        .testID("attemptDate")
+        Text(day, format: style)
+          .testID("attemptDate")
         Spacer()
         Text(unit.format(attempt.count))
           .bold()

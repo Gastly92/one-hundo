@@ -111,6 +111,12 @@ Pick a challenge and test yourself: how many can you do today without stopping? 
 No account, no ads, no tracking. Your progress stays on your iPhone and in your own iCloud.
 ```
 
+What's New in 1.1.2:
+
+```
+Logging a past day is clearer: the date is written out in full, and tapping it opens a calendar. Days from another year now show their year.
+```
+
 What's New in 1.1.1 (the first App Store
 release after 1.0; 1.1.0 was TestFlight
 only):

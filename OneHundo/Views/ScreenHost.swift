@@ -185,6 +185,13 @@ struct ScreenHost: View {
       if let plank {
         LogAttemptView(plank, on: now)
       }
+    case .logCalendar:
+      // The day's calendar open.
+      if let pushUps {
+        LogAttemptView(
+          pushUps, on: now, picking: true
+        )
+      }
     case .logResult:
       if let pushUps {
         LogAttemptView(
