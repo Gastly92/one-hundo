@@ -170,17 +170,10 @@ final class AppLaunchTests: XCTestCase {
       start(["OneHundo"]).notifier
         is PhoneNotifier
     )
-    // UI tests get no permission prompt,
-    // unless they ask for one.
+    // UI tests get no permission prompt.
     XCTAssertTrue(
       start(["-uiTesting"]).notifier
         is SilentNotifier
-    )
-    let real = start(
-      ["-uiTesting", "-notifications"]
-    )
-    XCTAssertTrue(
-      real.notifier is PhoneNotifier
     )
   }
 

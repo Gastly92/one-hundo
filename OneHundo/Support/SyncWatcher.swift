@@ -45,7 +45,7 @@ final class SyncWatcher {
     Publishers.MergeMany(changes)
       .sink { @Sendable _ in
         Task { @MainActor in
-          try? Self.update(
+          try? await Self.update(
             store, notifier, now: clock()
           )
         }
@@ -61,7 +61,7 @@ final class SyncWatcher {
     _ store: ModelContainer,
     _ notifier: any Notifier,
     now: Date
-  ) throws {
+  ) async throws {
     let context = store.mainContext
     try Duplicates.merge(in: context)
     let all = try context.fetch(
@@ -70,7 +70,7 @@ final class SyncWatcher {
     let plan = ReminderPlan.reminders(
       for: all, now: now
     )
-    notifier.replace(
+    await notifier.replace(
       with: plan.map { $0.request() }
     )
   }

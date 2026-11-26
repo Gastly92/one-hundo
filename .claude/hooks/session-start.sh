@@ -14,7 +14,8 @@ if [ ! -x "$venv/bin/pip" ]; then
 fi
 "$venv/bin/pip" install -q \
   --disable-pip-version-check \
-  -r "$root/.github/scripts/checkers.txt"
+  -r \
+  "$root/.github/checkers/requirements.txt"
 echo "export PATH=\"$venv/bin:\$PATH\"" \
   >> "$CLAUDE_ENV_FILE"
 
