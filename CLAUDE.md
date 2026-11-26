@@ -15,8 +15,15 @@ iCloud sync (1.1): `docs/ICLOUD.md`.
   Swift/Xcode builds locally. CI is the
   compiler.
 - `.github/workflows/ios-build.yml` runs on
-  every PR and push to `main` (macOS runner,
-  `macos-26`). It generates the project and
+  every PR and push to `main` (macOS
+  runners: GitHub's `xcode-27` image, as
+  App Store Connect refuses builds from
+  an older SDK from April 2027; for the
+  next Xcode, change every `runs-on` in
+  the workflows, list the label in
+  `.github/actionlint.yaml` if actionlint
+  doesn't know it, and re-record the
+  snapshots). It generates the project and
   builds the tests once, then runs them in
   two shards on separate runners in
   parallel (`run-tests.sh`; one simulator
@@ -257,11 +264,16 @@ iCloud sync (1.1): `docs/ICLOUD.md`.
   actionlint on `.github/workflows/` and
   ShellCheck on every `*.sh`. Versions are
   pinned in
-  `.github/scripts/checkers.txt`; the cloud
+  `.github/checkers/requirements.txt`
+  (Dependabot bumps them); the cloud
   session start hook
   (`.claude/hooks/session-start.sh`) installs
   them, so run both before pushing workflow
-  or script changes.
+  or script changes. Runner labels
+  actionlint doesn't know yet go in
+  `.github/actionlint.yaml`;
+  `runner-labels.sh` fails once it knows
+  one, so the entry gets dropped.
 - Test-only Swift packages are declared in
   `Packages/TestSupport/Package.swift`
   (pinned with `exact:`), which tests
@@ -308,8 +320,9 @@ iCloud sync (1.1): `docs/ICLOUD.md`.
   `UserDefaults`/`@AppStorage`: reason
   `CA92.1`).
 - Dependabot opens weekly PRs for GitHub
-  Actions, SwiftLint and test-only Swift
-  package versions. Check CI and summarize
+  Actions, SwiftLint, the workflow
+  checkers and test-only Swift package
+  versions. Check CI and summarize
   what changed (release notes); the owner
   reviews and merges them.
 - After pushing, check CI with the GitHub MCP

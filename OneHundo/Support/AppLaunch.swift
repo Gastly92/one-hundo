@@ -18,8 +18,7 @@ struct AppLaunch {
   /// only).
   let screen: ScreenID?
   /// Where reminders go. UI tests get none
-  /// (no permission prompt), unless they
-  /// launch with -notifications.
+  /// (no permission prompt).
   let notifier: any Notifier
   /// Handles what iCloud sync brings in,
   /// for as long as the app runs (none if
@@ -78,12 +77,10 @@ struct AppLaunch {
     // clean.
     isUITesting = args.contains("-uiTesting")
     let inMemory = isUITesting
-    let real = !isUITesting
-      || args.contains("-notifications")
-    if real {
-      notifier = PhoneNotifier()
-    } else {
+    if isUITesting {
       notifier = SilentNotifier()
+    } else {
+      notifier = PhoneNotifier()
     }
     let shown = isUITesting
       ? Self.screen(in: args) : nil

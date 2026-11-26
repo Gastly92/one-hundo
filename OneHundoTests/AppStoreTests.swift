@@ -207,6 +207,7 @@ final class AppStoreTests: XCTestCase {
     guard try SnapshotOS.matches() else {
       return
     }
+    try warmUp()
     for shot in Self.shots {
       let view = try page(shot.screen)
       for phone in Self.phones {
@@ -315,5 +316,28 @@ final class AppStoreTests: XCTestCase {
       scale: image.scale,
       orientation: .up
     )
+  }
+}
+
+extension AppStoreTests {
+  /// Draws the first screenshot once and
+  /// throws it away. The first poster
+  /// (`ImageRenderer`) on CI's GPU-less
+  /// runners builds its shaders (over a
+  /// second) and sometimes timed out,
+  /// coming out all black. It checks
+  /// nothing: `assertSnapshot` does.
+  private func warmUp() throws {
+    let shot = Self.shots[0]
+    let first = Page(
+      shot: shot,
+      view: try page(shot.screen)
+    )
+    let drawn = XCTestExpectation()
+    let draw = Self.poster(Self.phones[0])
+      .snapshot
+    draw(first).run { _ in drawn.fulfill() }
+    _ = XCTWaiter()
+      .wait(for: [drawn], timeout: 5)
   }
 }

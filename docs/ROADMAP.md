@@ -16,51 +16,20 @@ new feature (1.1.0), patch for fixes.
   submissions need Duo screenshots. On
   sale since 2026-10-23. Last in line:
   start it by early 2027 to make April.
-  - Runner: `macos-26` tops out at Xcode
-    26.6, so CI and TestFlight move to
+  - PR 1 (1.1.3): CI and TestFlight on
     GitHub's `xcode-27` image (macOS 27,
-    Xcode 27.1, iOS 27.1 simulator with
-    an iPhone Duo). Free for this repo.
-  - Tried in Oct 2026 (PR #89, closed;
-    branch `xcode-27-runner` has all of
-    it). The image was two weeks old and
-    flaky, so it waits. What it found:
-    - The pinned actionlint didn't know
-      the `xcode-27` label and needed a
-      config entry
-      (`.github/actionlint.yaml`) with
-      no way to remove it later. Check
-      for an actionlint release that
-      knows it first.
-    - `run-tests.sh` picks the first
-      iPhone simulator; skip the Duo so
-      snapshots keep a phone's window.
-    - Periphery on Xcode 27 called
-      `FormTips`' `$showsTips` binding
-      unused; letting `DisclosureGroup`
-      keep its own state fixed it.
-    - Every snapshot changes on iOS 27
-      (`record-snapshots` label).
-    - `AppStoreTests`' first poster
-      (`ImageRenderer`) came out all
-      black in about half the runs: it
-      builds its shaders on first use
-      and timed out. Drawing the first
-      screenshot once and throwing it
-      away fixed it.
-    - `NotificationTests` twice found no
-      permission prompt (the app was
-      uncovered; cause unknown, then 6
-      clean runs). The branch logs iOS's
-      answer and prints iOS's
-      notification lines after the main
-      shard, to catch it.
-    - One-off stalls: a timeout deleting
-      attempts, an app launch that hung.
-  - PR 1 (next patch version): the
-    runner, the fixes above, re-recorded
-    snapshots. Run CI several times
-    before merging to judge the runner.
+    Xcode 27, iOS 27), as the template
+    did (ios-template#20). It also: lets
+    `FormTips` keep its own open state
+    (Periphery on Xcode 27), warms up
+    the first App Store poster (it came
+    out black), tests `PhoneNotifier`
+    with a stand-in notification center
+    instead of the iOS 27 prompt (XCTest
+    can't see it), tracks the
+    `actionlint.yaml` label
+    (`runner-labels.sh`), and re-records
+    every snapshot.
   - PR 2: Duo-sized snapshots and App
     Store screenshots (`AppStoreTests`),
     and the upload steps in
